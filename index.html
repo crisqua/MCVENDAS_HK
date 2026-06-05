@@ -483,17 +483,22 @@
     border-top: 1px solid rgba(196,90,0,.1);
   }
   .footer-brand {
-    font-family: var(--serif); font-size: 1rem; color: var(--white-dim);
-    letter-spacing: .08em; text-align: center;
+    font-family: var(--serif); font-size: 1.15rem; color: var(--white);
+    letter-spacing: .1em; text-align: center; line-height: 1.4;
   }
   .footer-brand span { color: var(--orange); }
+  .footer-brand em {
+    font-style: italic; font-size: .8rem;
+    letter-spacing: .25em; text-transform: uppercase;
+    color: var(--orange); display: block; margin-top: .2rem;
+  }
   .footer-copy {
-    font-size: .7rem; letter-spacing: .1em;
-    color: rgba(176,168,152,.35);
+    font-size: .68rem; letter-spacing: .06em; line-height: 1.6;
+    color: rgba(176,168,152,.4); text-align: right;
   }
   .footer-dev {
-    font-size: .7rem; letter-spacing: .1em;
-    color: rgba(176,168,152,.35); text-align: right;
+    font-size: .68rem; letter-spacing: .06em;
+    color: rgba(176,168,152,.4);
   }
   .footer-dev strong { color: var(--orange); font-weight: 500; }
 
@@ -827,9 +832,9 @@
 
 <!-- FOOTER -->
 <footer>
-  <div class="footer-copy">© 2025 MC Treinamentos</div>
-  <div class="footer-brand">MC <span>Treinamentos</span> — Engenharia Comportamental</div>
   <div class="footer-dev">Desenvolvido por <strong>Desenvolva[IN]</strong></div>
+  <div class="footer-brand">MC <span>Treinamentos</span><br><em>Engenharia Comportamental</em></div>
+  <div class="footer-copy">© 2025 MC Treinamentos.<br>Todos os direitos reservados.</div>
 </footer>
 
 <script>
