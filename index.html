@@ -502,6 +502,100 @@
   }
   .footer-dev strong { color: var(--orange); font-weight: 500; }
 
+  /* ── DEPOIMENTOS ── */
+  #depoimentos { background: var(--black-soft); }
+  #depoimentos .container { display: grid; gap: 3.5rem; }
+  .dep-header { max-width: 540px; }
+
+  .dep-carousel-wrap { position: relative; }
+
+  .dep-track {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5px;
+    background: rgba(196,90,0,.1);
+    overflow: hidden;
+    transition: all .4s ease;
+  }
+
+  .dep-card {
+    background: var(--black-soft);
+    padding: 2.4rem 2rem;
+    display: flex; flex-direction: column; gap: 1.4rem;
+    position: relative; overflow: hidden;
+    transition: background .3s;
+    min-height: 280px;
+  }
+  .dep-card:hover { background: rgba(196,90,0,.05); }
+  .dep-card::after {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+    height: 2px; background: var(--orange);
+    transform: scaleX(0); transform-origin: left;
+    transition: transform .4s ease;
+  }
+  .dep-card:hover::after { transform: scaleX(1); }
+
+  .dep-quote-icon {
+    font-family: var(--serif); font-size: 4rem;
+    color: rgba(196,90,0,.25); line-height: 1;
+    margin-bottom: -.8rem;
+  }
+  .dep-text {
+    font-size: .86rem; line-height: 1.85;
+    color: var(--white-dim); flex: 1;
+    font-style: italic; font-family: var(--serif);
+  }
+  .dep-author {
+    display: flex; align-items: center; gap: 1rem;
+    border-top: 1px solid rgba(196,90,0,.1);
+    padding-top: 1.2rem; margin-top: auto;
+  }
+  .dep-avatar {
+    width: 40px; height: 40px; flex-shrink: 0;
+    background: linear-gradient(135deg, var(--orange-muted), var(--orange));
+    border-radius: 50%; display: grid; place-items: center;
+    font-family: var(--serif); font-size: 1.1rem;
+    color: var(--black); font-weight: 600;
+  }
+  .dep-author strong {
+    display: block; font-size: .85rem; font-weight: 500;
+    color: var(--white); font-family: var(--sans);
+  }
+  .dep-author span {
+    font-size: .72rem; color: var(--orange);
+    letter-spacing: .05em; line-height: 1.4;
+  }
+
+  .dep-controls {
+    display: flex; align-items: center; justify-content: center;
+    gap: 1.2rem; margin-top: 2rem;
+  }
+  .dep-btn {
+    background: transparent;
+    border: 1px solid rgba(196,90,0,.35);
+    color: var(--orange); width: 40px; height: 40px;
+    display: grid; place-items: center;
+    cursor: pointer; transition: background .3s, color .3s;
+  }
+  .dep-btn:hover { background: var(--orange); color: var(--black); }
+  .dep-dots { display: flex; gap: .5rem; }
+  .dep-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: rgba(196,90,0,.25);
+    cursor: pointer; transition: background .3s, transform .3s;
+    border: none;
+  }
+  .dep-dot.active {
+    background: var(--orange); transform: scale(1.4);
+  }
+
+  @media (max-width: 1024px) {
+    .dep-track { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 640px) {
+    .dep-track { grid-template-columns: 1fr; }
+  }
+
   /* ── ANIMATIONS ── */
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(28px); }
@@ -552,6 +646,7 @@
     <a href="#frentes">Atuação</a>
     <a href="#metodo">Método CCR</a>
     <a href="#diferenciais">Diferenciais</a>
+    <a href="#depoimentos">Depoimentos</a>
   </div>
   <a href="#contato" class="nav-cta">Falar com MC</a>
 </nav>
@@ -804,6 +899,119 @@
   </div>
 </section>
 
+<!-- DEPOIMENTOS -->
+<section id="depoimentos">
+  <div class="container">
+    <div class="dep-header">
+      <div class="section-label">Depoimentos</div>
+      <h2 class="section-title">O que dizem sobre<br><em>Madalena Carvalho</em></h2>
+    </div>
+
+    <div class="dep-carousel-wrap">
+      <div class="dep-track" id="depTrack">
+
+        <div class="dep-card">
+          <div class="dep-quote-icon">"</div>
+          <p class="dep-text">Madalena é daquelas pessoas que encantam ao primeiro contato. Perspicaz, ativa, eficiente e comprometida, leva a sério cada projeto em que se envolve e entrega soluções diferenciadas, capazes de surpreender pela criatividade e habilidade em lidar com as pessoas. Líder nata, se expressa com extrema competência, leveza e assertividade. É uma profissional que deixou marcas presentes no histórico de minhas relações profissionais, principalmente pela capacidade de se apaixonar pelos projetos em que se envolve e comprometer os demais membros das equipes.</p>
+          <div class="dep-author">
+            <div class="dep-avatar">D</div>
+            <div>
+              <strong>Danilo Pinto</strong>
+              <span>Gerente Comercial · Ex-Diretor de Indústria e Comércio — Prefeitura de Itaberaba/BA</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="dep-card">
+          <div class="dep-quote-icon">"</div>
+          <p class="dep-text">Profissional com alguns tipos de competências que não se acham facilmente hoje no mercado apesar de muitos dizerem que as possui. Resiliência, Visão Sistêmica e Facilidade na Comunicação. Capaz de dar resultados práticos mas com uma carga de embasamento teórico que dá sustentação às suas ideias. Possui em seu portfólio uma rede de contatos capaz de ajudá-la num piscar de olhos, simplesmente porque ela é Madalena Carvalho — a pessoa que em algum momento serviu de mentora para ajudar a solucionar algum problema.</p>
+          <div class="dep-author">
+            <div class="dep-avatar">R</div>
+            <div>
+              <strong>Richard Farias</strong>
+              <span>Sócio Proprietário — Graf Facilities</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="dep-card">
+          <div class="dep-quote-icon">"</div>
+          <p class="dep-text">A Madalena é uma excelente profissional! Tem competências profissionais e de relacionamento humano únicas, que fazem dela uma excelente pessoa e uma excelente profissional. É uma excelente parceira de negócios! Recomendo-a enquanto Professora e Conferencista bem como na organização e gestão de eventos empresariais. Além disso, a Madalena tem uma excelente rede de contatos profissionais em grandes empresas.</p>
+          <div class="dep-author">
+            <div class="dep-avatar">J</div>
+            <div>
+              <strong>Joel Serrano</strong>
+              <span>CEO & Founder — Heartbeat IT Solutions · Alemanha</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="dep-card">
+          <div class="dep-quote-icon">"</div>
+          <p class="dep-text">Madalena atua de forma orientativa e focada, aprimorando habilidades técnicas de alto valor. Trabalha fortemente no desenvolvimento das habilidades comportamentais necessárias para o sucesso do trabalho em equipe. Em sua forma de agir, faz com que todo o processo de orientação e coaching seja assimilado naturalmente. Seus trabalhos são sempre muito bem sucedidos!</p>
+          <div class="dep-author">
+            <div class="dep-avatar">S</div>
+            <div>
+              <strong>Solange Gouveia</strong>
+              <span>Gerente de Suprimentos</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="dep-card">
+          <div class="dep-quote-icon">"</div>
+          <p class="dep-text">Madalena é uma excelente profissional, com vasta experiência em gestão de pessoas, treinamentos, palestras e seminários. Tem uma altíssima capacidade intelectual e uma postura íntegra e amigável, que passa credibilidade e confiança. Possui muita habilidade com o público e conhece as melhores ferramentas de gestão de pessoas. Eu recomendo.</p>
+          <div class="dep-author">
+            <div class="dep-avatar">M</div>
+            <div>
+              <strong>Magda Miranda</strong>
+              <span>Gerente de Logística | MBA Supply Chain | Lean x Sigma</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="dep-card">
+          <div class="dep-quote-icon">"</div>
+          <p class="dep-text">Ao longo da nossa jornada, ficou muito evidente o quanto você é uma profissional preparada, sensível e comprometida com o desenvolvimento real de quem acompanha. Sua escuta ativa, clareza nas orientações e capacidade de identificar pontos de melhoria com tanto cuidado fizeram toda a diferença para mim. O suporte que você me deu foi essencial. Em cada desafio, em cada dúvida ou insegurança, você esteve presente, trazendo direcionamentos práticos e reflexões profundas que me ajudaram a crescer.</p>
+          <div class="dep-author">
+            <div class="dep-avatar">V</div>
+            <div>
+              <strong>Vanessa Saori Ongawa</strong>
+              <span>Gerente de Projetos — Banco Santander</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="dep-card">
+          <div class="dep-quote-icon">"</div>
+          <p class="dep-text">Realizei uma mentoria de gestão com a Mada — primeiramente seria um módulo, porém tive resultados muito bons e fiz mais um módulo. Com seu atendimento personalizado, todas as ações e orientações acabam sendo exclusivas, e isso é um grande diferencial. Recomendo muito a mentoria!</p>
+          <div class="dep-author">
+            <div class="dep-avatar">C</div>
+            <div>
+              <strong>Cristiano de Quadros</strong>
+              <span>Desenvolvedor & Gestor de Projetos</span>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /dep-track -->
+
+      <div class="dep-controls">
+        <button class="dep-btn" id="depPrev" aria-label="Anterior">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <div class="dep-dots" id="depDots"></div>
+        <button class="dep-btn" id="depNext" aria-label="Próximo">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<hr class="divider" />
+
 <!-- CTA -->
 <section id="contato">
   <div class="cta-bg"></div>
@@ -838,6 +1046,73 @@
 </footer>
 
 <script>
+  // Carrossel de depoimentos
+  (function() {
+    const track = document.getElementById('depTrack');
+    const cards = Array.from(track.querySelectorAll('.dep-card'));
+    const dotsContainer = document.getElementById('depDots');
+    const btnPrev = document.getElementById('depPrev');
+    const btnNext = document.getElementById('depNext');
+
+    function getVisible() {
+      if (window.innerWidth <= 640) return 1;
+      if (window.innerWidth <= 1024) return 2;
+      return 3;
+    }
+
+    let current = 0;
+    let visible = getVisible();
+    let total = Math.ceil(cards.length / visible);
+
+    function buildDots() {
+      dotsContainer.innerHTML = '';
+      total = Math.ceil(cards.length / visible);
+      for (let i = 0; i < total; i++) {
+        const d = document.createElement('button');
+        d.className = 'dep-dot' + (i === current ? ' active' : '');
+        d.addEventListener('click', () => goTo(i));
+        dotsContainer.appendChild(d);
+      }
+    }
+
+    function goTo(idx) {
+      current = Math.max(0, Math.min(idx, total - 1));
+      const start = current * visible;
+      cards.forEach((c, i) => {
+        c.style.display = (i >= start && i < start + visible) ? 'flex' : 'none';
+      });
+      document.querySelectorAll('.dep-dot').forEach((d, i) => {
+        d.classList.toggle('active', i === current);
+      });
+    }
+
+    function init() {
+      visible = getVisible();
+      buildDots();
+      goTo(0);
+    }
+
+    btnPrev.addEventListener('click', () => goTo(current - 1));
+    btnNext.addEventListener('click', () => goTo(current + 1));
+    window.addEventListener('resize', init);
+    init();
+
+    // Auto-play — pausa quando mouse está sobre o carrossel
+    let autoplay;
+    const wrap = document.querySelector('.dep-carousel-wrap');
+
+    function startAutoplay() {
+      autoplay = setInterval(() => goTo((current + 1) % total), 6000);
+    }
+    function stopAutoplay() {
+      clearInterval(autoplay);
+    }
+
+    wrap.addEventListener('mouseenter', stopAutoplay);
+    wrap.addEventListener('mouseleave', startAutoplay);
+    startAutoplay();
+  })();
+
   // Scroll-triggered fade-in
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
