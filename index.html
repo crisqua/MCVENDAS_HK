@@ -72,6 +72,18 @@
     transition: background .3s, color .3s;
   }
   .nav-cta:hover { background: var(--orange); color: var(--black); }
+  .nav-link-profit {
+    text-decoration: none;
+    color: var(--orange-light) !important;
+    font-size: .75rem; letter-spacing: .18em; text-transform: uppercase;
+    border: 1px solid rgba(196,90,0,.4);
+    padding: .4rem 1rem;
+    transition: background .3s, color .3s;
+  }
+  .nav-link-profit:hover {
+    background: var(--orange);
+    color: var(--black) !important;
+  }
 
   /* ── HERO ── */
   #hero {
@@ -316,6 +328,22 @@
     border: 1px solid rgba(196,90,0,.45);
     border-left: 4px solid var(--orange);
     position: relative; overflow: hidden;
+    text-decoration: none; cursor: pointer;
+    transition: border-color .3s, box-shadow .3s, transform .2s;
+  }
+  .profit-card:hover {
+    border-color: var(--orange);
+    box-shadow: 0 0 0 1px rgba(196,90,0,.3), 0 16px 40px rgba(196,90,0,.18);
+    transform: translateY(-2px);
+  }
+  .profit-card:hover .profit-arrow {
+    transform: translateX(4px);
+    opacity: 1;
+  }
+  .profit-arrow {
+    position: absolute; top: 2rem; right: 2rem;
+    color: var(--orange); opacity: .55;
+    transition: transform .3s, opacity .3s;
   }
   .profit-card::before {
     content: ''; position: absolute; inset: 0;
@@ -647,6 +675,7 @@
     <a href="#metodo">Método CCR</a>
     <a href="#diferenciais">Diferenciais</a>
     <a href="#depoimentos">Depoimentos</a>
+    <a href="profitplus.html" class="nav-link-profit">PROFIT+™</a>
   </div>
   <a href="#contato" class="nav-cta">Falar com MC</a>
 </nav>
@@ -781,7 +810,8 @@
     </div>
 
     <!-- PROFIT+™ DESTAQUE -->
-    <div class="profit-card">
+    <a href="profitplus.html" class="profit-card">
+      <svg class="profit-arrow" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
       <div class="profit-left">
         <div class="profit-badge">Produto Proprietário</div>
         <h3 class="profit-title">PROFIT+<span>™</span></h3>
@@ -801,7 +831,7 @@
           <span>Folha de Pagamento</span>
         </div>
       </div>
-    </div>
+    </a>
 
   </div>
 </section>

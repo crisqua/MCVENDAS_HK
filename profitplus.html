@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>PROFIT+™ — Engenharia Financeira Comportamental</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Barlow:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --black: #0a0a0a;
+    --black-soft: #121212;
+    --black-card: #181818;
+    --orange: #c45a00;
+    --orange-light: #e0720a;
+    --orange-muted: #6e3400;
+    --red-alert: #8c2a1f;
+    --white: #f5f0ea;
+    --white-dim: #a8a098;
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --sans: 'Barlow', sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--black); color: var(--white);
+    font-family: var(--sans); font-weight: 300;
+    overflow-x: hidden;
+  }
+  ::-webkit-scrollbar { width: 3px; }
+  ::-webkit-scrollbar-track { background: var(--black); }
+  ::-webkit-scrollbar-thumb { background: var(--orange); }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.4rem 4rem;
+    background: linear-gradient(to bottom, rgba(10,10,10,0.96) 0%, transparent 100%);
+    backdrop-filter: blur(6px);
+  }
+  .nav-brand {
+    font-family: var(--serif); font-size: 1.3rem; font-weight: 600;
+    letter-spacing: .02em; color: var(--white);
+  }
+  .nav-brand span { color: var(--orange); font-weight: 300; font-size: 1rem; vertical-align: super; }
+  .nav-links { display: flex; gap: 2.2rem; }
+  .nav-links a {
+    text-decoration: none; color: var(--white-dim);
+    font-size: .72rem; letter-spacing: .16em; text-transform: uppercase;
+    transition: color .3s;
+  }
+  .nav-links a:hover { color: var(--orange-light); }
+  .nav-cta {
+    text-decoration: none; background: var(--orange); color: var(--black);
+    padding: .6rem 1.5rem; font-size: .7rem; letter-spacing: .15em;
+    text-transform: uppercase; font-weight: 500; transition: background .3s;
+  }
+  .nav-cta:hover { background: var(--orange-light); }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh; display: grid; place-items: center;
+    position: relative; overflow: hidden; padding: 8rem 4rem 4rem;
+    text-align: center;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 70% 50% at 50% 20%, rgba(196,90,0,.16) 0%, transparent 65%),
+      radial-gradient(ellipse 50% 40% at 80% 90%, rgba(140,42,31,.08) 0%, transparent 60%),
+      var(--black);
+  }
+  .hero-grid-lines {
+    position: absolute; inset: 0; opacity: .35;
+    background-image:
+      linear-gradient(rgba(196,90,0,.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(196,90,0,.05) 1px, transparent 1px);
+    background-size: 64px 64px;
+    pointer-events: none;
+  }
+  .hero-content { position: relative; z-index: 2; max-width: 980px; }
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: .6rem;
+    font-family: var(--mono); font-size: .68rem; letter-spacing: .15em;
+    text-transform: uppercase; color: var(--orange);
+    border: 1px solid rgba(196,90,0,.35);
+    background: rgba(196,90,0,.06);
+    padding: .5rem 1.1rem; margin-bottom: 2.2rem;
+  }
+  .hero-tag .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--orange); animation: pulse 1.6s infinite;
+  }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .3; } }
+  .hero-heading {
+    font-family: var(--serif); font-weight: 300;
+    font-size: clamp(2.6rem, 5vw, 4.6rem);
+    line-height: 1.12; color: var(--white); margin-bottom: 1.8rem;
+  }
+  .hero-heading em { font-style: italic; color: var(--orange-light); }
+  .hero-sub {
+    font-size: 1.08rem; line-height: 1.8; color: var(--white-dim);
+    max-width: 680px; margin: 0 auto 2.8rem;
+  }
+  .hero-actions { display: flex; gap: 1.2rem; justify-content: center; align-items: center; }
+  .btn-primary {
+    text-decoration: none; display: inline-block;
+    background: var(--orange); color: var(--black);
+    padding: 1rem 2.6rem; font-size: .78rem; letter-spacing: .18em;
+    text-transform: uppercase; font-weight: 600;
+    transition: background .3s, transform .2s;
+  }
+  .btn-primary:hover { background: var(--orange-light); transform: translateY(-1px); }
+  .btn-secondary {
+    text-decoration: none; color: var(--white-dim);
+    font-size: .78rem; letter-spacing: .15em; text-transform: uppercase;
+    border-bottom: 1px solid rgba(196,90,0,.35); padding-bottom: 3px;
+    transition: color .3s, border-color .3s;
+  }
+  .btn-secondary:hover { color: var(--white); border-color: var(--orange); }
+
+  .hero-scroll-cue {
+    position: absolute; bottom: 2.4rem; left: 50%; transform: translateX(-50%);
+    font-family: var(--mono); font-size: .65rem; letter-spacing: .2em;
+    text-transform: uppercase; color: rgba(196,90,0,.5);
+    display: flex; flex-direction: column; align-items: center; gap: .5rem;
+  }
+  .hero-scroll-cue::after {
+    content: ''; width: 1px; height: 30px;
+    background: linear-gradient(to bottom, var(--orange), transparent);
+  }
+
+  /* ── SECTION BASE ── */
+  section { padding: 7rem 4rem; }
+  .container { max-width: 1140px; margin: 0 auto; }
+  .section-label {
+    font-family: var(--mono); font-size: .65rem; letter-spacing: .3em;
+    text-transform: uppercase; color: var(--orange); margin-bottom: .9rem;
+    display: flex; align-items: center; gap: .7rem;
+  }
+  .section-label::before { content: ''; display: block; width: 20px; height: 1px; background: var(--orange); }
+  .section-title {
+    font-family: var(--serif); font-size: clamp(1.9rem, 3.2vw, 3rem);
+    font-weight: 300; line-height: 1.2; color: var(--white); margin-bottom: 1.4rem;
+  }
+  .section-title em { font-style: italic; color: var(--orange-light); }
+  .section-body { font-size: .96rem; line-height: 1.85; color: var(--white-dim); max-width: 640px; }
+  .divider { border: none; border-top: 1px solid rgba(196,90,0,.1); margin: 0 4rem; }
+
+  /* ── DIAGNÓSTICO ── */
+  #diagnostico { background: var(--black-soft); }
+  #diagnostico .container { display: grid; gap: 3rem; }
+  .diag-intro { max-width: 700px; }
+  .diag-strike {
+    font-size: .92rem; line-height: 1.8; color: rgba(168,160,152,.55);
+    margin-bottom: 2.2rem; max-width: 600px;
+  }
+  .diag-strike strong { color: rgba(168,160,152,.75); font-weight: 400; }
+  .diag-core {
+    font-family: var(--serif); font-style: italic; font-size: 1.5rem;
+    line-height: 1.5; color: var(--white); max-width: 680px; margin-bottom: 3rem;
+  }
+  .diag-core span { color: var(--orange-light); font-style: normal; font-weight: 500; }
+
+  .diag-symptoms { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5px; background: rgba(196,90,0,.1); }
+  .symptom-card {
+    background: var(--black-soft); padding: 2.2rem 1.8rem;
+    border-top: 2px solid transparent; transition: border-color .3s, background .3s;
+  }
+  .symptom-card:hover { border-top-color: var(--orange); background: rgba(196,90,0,.04); }
+  .symptom-icon { color: var(--orange); margin-bottom: 1.2rem; }
+  .symptom-title {
+    font-family: var(--serif); font-size: 1.05rem; color: var(--white);
+    margin-bottom: .6rem; line-height: 1.3;
+  }
+  .symptom-desc { font-size: .82rem; line-height: 1.7; color: var(--white-dim); }
+
+  /* ── PROFIT+ INTERVENÇÃO ── */
+  #intervencao { position: relative; overflow: hidden; }
+  .intervencao-bg {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 70% 60% at 50% 50%, rgba(196,90,0,.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  #intervencao .container { position: relative; z-index: 2; }
+  .int-header { text-align: center; max-width: 740px; margin: 0 auto 3.5rem; }
+  .int-header .section-label { justify-content: center; }
+  .int-header .section-label::before { display: none; }
+  .int-header .section-title { text-align: center; }
+  .int-header .section-body { text-align: center; margin: 0 auto; }
+
+  .int-pillars { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; background: rgba(196,90,0,.12); }
+  .int-pillar {
+    background: var(--black-soft); padding: 2.6rem; display: flex; gap: 1.4rem; align-items: flex-start;
+    transition: background .3s;
+  }
+  .int-pillar:hover { background: rgba(196,90,0,.05); }
+  .int-pillar-num {
+    font-family: var(--serif); font-size: 2.2rem; font-weight: 600;
+    color: var(--orange); line-height: 1; flex-shrink: 0; width: 50px;
+  }
+  .int-pillar h4 { font-family: var(--serif); font-size: 1.15rem; color: var(--white); margin-bottom: .6rem; }
+  .int-pillar p { font-size: .85rem; line-height: 1.75; color: var(--white-dim); }
+
+  /* ── CTA FINAL ── */
+  #cta-final { position: relative; overflow: hidden; text-align: center; }
+  .cta-bg {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 70% 80% at 50% 50%, rgba(196,90,0,.14) 0%, transparent 70%), var(--black);
+    pointer-events: none;
+  }
+  #cta-final .container { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 1.6rem; }
+  #cta-final .section-title { max-width: 720px; text-align: center; }
+  #cta-final .section-label { justify-content: center; }
+  #cta-final .section-label::before { display: none; }
+  #cta-final .section-body { text-align: center; max-width: 560px; }
+  .cta-final-btn-wrap { margin-top: 1.2rem; display: flex; flex-direction: column; align-items: center; gap: 1rem; }
+  .cta-note { font-family: var(--mono); font-size: .68rem; letter-spacing: .08em; color: rgba(168,160,152,.5); }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 2.5rem 4rem; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+    border-top: 1px solid rgba(196,90,0,.1);
+  }
+  .footer-dev { font-size: .68rem; letter-spacing: .06em; color: rgba(168,160,152,.4); }
+  .footer-dev strong { color: var(--orange); font-weight: 500; }
+  .footer-brand { font-family: var(--serif); font-size: 1.1rem; color: var(--white); text-align: center; letter-spacing: .05em; }
+  .footer-brand span { color: var(--orange); }
+  .footer-copy { font-size: .68rem; letter-spacing: .06em; color: rgba(168,160,152,.4); text-align: right; }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+  .anim { opacity: 0; animation: fadeUp .8s ease forwards; }
+  .anim-d1 { animation-delay: .1s; } .anim-d2 { animation-delay: .25s; }
+  .anim-d3 { animation-delay: .4s; } .anim-d4 { animation-delay: .55s; }
+
+  @media (max-width: 1024px) {
+    nav { padding: 1.2rem 2rem; } .nav-links { display: none; }
+    section { padding: 5rem 2rem; } .divider { margin: 0 2rem; }
+    #hero { padding: 7rem 2rem 4rem; }
+    .diag-symptoms { grid-template-columns: 1fr; }
+    .int-pillars { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 640px) {
+    footer { grid-template-columns: 1fr; text-align: center; gap: .8rem; padding: 2rem; }
+    .footer-copy, .footer-dev { text-align: center; }
+    .hero-actions { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">PROFIT<span>+™</span></div>
+  <div class="nav-links">
+    <a href="#diagnostico">Diagnóstico</a>
+    <a href="#intervencao">Método</a>
+    <a href="#cta-final">Próximos Passos</a>
+  </div>
+  <a href="#cta-final" class="nav-cta">Fazer o Raio-X Agora</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid-lines"></div>
+  <div class="hero-content">
+    <div class="hero-tag anim anim-d1"><span class="dot"></span> Engenharia Financeira Comportamental</div>
+    <h1 class="hero-heading anim anim-d2">
+      A sua margem operacional<br>
+      está diminuindo. <em>E a culpa<br>
+      não é do mercado.</em>
+    </h1>
+    <p class="hero-sub anim anim-d3">
+      Enquanto sua equipe de gestão faz reuniões de alinhamento, o custo invisível
+      da sua operação continua crescendo. Chega de tratar sintoma — é hora de
+      intervir na causa raiz.
+    </p>
+    <div class="hero-actions anim anim-d4">
+      <a href="#cta-final" class="btn-primary">Fazer o Raio-X Agora</a>
+      <a href="#diagnostico" class="btn-secondary">Entender o problema</a>
+    </div>
+  </div>
+  <div class="hero-scroll-cue">Role para o diagnóstico</div>
+</section>
+
+<hr class="divider" />
+
+<!-- DIAGNÓSTICO -->
+<section id="diagnostico">
+  <div class="container">
+    <div class="diag-intro">
+      <div class="section-label">O Diagnóstico</div>
+      <h2 class="section-title">O problema não está<br>na <em>estratégia.</em></h2>
+    </div>
+
+    <p class="diag-strike">
+      Você já <strong>contratou consultoria</strong>. Já fez <strong>planejamento estratégico</strong>.
+      Já tentou "motivar" a equipe com programas vazios. E o resultado financeiro não veio.
+    </p>
+
+    <p class="diag-core">
+      Está na <span>execução.</span> Existe um atrito gerencial silencioso na sua empresa —
+      a passivo-agressividade disfarçada de elegância no meio do seu escalão, a decisão que
+      morre antes de chegar ao chão de fábrica, o ralo operacional que consome seu caixa
+      todo mês, invisível no DRE, mas devastador no resultado final.
+    </p>
+
+    <div class="diag-symptoms">
+      <div class="symptom-card">
+        <div class="symptom-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M21 21l-4.35-4.35M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16z"/></svg>
+        </div>
+        <div class="symptom-title">Atrito Gerencial Silencioso</div>
+        <div class="symptom-desc">Conflitos não resolvidos travestidos de "alinhamento". Decisões que se diluem entre o discurso e a prática.</div>
+      </div>
+      <div class="symptom-card">
+        <div class="symptom-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 3v18h18"/><path d="M19 9l-5 5-4-4-5 5"/></svg>
+        </div>
+        <div class="symptom-title">Decisão que Não Chega ao Chão</div>
+        <div class="symptom-desc">O que é decidido na sala da diretoria perde força, prioridade e clareza até alcançar quem executa.</div>
+      </div>
+      <div class="symptom-card">
+        <div class="symptom-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 2v20M2 12h20"/><circle cx="12" cy="12" r="9"/></svg>
+        </div>
+        <div class="symptom-title">Ralo Operacional Invisível</div>
+        <div class="symptom-desc">Custo comportamental que não aparece em nenhuma linha do DRE, mas consome margem todos os meses.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INTERVENÇÃO PROFIT+ -->
+<section id="intervencao">
+  <div class="intervencao-bg"></div>
+  <div class="container">
+    <div class="int-header">
+      <div class="section-label">A Intervenção</div>
+      <h2 class="section-title">PROFIT<em>+™</em></h2>
+      <p class="section-body">
+        Não é um software de RH tradicional. É uma inteligência analítico-comportamental
+        que traduz comportamento em número direto para o CEO — engenharia de caixa,
+        sem fórmulas mágicas e sem delegar para o RH.
+      </p>
+    </div>
+
+    <div class="int-pillars">
+      <div class="int-pillar">
+        <div class="int-pillar-num">01</div>
+        <div>
+          <h4>Confrontar</h4>
+          <p>Expomos com precisão onde o comportamento gerencial está custando dinheiro real — sem rodeios, sem diplomacia que protege o problema.</p>
+        </div>
+      </div>
+      <div class="int-pillar">
+        <div class="int-pillar-num">02</div>
+        <div>
+          <h4>Escancarar</h4>
+          <p>Tornamos visível o que o DRE não mostra: o passivo comportamental embutido na folha de pagamento, mês após mês.</p>
+        </div>
+      </div>
+      <div class="int-pillar">
+        <div class="int-pillar-num">03</div>
+        <div>
+          <h4>Calibrar</h4>
+          <p>Ajustamos a engrenagem humana da operação para que a execução pare de sangrar margem e comece a sustentar resultado.</p>
+        </div>
+      </div>
+      <div class="int-pillar">
+        <div class="int-pillar-num">04</div>
+        <div>
+          <h4>Reportar ao CEO</h4>
+          <p>Tudo traduzido em número direto, sem intermediação do RH — linguagem de caixa, não de departamento de pessoas.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- CTA FINAL -->
+<section id="cta-final">
+  <div class="cta-bg"></div>
+  <div class="container">
+    <div class="section-label">Próximo Passo</div>
+    <h2 class="section-title">O custo invisível não para<br>de crescer <em>enquanto você espera.</em></h2>
+    <p class="section-body">
+      Faça o Raio-X agora e receba a primeira leitura de exposição da sua operação —
+      o ponto de partida para o Relatório de Mitigação de Riscos PROFIT+™.
+    </p>
+    <div class="cta-final-btn-wrap">
+      <a href="https://profitaapmobileapp.vercel.app/" target="_blank" class="btn-primary">Fazer o Raio-X e Solicitar Relatório</a>
+      <span class="cta-note">leva menos de 2 minutos · sem compromisso</span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-dev">Desenvolvido por <strong>Desenvolva[IN]</strong></div>
+  <div class="footer-brand">PROFIT<span>+™</span></div>
+  <div class="footer-copy">© 2025 MC Treinamentos.<br>Todos os direitos reservados.</div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.symptom-card, .int-pillar').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    el.style.transition = 'opacity .7s ease, transform .7s ease';
+    observer.observe(el);
+  });
+</script>
+</body>
+</html>
