@@ -90,7 +90,7 @@
     min-height: 100vh;
     display: grid; place-items: center;
     position: relative; overflow: hidden;
-    padding: 0 4rem;
+    padding: 8rem 4rem 0;
   }
   .hero-bg {
     position: absolute; inset: 0;
@@ -114,9 +114,15 @@
     display: grid; grid-template-columns: 1fr 1fr; gap: 6rem;
     align-items: center; max-width: 1200px; width: 100%;
   }
+  .hero-left {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-width: 0;
+  }
   .hero-eyebrow {
-    font-size: .68rem; letter-spacing: .35em; text-transform: uppercase;
-    color: var(--orange); margin-bottom: 1.6rem;
+    font-size: .58rem; letter-spacing: .28em; text-transform: uppercase;
+    color: var(--orange); margin-bottom: 1.4rem;
     display: flex; align-items: center; gap: .8rem;
   }
   .hero-eyebrow::before {
@@ -136,7 +142,27 @@
   .hero-sub {
     font-size: 1rem; line-height: 1.8;
     color: var(--white-dim); max-width: 480px;
-    margin-bottom: 2.8rem;
+    margin-bottom: 2.2rem;
+  }
+  .hero-proof {
+    display: grid; gap: .9rem;
+    margin-bottom: 2.4rem;
+    max-width: 520px;
+  }
+  .hero-proof-item {
+    display: flex; align-items: center; gap: .9rem;
+    padding: .9rem 1rem;
+    background: rgba(196,90,0,.06);
+    border: 1px solid rgba(196,90,0,.18);
+    color: var(--white-dim);
+    font-size: .78rem; letter-spacing: .12em; text-transform: uppercase;
+  }
+  .hero-proof-item strong {
+    display: inline-grid; place-items: center;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--orange); color: var(--black);
+    font-size: .72rem; font-weight: 700;
+    flex-shrink: 0;
   }
   .hero-actions { display: flex; gap: 1.2rem; align-items: center; }
   .btn-primary {
@@ -446,7 +472,6 @@
   }
 
   /* ── CONEXÕES ── */
-  #conexoes { }
   #conexoes .container { display: grid; gap: 3rem; }
   .conexoes-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; background: rgba(196,90,0,.1); }
   .conexao-card {
@@ -672,26 +697,49 @@
     display: grid; grid-template-columns: 1fr auto 1fr;
     align-items: center;
     border-top: 1px solid rgba(196,90,0,.1);
+    background:
+      linear-gradient(to top, rgba(196,90,0,.04), transparent),
+      var(--black);
   }
   .footer-brand {
     font-family: var(--serif); font-size: 1.15rem; color: var(--white);
     letter-spacing: .1em; text-align: center; line-height: 1.4;
+    text-shadow: 0 0 12px rgba(196,90,0,.12);
   }
-  .footer-brand span { color: var(--orange); }
+  .footer-brand .mc-word {
+    display: inline-block;
+    color: transparent;
+    background: linear-gradient(135deg, #ffb266 0%, #f18a14 40%, #ffcc99 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    font-weight: 700;
+    text-shadow: 0 0 16px rgba(241,138,20,.55);
+  }
+  .footer-brand .brand-name {
+    color: #f2aa59;
+    text-shadow: 0 0 12px rgba(241,138,20,.26);
+  }
   .footer-brand em {
     font-style: italic; font-size: .8rem;
     letter-spacing: .25em; text-transform: uppercase;
-    color: var(--orange); display: block; margin-top: .2rem;
+    color: #f7b26a; display: block; margin-top: .2rem;
+    text-shadow: 0 0 10px rgba(241,138,20,.32);
   }
   .footer-copy {
     font-size: .68rem; letter-spacing: .06em; line-height: 1.6;
-    color: rgba(176,168,152,.4); text-align: right;
+    color: rgba(246,238,226,.78); text-align: right;
+    text-shadow: 0 0 10px rgba(196,90,0,.12);
   }
   .footer-dev {
     font-size: .68rem; letter-spacing: .06em;
-    color: rgba(176,168,152,.4);
+    color: rgba(246,238,226,.78);
+    text-shadow: 0 0 10px rgba(196,90,0,.12);
   }
-  .footer-dev strong { color: var(--orange); font-weight: 500; }
+  .footer-dev strong {
+    color: #f8b46c;
+    font-weight: 700;
+    text-shadow: 0 0 10px rgba(248,180,108,.48);
+  }
 
   /* ── DEPOIMENTOS ── */
   #depoimentos { background: var(--black-soft); }
@@ -854,16 +902,18 @@
     <div class="hero-left">
       <div class="hero-eyebrow anim anim-d1">Engenharia Comportamental Corporativa</div>
       <h1 class="hero-heading anim anim-d2">
-        Onde <em>consciência</em><br>
-        encontra<br>
-        resultado.
+        O resultado não nasce só<br>
+        de estratégia. Nasce de <em>consciência</em>.
       </h1>
       <p class="hero-sub anim anim-d3">
-        Transformamos variáveis invisíveis — comunicação, posicionamento
-        e cultura — em impacto concreto sobre performance e resultado financeiro.
+        Transformamos comunicação, posicionamento e cultura em impacto real sobre a performance da sua operação.
       </p>
+      <div class="hero-proof anim anim-d3">
+        <div class="hero-proof-item"><strong>01</strong> Diagnóstico de impacto comportamental</div>
+        <div class="hero-proof-item"><strong>02</strong> Intervenção com foco em desempenho real</div>
+      </div>
       <div class="hero-actions anim anim-d4">
-        <a href="#contato" class="btn-primary">Iniciar Conversa</a>
+        <a href="#contato" class="btn-primary">Solicitar diagnóstico</a>
         <a href="#sobre" class="btn-secondary">Conhecer a MC</a>
       </div>
     </div>
@@ -913,14 +963,11 @@
       <div class="section-label">Sobre a MC</div>
       <h2 class="section-title">Um ecossistema de<br><em>engenharia comportamental</em></h2>
       <p class="section-body">
-        A MC Treinamentos nasceu da integração entre comportamento humano, estratégia e resultado.
-        Fundada por Madalena Carvalho após décadas nas trincheiras de grandes organizações,
-        a empresa opera numa lógica premium, estratégica e profundamente humana.
+        A MC Treinamentos nasceu da convergência entre comportamento humano, estratégia e resultado.
+        Com um olhar sistêmico e elevado rigor executivo, a empresa atua onde a performance real é construída: nas relações, no posicionamento e na coerência organizacional.
       </p>
       <p class="section-body" style="margin-top:1rem">
-        A MC não opera na lógica do treinamento motivacional tradicional. Sua proposta é
-        atuar nas estruturas invisíveis que sustentam — ou comprometem — os resultados
-        dentro das organizações e na vida profissional das pessoas.
+        Não se trata de treinamento motivacional. Trata-se de intervenção precisa sobre as estruturas invisíveis que sustentam — ou comprometem — a execução, a liderança e o crescimento sustentável das organizações.
       </p>
     </div>
   </div>
@@ -1423,22 +1470,21 @@
   <div class="container">
     <div class="section-label">Próximo Passo</div>
     <h2 class="section-title" style="text-align:center">
-      Pronto para ocupar<br>seu espaço <em>com legitimidade?</em>
+      Quando a intenção já existe,<br>o próximo passo é <em>executar.</em>
     </h2>
     <p class="section-body" style="text-align:center">
-      A MC Treinamentos atende líderes, executivos e organizações que estão dispostos
-      a ir além da superfície. Se você chegou até aqui, provavelmente é um deles.
+      A MC Treinamentos acompanha líderes e organizações que desejam construir presença, coerência e performance com profundidade, clareza e disciplina.
     </p>
     <div class="cta-actions">
       <a href="mailto:madalena@madalenacarvalho.com.br" class="btn-primary">
-        Conectar com Madalena
+        Agendar conversa
       </a>
     </div>
     <div class="cta-divider-line" style="width:100%; max-width:400px">
       ou
     </div>
     <a href="http://wa.me/5511994176450" target="_blank" class="btn-secondary">
-      enviar mensagem direta
+      falar pelo WhatsApp
     </a>
   </div>
 </section>
@@ -1446,7 +1492,7 @@
 <!-- FOOTER -->
 <footer>
   <div class="footer-dev">Desenvolvido por <strong>Desenvolva[IN]</strong></div>
-  <div class="footer-brand">MC <span>Treinamentos</span><br><em>Engenharia Comportamental</em></div>
+  <div class="footer-brand"><span class="mc-word">MC</span> <span class="brand-name">Treinamentos</span><br><em>Engenharia Comportamental</em></div>
   <div class="footer-copy">© 2025 MC Treinamentos.<br>Todos os direitos reservados.</div>
 </footer>
 
