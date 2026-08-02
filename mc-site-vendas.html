@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>MC Treinamentos — Diagnóstico de Dispersão Executiva</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  /* ── TOKENS ── */
+  :root {
+    --black:        #0d0d0d;
+    --black-soft:   #141414;
+    --black-card:   #1a1a1a;
+    --orange:       #c45a00;
+    --orange-light: #d96b0a;
+    --orange-muted: #7a3800;
+    --gold:         #b8843c;
+    --white:        #f5f0ea;
+    --white-dim:    #b0a898;
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --sans:  'Barlow', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: var(--sans);
+    font-weight: 300;
+    overflow-x: hidden;
+  }
+  ::-webkit-scrollbar { width: 3px; }
+  ::-webkit-scrollbar-track { background: var(--black); }
+  ::-webkit-scrollbar-thumb { background: var(--orange); }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.4rem 4rem;
+    background: linear-gradient(to bottom, rgba(13,13,13,0.96) 0%, transparent 100%);
+    backdrop-filter: blur(8px);
+  }
+  .nav-logo { display: flex; align-items: center; gap: .9rem; text-decoration: none; }
+  .nav-logo img {
+    height: 42px; width: 42px; object-fit: cover;
+    border-radius: 6px; opacity: .92;
+  }
+  .nav-brand {
+    font-family: var(--serif); font-size: 1.05rem; font-weight: 400;
+    letter-spacing: .12em; color: var(--white);
+  }
+  .nav-links { display: flex; gap: 2.4rem; align-items: center; }
+  .nav-links a {
+    text-decoration: none;
+    font-size: .72rem; letter-spacing: .18em; text-transform: uppercase;
+    transition: color .3s;
+  }
+  .nav-links a.nav-gold  { color: var(--gold); }
+  .nav-links a.nav-prata { color: var(--white-dim); }
+  .nav-links a:hover { color: var(--orange-light); }
+
+  @media (max-width: 768px) {
+    nav { padding: 1.1rem 1.6rem; }
+    .nav-links { gap: 1.2rem; }
+    .nav-links a { font-size: .65rem; letter-spacing: .1em; }
+    .nav-brand { display: none; }
+  }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh;
+    display: grid; place-items: center;
+    position: relative; overflow: hidden;
+    padding: 8rem 4rem 5rem;
+    text-align: center;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 65% 55% at 50% 35%, rgba(196,90,0,.2) 0%, transparent 65%),
+      radial-gradient(ellipse 40% 40% at 15% 85%, rgba(184,132,60,.08) 0%, transparent 60%),
+      var(--black);
+  }
+  .hero-grain {
+    position: absolute; inset: 0; opacity: .035; pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .hero-content {
+    position: relative; z-index: 2;
+    max-width: 820px; width: 100%;
+    display: flex; flex-direction: column; align-items: center;
+  }
+  .eyebrow {
+    font-size: .58rem; letter-spacing: .32em; text-transform: uppercase;
+    color: var(--orange); margin-bottom: 1.6rem;
+    display: flex; align-items: center; gap: .9rem;
+  }
+  .eyebrow::before, .eyebrow::after {
+    content: ''; display: block; width: 28px; height: 1px; background: var(--orange);
+  }
+  .hero-heading {
+    font-family: var(--serif);
+    font-size: clamp(3.1rem, 6vw, 5.2rem);
+    font-weight: 300; line-height: 1.12; color: var(--white);
+    margin-bottom: 1.6rem;
+  }
+  .hero-sub {
+    font-size: 1.05rem; line-height: 1.85;
+    color: var(--white-dim); max-width: 560px;
+    margin-bottom: 2.8rem;
+  }
+  .btn-primary {
+    display: inline-block; text-decoration: none;
+    background: var(--orange); color: var(--black);
+    font-family: var(--sans); font-weight: 500;
+    padding: 1.1rem 2.8rem;
+    font-size: .78rem; letter-spacing: .22em; text-transform: uppercase;
+    border: 1px solid var(--orange);
+    cursor: pointer;
+    transition: background .3s, color .3s, transform .25s;
+  }
+  .btn-primary:hover { background: transparent; color: var(--orange-light); transform: translateY(-2px); }
+
+  .btn-outline {
+    display: inline-block; text-decoration: none;
+    background: transparent; color: var(--white-dim);
+    font-family: var(--sans); font-weight: 400;
+    padding: 1.1rem 2.8rem;
+    font-size: .78rem; letter-spacing: .22em; text-transform: uppercase;
+    border: 1px solid rgba(255,255,255,.18);
+    cursor: pointer;
+    transition: border-color .3s, color .3s, transform .25s;
+  }
+  .btn-outline:hover { border-color: var(--orange); color: var(--orange-light); transform: translateY(-2px); }
+
+  @media (max-width: 768px) {
+    #hero { padding: 7rem 1.6rem 3.5rem; }
+    .hero-sub { font-size: .95rem; }
+  }
+
+  /* ── SEÇÃO A MADALENA ── */
+  #madalena {
+    padding: 7rem 4rem;
+    background: var(--black-soft);
+    display: grid; place-items: center;
+    text-align: center;
+  }
+  .madalena-inner { max-width: 700px; }
+  .madalena-eyebrow {
+    font-size: .58rem; letter-spacing: .3em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 1.2rem;
+  }
+  .madalena-title {
+    font-family: var(--serif);
+    font-size: clamp(2.3rem, 4vw, 3.2rem);
+    font-weight: 400; color: var(--white);
+    margin-bottom: 2rem; letter-spacing: .02em;
+  }
+  .madalena-text {
+    font-size: 1.05rem; line-height: 2;
+    color: var(--white-dim); font-weight: 300;
+  }
+  @media (max-width: 768px) {
+    #madalena { padding: 5rem 1.6rem; }
+    .madalena-text { font-size: .95rem; }
+  }
+
+  /* ── MATRIZ / QUIZ ── */
+  #matriz {
+    padding: 7rem 4rem;
+    background: var(--black);
+    display: grid; place-items: center;
+  }
+  .quiz-wrap { max-width: 680px; width: 100%; }
+  .quiz-eyebrow {
+    font-size: .58rem; letter-spacing: .32em; text-transform: uppercase;
+    color: var(--orange); margin-bottom: 1.2rem; text-align: center;
+  }
+  .quiz-title {
+    font-family: var(--serif);
+    font-size: clamp(2.2rem, 3.5vw, 2.9rem);
+    font-weight: 300; color: var(--white);
+    text-align: center; margin-bottom: 3rem;
+    letter-spacing: .02em;
+  }
+
+  /* Progress */
+  .quiz-progress-track {
+    width: 100%; height: 2px;
+    background: rgba(255,255,255,.07); margin-bottom: .7rem;
+  }
+  .quiz-progress-fill {
+    height: 100%; background: var(--orange);
+    transition: width .45s ease;
+  }
+  .quiz-progress-label {
+    font-size: .6rem; letter-spacing: .18em; text-transform: uppercase;
+    color: var(--white-dim); text-align: right; margin-bottom: 2.2rem;
+  }
+
+  /* Card */
+  .quiz-card {
+    display: none;
+    background: var(--black-card);
+    border: 1px solid rgba(196,90,0,.18);
+    padding: 2.6rem;
+    animation: fadeUp .38s ease;
+  }
+  .quiz-card.active { display: block; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .quiz-q-num {
+    font-size: .56rem; letter-spacing: .28em; text-transform: uppercase;
+    color: var(--orange); margin-bottom: .9rem;
+  }
+  .quiz-q-label {
+    font-family: var(--serif);
+    font-size: clamp(1.2rem, 2vw, 1.5rem);
+    font-weight: 400; color: var(--white);
+    line-height: 1.5; margin-bottom: 2rem;
+  }
+
+  /* Slider */
+  .slider-wrap { display: flex; flex-direction: column; gap: 1rem; }
+  .slider-display {
+    font-family: var(--serif);
+    font-size: 3.2rem; font-weight: 300;
+    color: var(--orange-light); text-align: center; line-height: 1;
+  }
+  .slider-display sup { font-size: 1.3rem; color: var(--white-dim); vertical-align: super; }
+  input[type="range"] {
+    -webkit-appearance: none; appearance: none;
+    width: 100%; height: 3px;
+    background: rgba(255,255,255,.1);
+    outline: none; cursor: pointer; border-radius: 0;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px; height: 18px;
+    background: var(--orange); border-radius: 50%;
+    border: 2px solid var(--black);
+    transition: transform .2s;
+  }
+  input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.3); }
+  .slider-labels {
+    display: flex; justify-content: space-between;
+    font-size: .6rem; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--white-dim);
+  }
+
+  /* Radio */
+  .radio-group { display: flex; flex-direction: column; gap: .7rem; }
+  .radio-option {
+    display: flex; align-items: flex-start; gap: 1rem;
+    padding: 1rem 1.2rem;
+    border: 1px solid rgba(255,255,255,.07);
+    cursor: pointer;
+    transition: border-color .25s, background .25s;
+  }
+  .radio-option:hover { border-color: rgba(196,90,0,.35); background: rgba(196,90,0,.04); }
+  .radio-option input[type="radio"] { display: none; }
+  .radio-bullet {
+    width: 18px; height: 18px; min-width: 18px;
+    border: 1px solid rgba(255,255,255,.25); border-radius: 50%;
+    display: grid; place-items: center; margin-top: 2px;
+    transition: border-color .25s;
+  }
+  .radio-bullet::after {
+    content: ''; width: 8px; height: 8px;
+    background: var(--orange); border-radius: 50%;
+    opacity: 0; transition: opacity .2s;
+  }
+  .radio-option.selected { border-color: var(--orange); background: rgba(196,90,0,.06); }
+  .radio-option.selected .radio-bullet { border-color: var(--orange); }
+  .radio-option.selected .radio-bullet::after { opacity: 1; }
+  .radio-text { font-size: .88rem; color: var(--white-dim); line-height: 1.55; font-weight: 300; }
+  .radio-option.selected .radio-text { color: var(--white); }
+
+  /* Nav quiz */
+  .quiz-nav { display: flex; justify-content: flex-end; margin-top: 2rem; }
+  .quiz-btn {
+    background: var(--orange); color: var(--black);
+    border: 1px solid var(--orange);
+    padding: .9rem 2.2rem;
+    font-family: var(--sans); font-size: .72rem;
+    letter-spacing: .2em; text-transform: uppercase; font-weight: 500;
+    cursor: pointer; transition: background .3s, color .3s;
+  }
+  .quiz-btn:hover { background: transparent; color: var(--orange-light); }
+  .quiz-btn:disabled { opacity: .3; cursor: not-allowed; background: rgba(196,90,0,.3); color: var(--black); }
+
+  /* Gate */
+  #gate {
+    display: none;
+    background: var(--black-card);
+    border: 1px solid rgba(196,90,0,.22);
+    padding: 2.6rem;
+    animation: fadeUp .4s ease;
+  }
+  #gate.active { display: block; }
+  .gate-title {
+    font-family: var(--serif);
+    font-size: clamp(1.4rem, 2.5vw, 1.9rem);
+    font-weight: 400; color: var(--white); margin-bottom: .7rem;
+  }
+  .gate-sub { font-size: .88rem; color: var(--white-dim); line-height: 1.75; margin-bottom: 1.8rem; }
+  .gate-field { display: flex; flex-direction: column; gap: .45rem; margin-bottom: 1.1rem; }
+  .gate-label {
+    font-size: .6rem; letter-spacing: .22em; text-transform: uppercase; color: var(--gold);
+  }
+  .gate-input {
+    background: transparent;
+    border: none; border-bottom: 1px solid rgba(255,255,255,.18);
+    color: var(--white); font-family: var(--sans); font-size: .95rem;
+    font-weight: 300; padding: .7rem 0;
+    outline: none; transition: border-color .3s; width: 100%;
+  }
+  .gate-input:focus { border-color: var(--orange); }
+  .gate-input::placeholder { color: var(--white-dim); opacity: .45; }
+  .gate-check {
+    display: flex; gap: .8rem; align-items: flex-start;
+    margin: 1.4rem 0 1.8rem;
+  }
+  .gate-check input[type="checkbox"] {
+    accent-color: var(--orange);
+    width: 15px; height: 15px; min-width: 15px; margin-top: 3px; cursor: pointer;
+  }
+  .gate-check label { font-size: .8rem; color: var(--white-dim); line-height: 1.6; cursor: pointer; }
+  .gate-check label a { color: var(--orange-light); text-decoration: underline; }
+  .gate-btn {
+    width: 100%;
+    background: var(--orange); color: var(--black);
+    border: 1px solid var(--orange);
+    padding: 1.1rem;
+    font-family: var(--sans); font-size: .78rem;
+    letter-spacing: .22em; text-transform: uppercase; font-weight: 500;
+    cursor: pointer; transition: background .3s, color .3s;
+  }
+  .gate-btn:hover { background: transparent; color: var(--orange-light); }
+  .gate-btn:disabled { opacity: .3; cursor: not-allowed; }
+
+  /* Resultado */
+  #resultado {
+    display: none; text-align: center;
+    padding: 2.4rem 0; animation: fadeUp .5s ease;
+  }
+  #resultado.active { display: block; }
+  .resultado-label {
+    font-size: .58rem; letter-spacing: .3em; text-transform: uppercase;
+    color: var(--orange); margin-bottom: .7rem;
+  }
+  .resultado-numero {
+    font-family: var(--serif);
+    font-size: clamp(4.5rem, 10vw, 7.5rem);
+    font-weight: 300; color: var(--orange-light); line-height: 1;
+    margin-bottom: .5rem;
+  }
+  .resultado-numero sup { font-size: 2rem; color: var(--white-dim); vertical-align: super; }
+  .resultado-texto {
+    font-size: 1rem; color: var(--white-dim);
+    line-height: 1.9; max-width: 540px; margin: 1.2rem auto 0;
+    font-family: var(--serif); font-style: italic;
+  }
+
+  @media (max-width: 768px) {
+    #matriz { padding: 5rem 1.4rem; }
+    .quiz-card, #gate { padding: 1.8rem; }
+  }
+
+  /* ── DEPOIMENTOS ── */
+  #depoimentos {
+    padding: 7rem 4rem;
+    background: var(--black-soft);
+  }
+  .dep-header { max-width: 560px; margin: 0 auto 3.5rem; text-align: center; }
+  .dep-eyebrow {
+    font-size: .58rem; letter-spacing: .32em; text-transform: uppercase;
+    color: var(--orange); margin-bottom: 1rem;
+  }
+  .dep-title {
+    font-family: var(--serif);
+    font-size: clamp(2.1rem, 3.5vw, 2.9rem);
+    font-weight: 300; color: var(--white); line-height: 1.2;
+  }
+
+  .dep-track-wrap { overflow: hidden; }
+  .dep-track {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5px;
+    background: rgba(196,90,0,.1);
+  }
+  .dep-card {
+    background: var(--black-soft);
+    padding: 2.4rem 2rem;
+    display: flex; flex-direction: column; gap: 1.2rem;
+    position: relative; overflow: hidden;
+    transition: background .3s; min-height: 260px;
+  }
+  .dep-card:hover { background: rgba(196,90,0,.05); }
+  .dep-card::after {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+    height: 2px; background: var(--orange);
+    transform: scaleX(0); transform-origin: left;
+    transition: transform .4s ease;
+  }
+  .dep-card:hover::after { transform: scaleX(1); }
+  .dep-quote-mark {
+    font-family: var(--serif); font-size: 3.5rem;
+    color: rgba(196,90,0,.22); line-height: 1; margin-bottom: -.6rem;
+  }
+  .dep-text {
+    font-size: .85rem; line-height: 1.88;
+    color: var(--white-dim); flex: 1;
+    font-style: italic; font-family: var(--serif);
+  }
+  .dep-author {
+    display: flex; align-items: center; gap: .9rem;
+    border-top: 1px solid rgba(196,90,0,.1);
+    padding-top: 1.1rem; margin-top: auto;
+  }
+  .dep-avatar {
+    width: 38px; height: 38px; flex-shrink: 0;
+    background: linear-gradient(135deg, var(--orange-muted), var(--orange));
+    border-radius: 50%; display: grid; place-items: center;
+    font-family: var(--serif); font-size: 1rem;
+    color: var(--black); font-weight: 600;
+  }
+  .dep-author-name {
+    display: block; font-size: .84rem; font-weight: 500;
+    color: var(--white); font-family: var(--sans);
+  }
+  .dep-author-role {
+    font-size: .7rem; color: var(--orange);
+    letter-spacing: .04em; line-height: 1.4;
+  }
+
+  .dep-controls {
+    display: flex; align-items: center; justify-content: center;
+    gap: 1.2rem; margin-top: 2rem;
+  }
+  .dep-btn {
+    background: transparent; border: 1px solid rgba(196,90,0,.35);
+    color: var(--orange); width: 38px; height: 38px;
+    display: grid; place-items: center;
+    cursor: pointer; font-size: 1rem;
+    transition: background .3s, color .3s;
+  }
+  .dep-btn:hover { background: var(--orange); color: var(--black); }
+  .dep-dots { display: flex; gap: .5rem; }
+  .dep-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: rgba(196,90,0,.25);
+    cursor: pointer; transition: background .3s, transform .3s;
+    border: none;
+  }
+  .dep-dot.active { background: var(--orange); transform: scale(1.4); }
+
+  @media (max-width: 960px)  { .dep-track { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 580px)  { .dep-track { grid-template-columns: 1fr; } }
+  @media (max-width: 768px)  { #depoimentos { padding: 5rem 1.4rem; } }
+
+  /* ── CTAS FINAIS ── */
+  #saida {
+    padding: 7rem 4rem;
+    background: var(--black);
+    text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .saida-bg {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 70% 70% at 50% 50%, rgba(196,90,0,.1) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .saida-inner { position: relative; z-index: 2; max-width: 780px; margin: 0 auto; }
+  .saida-eyebrow {
+    font-size: .58rem; letter-spacing: .32em; text-transform: uppercase;
+    color: var(--orange); margin-bottom: 1.2rem;
+  }
+  .saida-title {
+    font-family: var(--serif);
+    font-size: clamp(2.1rem, 4vw, 3.2rem);
+    font-weight: 300; color: var(--white); line-height: 1.2;
+    margin-bottom: 1rem;
+  }
+  .saida-sub {
+    font-size: 1rem; color: var(--white-dim); line-height: 1.8;
+    margin-bottom: 3rem;
+  }
+  .saida-btns {
+    display: flex; gap: 1.4rem; justify-content: center; flex-wrap: wrap;
+  }
+  .saida-btn-wrap { display: flex; flex-direction: column; align-items: center; gap: .5rem; }
+  .saida-btn-sub {
+    font-size: .65rem; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--white-dim);
+  }
+
+  @media (max-width: 768px) {
+    #saida { padding: 5rem 1.4rem; }
+    .saida-btns { flex-direction: column; align-items: center; }
+    .btn-primary, .btn-outline { width: 100%; max-width: 320px; text-align: center; }
+  }
+
+  /* ── RODAPÉ ── */
+  footer {
+    padding: 2.4rem 4rem;
+    background: #000;
+    border-top: 1px solid rgba(196,90,0,.1);
+    display: flex; flex-direction: column;
+    align-items: center; gap: .9rem;
+    text-align: center;
+  }
+  .footer-text {
+    font-size: .7rem; letter-spacing: .06em; line-height: 1.8;
+    color: var(--white-dim);
+  }
+  .footer-text a {
+    color: var(--orange-light); text-decoration: underline; transition: color .3s;
+  }
+  .footer-text a:hover { color: var(--white); }
+  @media (max-width: 768px) { footer { padding: 2rem 1.4rem; } }
+
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════ NAV ═══════════════════════════════ -->
+<nav>
+  <a href="index.html" class="nav-logo">
+    <img src="MC.jpg" alt="MC Treinamentos" onerror="this.style.display='none'" />
+    <span class="nav-brand">MC Treinamentos</span>
+  </a>
+  <div class="nav-links">
+    <a href="javascript:void(0)" onclick="scrollTo('matriz')"   class="nav-gold">A Matriz</a>
+    <a href="javascript:void(0)" onclick="scrollTo('madalena')" class="nav-prata">A Madalena</a>
+    <a href="javascript:void(0)" onclick="scrollTo('contato-footer')"  class="nav-gold">Contato</a>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════ HERO ═══════════════════════════════ -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grain"></div>
+  <div class="hero-content">
+    <div class="eyebrow">Diagnóstico Gratuito</div>
+    <h1 class="hero-heading">
+      Você não tem falta de capacidade.<br>Tem dispersão energética.
+    </h1>
+    <p class="hero-sub">
+      29 anos mapeando onde líderes e empresários gastam 80% da energia no que não controlam.
+    </p>
+    <button class="btn-primary" onclick="document.getElementById('matriz').scrollIntoView({behavior:'smooth'})">
+      Mapear minha dispersão agora
+    </button>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ A MADALENA ════════════════════════════ -->
+<section id="madalena">
+  <div class="madalena-inner">
+    <div class="madalena-eyebrow">Quem conduz</div>
+    <h2 class="madalena-title">Madalena Carvalho</h2>
+    <p class="madalena-text">
+      Iniciei minha trajetória profissional na Ford aos 19 anos, passando por todos os subsistemas de Recursos Humanos e assumindo posições de crescente responsabilidade. Há 29 anos fundei a MC Treinamentos e, desde então, conduzo líderes e executivos de empresas nacionais e multinacionais na transformação de comportamento em resultado. Atuei como professora de MBA, desenvolvi metodologias próprias e traduzo variáveis humanas em decisões que impactam desempenho e lucro. Acredito que nenhuma engenharia organizacional se sustenta sem respeito genuíno pelas pessoas que a tornam possível.
+    </p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ QUIZ ═══════════════════════════════ -->
+<section id="matriz">
+  <div class="quiz-wrap">
+    <div class="quiz-eyebrow">Diagnóstico Gratuito</div>
+    <h2 class="quiz-title">Diagnóstico de Dispersão Executiva</h2>
+
+    <div class="quiz-progress-track">
+      <div class="quiz-progress-fill" id="progressFill" style="width:25%"></div>
+    </div>
+    <div class="quiz-progress-label" id="progressLabel">Pergunta 1 de 4</div>
+
+    <!-- P1 — Slider -->
+    <div class="quiz-card active" id="card1">
+      <div class="quiz-q-num">Pergunta 01 — Slider</div>
+      <div class="quiz-q-label">Quanto da sua energia semanal é consumida por decisões ou demandas que outros deveriam tomar?</div>
+      <div class="slider-wrap">
+        <div class="slider-display"><span id="p1Val">50</span><sup>%</sup></div>
+        <input type="range" id="p1" min="0" max="100" value="50"
+          oninput="updateSlider(this,'p1Val','p1')" />
+        <div class="slider-labels"><span>0%</span><span>50%</span><span>100%</span></div>
+      </div>
+      <div class="quiz-nav">
+        <button class="quiz-btn" onclick="goTo(2)">Próxima →</button>
+      </div>
+    </div>
+
+    <!-- P2 — Radio -->
+    <div class="quiz-card" id="card2">
+      <div class="quiz-q-num">Pergunta 02 — Escolha única</div>
+      <div class="quiz-q-label">O que mais consome o seu tempo no dia a dia?</div>
+      <div class="radio-group" id="rg2">
+        <label class="radio-option" onclick="selectRadio(this,'rg2',80,'btn2')">
+          <input type="radio" name="p2" value="80"/>
+          <div class="radio-bullet"></div>
+          <span class="radio-text">Reuniões que não definem ações claras</span>
+        </label>
+        <label class="radio-option" onclick="selectRadio(this,'rg2',90,'btn2')">
+          <input type="radio" name="p2" value="90"/>
+          <div class="radio-bullet"></div>
+          <span class="radio-text">Apagar incêndios operacionais</span>
+        </label>
+        <label class="radio-option" onclick="selectRadio(this,'rg2',85,'btn2')">
+          <input type="radio" name="p2" value="85"/>
+          <div class="radio-bullet"></div>
+          <span class="radio-text">Micromanagement da equipe</span>
+        </label>
+        <label class="radio-option" onclick="selectRadio(this,'rg2',75,'btn2')">
+          <input type="radio" name="p2" value="75"/>
+          <div class="radio-bullet"></div>
+          <span class="radio-text">Demandas que não são da minha alçada</span>
+        </label>
+      </div>
+      <div class="quiz-nav">
+        <button class="quiz-btn" id="btn2" onclick="goTo(3)" disabled>Próxima →</button>
+      </div>
+    </div>
+
+    <!-- P3 — Slider -->
+    <div class="quiz-card" id="card3">
+      <div class="quiz-q-num">Pergunta 03 — Slider</div>
+      <div class="quiz-q-label">Qual o percentual da sua semana que é gasto com atividades que geram retorno mensurável (caixa, margem, avanço estratégico)?</div>
+      <div class="slider-wrap">
+        <div class="slider-display"><span id="p3Val">50</span><sup>%</sup></div>
+        <input type="range" id="p3" min="0" max="100" value="50"
+          oninput="updateSlider(this,'p3Val','p3')" />
+        <div class="slider-labels"><span>0%</span><span>50%</span><span>100%</span></div>
+      </div>
+      <div class="quiz-nav">
+        <button class="quiz-btn" onclick="goTo(4)">Próxima →</button>
+      </div>
+    </div>
+
+    <!-- P4 — Radio -->
+    <div class="quiz-card" id="card4">
+      <div class="quiz-q-num">Pergunta 04 — Escolha única</div>
+      <div class="quiz-q-label">Quando você avalia o seu último trimestre, a sensação é de:</div>
+      <div class="radio-group" id="rg4">
+        <label class="radio-option" onclick="selectRadio(this,'rg4',85,'btn4')">
+          <input type="radio" name="p4" value="85"/>
+          <div class="radio-bullet"></div>
+          <span class="radio-text">Muito trabalho executado, mas pouco resultado visível</span>
+        </label>
+        <label class="radio-option" onclick="selectRadio(this,'rg4',60,'btn4')">
+          <input type="radio" name="p4" value="60"/>
+          <div class="radio-bullet"></div>
+          <span class="radio-text">Tempo gasto no essencial, mas sem foco no estratégico</span>
+        </label>
+        <label class="radio-option" onclick="selectRadio(this,'rg4',90,'btn4')">
+          <input type="radio" name="p4" value="90"/>
+          <div class="radio-bullet"></div>
+          <span class="radio-text">Desequilíbrio entre o que eu controlo e o que me cobram</span>
+        </label>
+      </div>
+      <div class="quiz-nav">
+        <button class="quiz-btn" id="btn4" onclick="abrirGate()" disabled>Ver Resultado →</button>
+      </div>
+    </div>
+
+    <!-- Gate de captura -->
+    <div id="gate">
+      <div class="gate-title">Quase lá. Onde enviamos seu mapeamento?</div>
+      <div class="gate-sub">Preencha abaixo para receber seu diagnóstico personalizado de energia estratégica.</div>
+      <div class="gate-field">
+        <span class="gate-label">Nome completo</span>
+        <input class="gate-input" id="gateName" type="text" placeholder="Seu nome" autocomplete="name"/>
+      </div>
+      <div class="gate-field">
+        <span class="gate-label">E-mail</span>
+        <input class="gate-input" id="gateEmail" type="email" placeholder="seu@email.com" autocomplete="email"/>
+      </div>
+      <div class="gate-field">
+        <span class="gate-label">WhatsApp</span>
+        <input class="gate-input" id="gatePhone" type="tel" placeholder="(11) 99999-9999" maxlength="15" autocomplete="tel"/>
+      </div>
+      <div class="gate-check">
+        <input type="checkbox" id="gateConsent" onchange="toggleGateBtn()"/>
+        <label for="gateConsent">
+          Concordo com a <a href="/politica-de-privacidade" target="_blank">Política de Privacidade</a> e autorizo o uso dos dados para contato.
+        </label>
+      </div>
+      <button class="gate-btn" id="gateBtn" onclick="exibirResultado()" disabled>
+        Ver meu mapeamento
+      </button>
+    </div>
+
+    <!-- Resultado -->
+    <div id="resultado">
+      <div class="resultado-label">Seu nível de dispersão</div>
+      <div class="resultado-numero" id="resNum">—<sup>%</sup></div>
+      <p class="resultado-texto" id="resTxt"></p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════ DEPOIMENTOS ═══════════════════════════ -->
+<section id="depoimentos">
+  <div class="dep-header">
+    <div class="dep-eyebrow">Quem já mapeou</div>
+    <h2 class="dep-title">O que muda quando o comportamento vira métrica.</h2>
+  </div>
+
+  <div class="dep-track-wrap">
+    <div class="dep-track" id="depTrack">
+
+      <div class="dep-card">
+        <div class="dep-quote-mark">"</div>
+        <p class="dep-text">Ela alinha liderança humana com a busca por resultados de alta performance. Quem passa por esse processo vivencia uma virada estrutural.</p>
+        <div class="dep-author">
+          <div class="dep-avatar">D</div>
+          <div>
+            <span class="dep-author-name">Daniel Cassio de Assis</span>
+            <span class="dep-author-role">Especialista em T&amp;D Sênior | Coca-Cola</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dep-card">
+        <div class="dep-quote-mark">"</div>
+        <p class="dep-text">Entrega resultados práticos com o embasamento teórico que sustenta cada decisão. Não é achismo, é método aplicado ao negócio.</p>
+        <div class="dep-author">
+          <div class="dep-avatar">R</div>
+          <div>
+            <span class="dep-author-name">Richard Farias</span>
+            <span class="dep-author-role">Sócio Proprietário | Graf Facilities</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dep-card">
+        <div class="dep-quote-mark">"</div>
+        <p class="dep-text">De incertezas e inseguranças operacionais a direcionamentos práticos. O suporte foi o que faltava para ocupar o meu real espaço.</p>
+        <div class="dep-author">
+          <div class="dep-avatar">V</div>
+          <div>
+            <span class="dep-author-name">Vanessa Saori Ongawa</span>
+            <span class="dep-author-role">Gerente de Projetos | Banco Santander</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dep-card">
+        <div class="dep-quote-mark">"</div>
+        <p class="dep-text">A clareza nas orientações e a capacidade de identificar os pontos cegos da minha atuação fizeram toda a diferença na minha transição.</p>
+        <div class="dep-author">
+          <div class="dep-avatar">M</div>
+          <div>
+            <span class="dep-author-name">Magda Miranda</span>
+            <span class="dep-author-role">Gerente de Logística | Lean Six Sigma</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dep-card">
+        <div class="dep-quote-mark">"</div>
+        <p class="dep-text">As orientações são 100% focadas na minha realidade. Nada de fórmula genérica — tudo é customizado e aplicável.</p>
+        <div class="dep-author">
+          <div class="dep-avatar">C</div>
+          <div>
+            <span class="dep-author-name">Cristiano de Quadros</span>
+            <span class="dep-author-role">Desenvolvedor &amp; Gestor de Projetos</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="dep-controls">
+    <button class="dep-btn" id="depPrev" onclick="depNav(-1)">&#8592;</button>
+    <div class="dep-dots" id="depDots"></div>
+    <button class="dep-btn" id="depNext" onclick="depNav(1)">&#8594;</button>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ CTAs FINAIS ════════════════════════════ -->
+<section id="saida" id="contato">
+  <div class="saida-bg"></div>
+  <div class="saida-inner">
+    <div class="saida-eyebrow">Próximo passo</div>
+    <h2 class="saida-title">O diagnóstico mapeia o sintoma.<br>A conversa define a intervenção.</h2>
+    <p class="saida-sub">Escolha o caminho mais adequado ao seu momento.</p>
+    <div class="saida-btns">
+      <div class="saida-btn-wrap">
+        <a class="btn-primary"
+          href="https://api.whatsapp.com/send?phone=5511994176450&text=Fiz%20o%20diagn%C3%B3stico%20de%20energia%20no%20site%20e%20quero%20entender%20como%20a%20MC%20atua%20dentro%20da%20minha%20opera%C3%A7%C3%A3O."
+          target="_blank" rel="noopener">
+          Agendar Conversa Estratégica
+        </a>
+        <span class="saida-btn-sub">Para líderes e donos de empresa</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ FOOTER ════════════════════════════ -->
+<footer id="contato-footer">
+  <p class="footer-text">
+    MC Treinamentos | 29 anos traduzindo comportamento em resultado financeiro.<br>
+    CNPJ 46.590.965/0001-82 &nbsp;|&nbsp;
+    <a href="/politica-de-privacidade" target="_blank" rel="noopener">Política de Privacidade</a> &nbsp;|&nbsp;
+    <a href="https://www.linkedin.com/in/madalenacarvalhocoach/" target="_blank" rel="noopener">LinkedIn</a><br>
+    <a href="mailto:mentoria@madalenacarvalho.com.br">mentoria@madalenacarvalho.com.br</a> &nbsp;|&nbsp; (11) 99417-6450
+  </p>
+</footer>
+
+<!-- ═══════════════════════════════ JS ════════════════════════════════ -->
+<script>
+  /* ── Scroll suave via JS (evita conflito com Claude iframe) ── */
+  function scrollTo(id) {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  /* ── Estado global ── */
+  const S = { p1: 50, p2: null, p3: 50, p4: null };
+
+  /* ── Slider ── */
+  function updateSlider(input, displayId, key) {
+    const v = parseInt(input.value);
+    document.getElementById(displayId).textContent = v;
+    const pct = v + '%';
+    input.style.background =
+      `linear-gradient(to right, var(--orange) 0%, var(--orange) ${pct}, rgba(255,255,255,.1) ${pct}, rgba(255,255,255,.1) 100%)`;
+    S[key] = v;
+  }
+  /* Inicializa visual dos sliders */
+  ['p1','p3'].forEach(k => {
+    const el = document.getElementById(k);
+    if (el) updateSlider(el, k + 'Val', k);
+  });
+
+  /* ── Radio ── */
+  function selectRadio(label, groupId, value, btnId) {
+    document.querySelectorAll('#' + groupId + ' .radio-option').forEach(o => o.classList.remove('selected'));
+    label.classList.add('selected');
+    if (groupId === 'rg2') S.p2 = value;
+    if (groupId === 'rg4') S.p4 = value;
+    document.getElementById(btnId).disabled = false;
+  }
+
+  /* ── Navegação entre steps ── */
+  function goTo(step) {
+    document.querySelectorAll('.quiz-card').forEach(c => c.classList.remove('active'));
+    document.getElementById('gate').classList.remove('active');
+    document.getElementById('resultado').classList.remove('active');
+    document.getElementById('card' + step).classList.add('active');
+    document.getElementById('progressFill').style.width = (step / 4 * 100) + '%';
+    document.getElementById('progressLabel').textContent = `Pergunta ${step} de 4`;
+    document.getElementById('matriz').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  /* ── Abre gate ── */
+  function abrirGate() {
+    document.querySelectorAll('.quiz-card').forEach(c => c.classList.remove('active'));
+    document.getElementById('progressFill').style.width = '100%';
+    document.getElementById('progressLabel').textContent = 'Identificação';
+    document.getElementById('gate').classList.add('active');
+    document.getElementById('gate').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  /* ── Máscara de telefone BR ── */
+  document.getElementById('gatePhone').addEventListener('input', function () {
+    let v = this.value.replace(/\D/g, '').slice(0, 11);
+    if      (v.length > 10) v = `(${v.slice(0,2)}) ${v.slice(2,7)}-${v.slice(7)}`;
+    else if (v.length >  6) v = `(${v.slice(0,2)}) ${v.slice(2,6)}-${v.slice(6)}`;
+    else if (v.length >  2) v = `(${v.slice(0,2)}) ${v.slice(2)}`;
+    else if (v.length >  0) v = `(${v}`;
+    this.value = v;
+    toggleGateBtn();
+  });
+  document.getElementById('gateName').addEventListener('input', toggleGateBtn);
+  document.getElementById('gateEmail').addEventListener('input', toggleGateBtn);
+
+  function toggleGateBtn() {
+    const nome    = document.getElementById('gateName').value.trim();
+    const email   = document.getElementById('gateEmail').value.trim();
+    const tel     = document.getElementById('gatePhone').value.replace(/\D/g,'');
+    const consent = document.getElementById('gateConsent').checked;
+    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    document.getElementById('gateBtn').disabled = !(nome.length > 2 && emailOk && tel.length >= 10 && consent);
+  }
+
+  /* ── Cálculo do score ── */
+  function calcScore() {
+    const s1 = S.p1;            // direto
+    const s2 = S.p2 ?? 80;      // radio — fallback
+    const s3 = 100 - S.p3;      // invertido
+    const s4 = S.p4 ?? 85;      // radio — fallback
+    return Math.round((s1 + s2 + s3 + s4) / 4);
+  }
+
+  function textoScore(score) {
+    if (score <= 30) return `Seu nível de dispersão é de ${score}%. Você está com alta governabilidade sobre a sua energia. O risco agora é a zona de conforto: estar nos 20% e não escalar o que já funciona.`;
+    if (score <= 60) return `Seu nível de dispersão é de ${score}%. Você está na zona de alerta. Parte da sua energia está no controle, mas o custo invisível das demandas operacionais já está corroendo seus resultados.`;
+    return `Seu nível de dispersão é de ${score}%. Você está operando no modo reativo. A maior parte da sua energia está sendo drenada por fatores que não controla e que não geram retorno mensurável.`;
+  }
+
+  /* ── Exibe resultado ── */
+  function exibirResultado() {
+    const score = calcScore();
+    document.getElementById('gate').classList.remove('active');
+    document.getElementById('resultado').classList.add('active');
+    document.getElementById('resNum').innerHTML = `${score}<sup>%</sup>`;
+    document.getElementById('resTxt').textContent = textoScore(score);
+    document.getElementById('resultado').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    /* Log para debug — remover em produção */
+    console.log('SCORE:', score, '| p1:', S.p1, '| p2:', S.p2, '| p3 inv:', 100-S.p3, '| p4:', S.p4);
+  }
+
+  /* ─────────────── CARROSSEL DE DEPOIMENTOS ─────────────── */
+  const CARDS_PER_VIEW = () => window.innerWidth < 580 ? 1 : window.innerWidth < 960 ? 2 : 3;
+  const TOTAL_CARDS = 5;
+  let depPage = 0;
+
+  function totalPages() { return Math.ceil(TOTAL_CARDS / CARDS_PER_VIEW()); }
+
+  function buildDots() {
+    const wrap = document.getElementById('depDots');
+    wrap.innerHTML = '';
+    for (let i = 0; i < totalPages(); i++) {
+      const btn = document.createElement('button');
+      btn.className = 'dep-dot' + (i === depPage ? ' active' : '');
+      btn.onclick = () => { depPage = i; renderDep(); };
+      wrap.appendChild(btn);
+    }
+  }
+
+  function renderDep() {
+    const cpv = CARDS_PER_VIEW();
+    const cards = document.querySelectorAll('.dep-card');
+    const start = depPage * cpv;
+    cards.forEach((c, i) => {
+      c.style.display = (i >= start && i < start + cpv) ? 'flex' : 'none';
+    });
+    buildDots();
+  }
+
+  function depNav(dir) {
+    depPage = Math.max(0, Math.min(totalPages() - 1, depPage + dir));
+    renderDep();
+  }
+
+  renderDep();
+  window.addEventListener('resize', () => { depPage = 0; renderDep(); });
+</script>
+
+</body>
+</html>
