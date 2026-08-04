@@ -144,35 +144,6 @@
     color: var(--white-dim); max-width: 480px;
     margin-bottom: 2.2rem;
   }
-  .hero-proof {
-    display: grid; gap: .9rem;
-    margin-bottom: 2.4rem;
-    max-width: 520px;
-  }
-  .hero-proof-item {
-    display: flex; align-items: center; gap: .9rem;
-    padding: .9rem 1rem;
-    background: rgba(196,90,0,.06);
-    border: 1px solid rgba(196,90,0,.18);
-    color: var(--white-dim);
-    font-size: .78rem; letter-spacing: .12em; text-transform: uppercase;
-  }
-  a.hero-proof-item {
-    text-decoration: none;
-    transition: background .3s, border-color .3s, color .3s;
-  }
-  a.hero-proof-item:hover {
-    background: rgba(196,90,0,.14);
-    border-color: rgba(196,90,0,.4);
-    color: var(--white);
-  }
-  .hero-proof-item strong {
-    display: inline-grid; place-items: center;
-    width: 26px; height: 26px; border-radius: 50%;
-    background: var(--orange); color: var(--black);
-    font-size: .72rem; font-weight: 700;
-    flex-shrink: 0;
-  }
   .hero-actions { display: flex; gap: 1.2rem; align-items: center; }
   .btn-primary {
     text-decoration: none; display: inline-block;
@@ -192,11 +163,12 @@
   .btn-secondary:hover { color: var(--white); border-color: var(--orange); }
 
   .hero-visual {
-    display: flex; flex-direction: column; gap: 1.2rem;
-    align-items: flex-end;
+    display: flex; flex-direction: column;
+    align-items: stretch;
   }
   .hero-stat-row {
-    display: flex; gap: 1rem; justify-content: flex-end;
+    display: flex; gap: 1rem; justify-content: flex-start;
+    margin-bottom: 1.6rem;
   }
   .hero-stat {
     background: var(--black-card);
@@ -225,16 +197,48 @@
     border: 1px solid rgba(196,90,0,.15);
     border-left: 3px solid var(--orange);
     padding: 1.8rem 2rem;
-    max-width: 400px;
+    max-width: 460px;
     font-family: var(--serif); font-style: italic;
     font-size: 1.15rem; line-height: 1.65;
     color: var(--white);
+    margin-bottom: 2.4rem;
   }
   .hero-quote cite {
     display: block; margin-top: .8rem;
     font-style: normal; font-family: var(--sans);
     font-size: .68rem; letter-spacing: .18em;
     text-transform: uppercase; color: var(--orange);
+  }
+
+  .hero-diag { display: grid; gap: 1rem; width: 100%; }
+  .hero-diag-item {
+    display: block; text-decoration: none;
+    padding: 1.4rem 1.6rem;
+    background: rgba(196,90,0,.06);
+    border: 1px solid rgba(196,90,0,.18);
+    transition: background .3s, border-color .3s;
+  }
+  .hero-diag-item:hover {
+    background: rgba(196,90,0,.14);
+    border-color: rgba(196,90,0,.4);
+  }
+  .hero-diag-head {
+    display: flex; align-items: center; gap: .9rem;
+    margin-bottom: .7rem;
+  }
+  .hero-diag-head strong {
+    display: inline-grid; place-items: center;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--orange); color: var(--black);
+    font-size: .72rem; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .hero-diag-title {
+    color: var(--white); font-size: .8rem;
+    letter-spacing: .1em; text-transform: uppercase; font-weight: 500;
+  }
+  .hero-diag-desc {
+    color: var(--white-dim); font-size: .85rem; line-height: 1.65;
   }
 
   /* ── SECTION BASE ── */
@@ -918,34 +922,48 @@
         O resultado não nasce só<br>
         de estratégia. Nasce de <em>consciência</em>.
       </h1>
+      <div class="hero-stat-row anim anim-d3">
+        <div class="hero-stat">
+          <div class="hero-stat-num">CCR</div>
+          <div class="hero-stat-label">metodologia proprietária</div>
+        </div>
+      </div>
+      <blockquote class="hero-quote anim anim-d3">
+        "Mais do que ensinar técnicas, a MC desenvolve consciência, presença e coerência para a ocupação legítima de espaço."
+        <cite>— Madalena Carvalho, Fundadora</cite>
+      </blockquote>
       <p class="hero-sub anim anim-d3">
         Transformamos comunicação, posicionamento e cultura em impacto real sobre a performance da sua operação.
       </p>
-      <div class="hero-proof anim anim-d3">
-        <a href="risco-silencioso.html" class="hero-proof-item"><strong>01</strong> Risco Operacional Silencioso™</a>
-        <a href="mc-site-vendas.html" class="hero-proof-item"><strong>02</strong> Intervenção com foco em desempenho real™</a>
-        <a href="raio-x-posicionamento.html" class="hero-proof-item"><strong>03</strong> Raio-X de Posicionamento™</a>
-      </div>
       <div class="hero-actions anim anim-d4">
         <a href="#contato" class="btn-primary">Solicitar diagnóstico</a>
         <a href="#sobre" class="btn-secondary">Conhecer a MC</a>
       </div>
     </div>
     <div class="hero-visual anim anim-d3">
-      <div class="hero-stat-row">
-        <div class="hero-stat">
-          <div class="hero-stat-num">28+</div>
-          <div class="hero-stat-label">anos de atuação corporativa</div>
-        </div>
-        <div class="hero-stat">
-          <div class="hero-stat-num">CCR</div>
-          <div class="hero-stat-label">metodologia proprietária</div>
-        </div>
+      <div class="hero-diag">
+        <a href="risco-silencioso.html" class="hero-diag-item">
+          <div class="hero-diag-head">
+            <strong>01</strong>
+            <span class="hero-diag-title">Risco Operacional Silencioso™</span>
+          </div>
+          <p class="hero-diag-desc">Descubra quanto o esgotamento disfarçado de dedicação custa na sua folha.</p>
+        </a>
+        <a href="mc-site-vendas.html" class="hero-diag-item">
+          <div class="hero-diag-head">
+            <strong>02</strong>
+            <span class="hero-diag-title">Intervenção com Foco em Desempenho Real™</span>
+          </div>
+          <p class="hero-diag-desc">Mapeie o comportamento gerencial que o DRE não captura e descubra o custo invisível na sua operação.</p>
+        </a>
+        <a href="raio-x-posicionamento.html" class="hero-diag-item">
+          <div class="hero-diag-head">
+            <strong>03</strong>
+            <span class="hero-diag-title">Diagnóstico de Dispersão Executiva™</span>
+          </div>
+          <p class="hero-diag-desc">Descubra onde 80% da sua energia está sendo drenada sem gerar retorno.</p>
+        </a>
       </div>
-      <blockquote class="hero-quote">
-        "Mais do que ensinar técnicas, a MC desenvolve consciência, presença e coerência para a ocupação legítima de espaço."
-        <cite>— Madalena Carvalho, Fundadora</cite>
-      </blockquote>
     </div>
   </div>
 </section>
