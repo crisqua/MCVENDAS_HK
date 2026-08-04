@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Política de Privacidade — MC Treinamentos</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --black:        #0d0d0d;
+    --black-soft:   #141414;
+    --black-card:   #1a1a1a;
+    --orange:       #c45a00;
+    --orange-light: #d96b0a;
+    --orange-muted: #7a3800;
+    --gold:         #b8843c;
+    --white:        #f5f0ea;
+    --white-dim:    #b0a898;
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --sans:  'Barlow', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: var(--sans);
+    font-weight: 300;
+    overflow-x: hidden;
+  }
+  ::-webkit-scrollbar { width: 3px; }
+  ::-webkit-scrollbar-track { background: var(--black); }
+  ::-webkit-scrollbar-thumb { background: var(--orange); }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.2rem 4rem;
+    background: linear-gradient(to bottom, rgba(13,13,13,.95) 0%, transparent 100%);
+    backdrop-filter: blur(6px);
+  }
+  .nav-brand {
+    font-family: var(--serif); font-size: 1.05rem; font-weight: 400;
+    letter-spacing: .1em; color: var(--white); text-decoration: none;
+  }
+  .nav-back {
+    text-decoration: none; color: var(--white-dim);
+    font-size: .72rem; letter-spacing: .16em; text-transform: uppercase;
+    transition: color .3s;
+  }
+  .nav-back:hover { color: var(--orange-light); }
+
+  /* ── LAYOUT ── */
+  main {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 9rem 1.5rem 6rem;
+  }
+  .eyebrow {
+    font-size: .58rem; letter-spacing: .28em; text-transform: uppercase;
+    color: var(--orange); margin-bottom: 1rem;
+    display: flex; align-items: center; gap: .8rem;
+  }
+  .eyebrow::before { content: ''; display: block; width: 28px; height: 1px; background: var(--orange); }
+
+  h1.page-title {
+    font-family: var(--serif);
+    font-size: clamp(2rem, 4vw, 2.8rem);
+    font-weight: 300; line-height: 1.2;
+    margin-bottom: 1rem;
+  }
+  .intro-text {
+    color: var(--white-dim); font-size: .95rem; line-height: 1.85;
+    margin-bottom: 3rem; max-width: 620px;
+  }
+
+  .policy-section { margin-bottom: 2.6rem; }
+  .policy-section h2 {
+    font-family: var(--serif);
+    font-size: 1.35rem; font-weight: 400;
+    color: var(--white); margin-bottom: 1rem;
+    display: flex; align-items: baseline; gap: .7rem;
+  }
+  .policy-section h2 span.num {
+    font-size: .95rem; color: var(--orange-light);
+  }
+  .policy-section p {
+    color: var(--white-dim); font-size: .92rem; line-height: 1.85;
+    margin-bottom: 1rem;
+  }
+  .policy-section ul {
+    list-style: none; display: grid; gap: .6rem;
+    margin-bottom: 1rem;
+  }
+  .policy-section li {
+    font-size: .92rem; color: var(--white-dim); line-height: 1.7;
+    padding-left: 1.2rem; position: relative;
+  }
+  .policy-section li::before { content: '—'; position: absolute; left: 0; color: var(--orange); }
+  .policy-section a {
+    color: var(--orange-light); text-decoration: underline;
+    transition: color .3s;
+  }
+  .policy-section a:hover { color: var(--white); }
+
+  .updated-note {
+    font-size: .78rem; letter-spacing: .06em; color: var(--white-dim);
+    text-transform: uppercase; margin-top: 3rem;
+    border-top: 1px solid rgba(255,255,255,.08); padding-top: 1.6rem;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center; padding: 3rem 1.5rem 2.5rem;
+    border-top: 1px solid rgba(255,255,255,.06);
+    margin-top: 5rem;
+  }
+  .footer-brand {
+    font-family: var(--serif); font-size: 1rem; color: var(--white);
+    margin-bottom: .5rem;
+  }
+  .footer-brand em { color: var(--orange-light); font-style: italic; }
+  .footer-copy { font-size: .78rem; color: var(--white-dim); }
+
+  @media (max-width: 640px) {
+    nav { padding: 1rem 1.4rem; }
+    main { padding: 7.5rem 1.2rem 4rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-brand">MC Treinamentos</a>
+  <a href="index.html" class="nav-back">← Voltar ao site</a>
+</nav>
+
+<main>
+  <div class="eyebrow">LGPD</div>
+  <h1 class="page-title">Política de Privacidade e Tratamento de Dados Pessoais</h1>
+  <p class="intro-text">
+    A MC Treinamentos Gerenciais ("MC Treinamentos"), inscrita no CNPJ sob o nº 46.590.965/0001-82, no exercício de suas atividades, valoriza a privacidade e a proteção dos dados pessoais de seus usuários e visitantes de seu site. Esta Política de Privacidade descreve como coletamos, utilizamos, armazenamos e protegemos suas informações pessoais em conformidade com a Lei Geral de Proteção de Dados Pessoais (Lei nº 13.709/2018 - LGPD).
+  </p>
+
+  <div class="policy-section">
+    <h2><span class="num">1.</span> Dados Coletados</h2>
+    <p>Ao utilizar nosso site e realizar os diagnósticos disponíveis, coletamos os seguintes dados pessoais fornecidos de forma consciente:</p>
+    <ul>
+      <li>Nome completo;</li>
+      <li>Número de telefone/WhatsApp;</li>
+      <li>E-mail de contato;</li>
+      <li>Respostas geradas nas ferramentas de diagnóstico.</li>
+    </ul>
+    <p>Não coletamos dados sensíveis (origem racial ou étnica, convicção religiosa, dados de saúde, etc.).</p>
+  </div>
+
+  <div class="policy-section">
+    <h2><span class="num">2.</span> Finalidade do Tratamento</h2>
+    <p>Os dados coletados são utilizados exclusivamente para as seguintes finalidades:</p>
+    <ul>
+      <li>Enviar o resultado do seu diagnóstico via WhatsApp e/ou e-mail;</li>
+      <li>Iniciar um contato comercial para apresentação de nossos serviços de mentoria, consultoria e intervenção comportamental (Protocolo CCR™, Raio-X de Posicionamento™, entre outros);</li>
+      <li>Armazenamento de histórico de leads para atendimento futuro.</li>
+    </ul>
+  </div>
+
+  <div class="policy-section">
+    <h2><span class="num">3.</span> Base Legal</h2>
+    <p>O tratamento dos seus dados pessoais é realizado com base no seu consentimento manifesto e informado (Art. 7º, I, da LGPD), fornecido no momento do preenchimento do formulário no site, mediante a marcação da caixa de verificação.</p>
+  </div>
+
+  <div class="policy-section">
+    <h2><span class="num">4.</span> Compartilhamento de Dados</h2>
+    <p>Seus dados pessoais não são compartilhados com terceiros, exceto quando necessário para a prestação dos serviços contratados (ex: envio de mensagens via APIs oficiais de WhatsApp ou de e-mail) ou por determinação legal ou judicial.</p>
+  </div>
+
+  <div class="policy-section">
+    <h2><span class="num">5.</span> Segurança dos Dados</h2>
+    <p>Adotamos medidas técnicas e administrativas aptas a proteger os dados pessoais de acessos não autorizados e de situações de destruição, perda ou alteração acidental.</p>
+  </div>
+
+  <div class="policy-section">
+    <h2><span class="num">6.</span> Tempo de Armazenamento</h2>
+    <p>Seus dados pessoais serão armazenados pelo prazo máximo de 2 (dois) anos a contar da data do seu consentimento. Após esse período, os dados serão eliminados de nossos sistemas de forma segura, salvo se houver obrigação legal de retenção.</p>
+  </div>
+
+  <div class="policy-section">
+    <h2><span class="num">7.</span> Direitos do Titular</h2>
+    <p>Como titular dos dados, você tem o direito de:</p>
+    <ul>
+      <li>Acessar seus dados pessoais que mantemos;</li>
+      <li>Solicitar a correção de dados incompletos, inexatos ou desatualizados;</li>
+      <li>Solicitar a anonimização, bloqueio ou eliminação de dados desnecessários, excessivos ou tratados em desconformidade com a LGPD;</li>
+      <li>Revogar o consentimento a qualquer momento, o que implicará na interrupção do contato comercial e eliminação dos dados.</li>
+    </ul>
+    <p>Para exercer qualquer um destes direitos, entre em contato conosco através do e-mail: <a href="mailto:mentoria@madalenacarvalho.com.br">mentoria@madalenacarvalho.com.br</a> ou pelo WhatsApp: (11) 99417-6450.</p>
+  </div>
+
+  <div class="policy-section">
+    <h2><span class="num">8.</span> Alterações nesta Política</h2>
+    <p>Reservamo-nos o direito de atualizar esta Política de Privacidade a qualquer momento. As alterações serão publicadas nesta mesma página com a data de atualização revisada.</p>
+  </div>
+
+  <div class="updated-note">Última atualização: Julho de 2026</div>
+</main>
+
+<footer>
+  <div class="footer-brand">MC Treinamentos | 29 anos traduzindo <em>comportamento em resultado financeiro</em></div>
+  <div class="footer-copy">© 2025 MC Treinamentos. Todos os direitos reservados.</div>
+</footer>
+
+</body>
+</html>

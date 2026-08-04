@@ -748,6 +748,11 @@
     color: rgba(246,238,226,.78); text-align: right;
     text-shadow: 0 0 10px rgba(196,90,0,.12);
   }
+  .footer-copy a {
+    color: inherit; text-decoration: underline;
+    transition: color .3s;
+  }
+  .footer-copy a:hover { color: var(--orange-light); }
   .footer-dev {
     font-size: .68rem; letter-spacing: .06em;
     color: rgba(246,238,226,.78);
@@ -1525,7 +1530,10 @@
 <footer>
   <div class="footer-dev">Desenvolvido por <strong>Desenvolva[IN]</strong></div>
   <div class="footer-brand"><span class="mc-word">MC</span> <span class="brand-name">Treinamentos</span><br><em>Engenharia Comportamental</em></div>
-  <div class="footer-copy">© 2025 MC Treinamentos.<br>Todos os direitos reservados.</div>
+  <div class="footer-copy">
+    <a href="politica-de-privacidade.html" target="_blank" rel="noopener">Política de Privacidade</a><br>
+    © 2025 MC Treinamentos.<br>Todos os direitos reservados.
+  </div>
 </footer>
 
 <script>
