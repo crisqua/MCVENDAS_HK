@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>MC Treinamentos — Diagnóstico de Dispersão Executiva</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <style>
   /* ── TOKENS ── */
   :root {
@@ -827,8 +828,11 @@
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
+  /* ── EmailJS ── */
+  emailjs.init({ publicKey: 'mEhNvrCLc1o03cpU8' });
+
   /* ── Estado global ── */
-  const S = { p1: 50, p2: null, p3: 50, p4: null };
+  const S = { p1: 50, p2: null, p2Text: null, p3: 50, p4: null, p4Text: null };
 
   /* ── Slider ── */
   function updateSlider(input, displayId, key) {
@@ -849,8 +853,9 @@
   function selectRadio(label, groupId, value, btnId) {
     document.querySelectorAll('#' + groupId + ' .radio-option').forEach(o => o.classList.remove('selected'));
     label.classList.add('selected');
-    if (groupId === 'rg2') S.p2 = value;
-    if (groupId === 'rg4') S.p4 = value;
+    const text = label.querySelector('.radio-text').textContent.trim();
+    if (groupId === 'rg2') { S.p2 = value; S.p2Text = text; }
+    if (groupId === 'rg4') { S.p4 = value; S.p4Text = text; }
     document.getElementById(btnId).disabled = false;
   }
 
@@ -919,8 +924,31 @@
     document.getElementById('resNum').innerHTML = `${score}<sup>%</sup>`;
     document.getElementById('resTxt').textContent = textoScore(score);
     document.getElementById('resultado').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    /* Log para debug — remover em produção */
-    console.log('SCORE:', score, '| p1:', S.p1, '| p2:', S.p2, '| p3 inv:', 100-S.p3, '| p4:', S.p4);
+    enviarDiagnosticoPorEmail(score);
+  }
+
+  /* ── Envia o diagnóstico por e-mail via EmailJS ── */
+  function enviarDiagnosticoPorEmail(score) {
+    const params = {
+      lead_name: document.getElementById('gateName').value.trim(),
+      lead_email: document.getElementById('gateEmail').value.trim(),
+      lead_phone: document.getElementById('gatePhone').value.trim(),
+      q1_question: 'Quanto da sua energia semanal é consumida por decisões ou demandas que outros deveriam tomar?',
+      q1_answer: S.p1 + '%',
+      q2_question: 'O que mais consome o seu tempo no dia a dia?',
+      q2_answer: S.p2Text || '—',
+      q3_question: 'Qual o percentual da sua semana que é gasto com atividades que geram retorno mensurável (caixa, margem, avanço estratégico)?',
+      q3_answer: S.p3 + '%',
+      q4_question: 'Quando você avalia o seu último trimestre, a sensação é de:',
+      q4_answer: S.p4Text || '—',
+      score: score,
+      result_text: textoScore(score),
+      timestamp: new Date().toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'medium' })
+    };
+
+    emailjs.send('service_rjdpydm', 'template_gaoe7ie', params)
+      .then(() => console.log('Diagnóstico enviado por e-mail.'))
+      .catch(err => console.error('Falha ao enviar diagnóstico por e-mail:', err));
   }
 
   /* ─────────────── CARROSSEL DE DEPOIMENTOS ─────────────── */
