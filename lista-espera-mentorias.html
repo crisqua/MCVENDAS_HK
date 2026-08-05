@@ -87,6 +87,7 @@
   /* ── CAMPOS (padrão gate) ── */
   .gate-field { display: flex; flex-direction: column; gap: .45rem; margin-bottom: 1.3rem; }
   .gate-label { font-size: .6rem; letter-spacing: .22em; text-transform: uppercase; color: var(--gold); }
+  .gate-label .req { color: var(--orange-light); letter-spacing: 0; }
   .gate-input {
     background: transparent;
     border: none; border-bottom: 1px solid rgba(255,255,255,.18);
@@ -193,12 +194,12 @@
         <div class="block-title">Sessão desejada</div>
 
         <div class="gate-field">
-          <span class="gate-label">Data desejada</span>
+          <span class="gate-label">Data desejada <span class="req">*</span></span>
           <input type="date" id="sessionDate" class="gate-input" />
         </div>
 
         <div class="gate-field">
-          <span class="gate-label">Módulo da sessão</span>
+          <span class="gate-label">Módulo da sessão <span class="req">*</span></span>
           <select id="sessionModule" class="gate-input">
             <option value="" disabled selected>Selecione uma opção</option>
             <option>Módulo 1: Liderança</option>
@@ -218,15 +219,15 @@
         <div class="block-title">Seus dados</div>
 
         <div class="gate-field">
-          <span class="gate-label">Nome completo</span>
+          <span class="gate-label">Nome completo <span class="req">*</span></span>
           <input type="text" id="leadName" class="gate-input" placeholder="Seu nome" autocomplete="name" />
         </div>
         <div class="gate-field">
-          <span class="gate-label">E-mail</span>
+          <span class="gate-label">E-mail <span class="req">*</span></span>
           <input type="email" id="leadEmail" class="gate-input" placeholder="exemplo@email.com" autocomplete="email" />
         </div>
         <div class="gate-field">
-          <span class="gate-label">WhatsApp</span>
+          <span class="gate-label">WhatsApp <span class="req">*</span></span>
           <input type="tel" id="leadPhone" class="gate-input" placeholder="(11) 99999-9999" maxlength="15" autocomplete="tel" />
         </div>
 
@@ -245,7 +246,7 @@
           Ao enviar este formulário, você confirma sua entrada na lista de espera para as mentorias e inicia o processo de agendamento com Madalena Carvalho. A confirmação da data escolhida chegará no e-mail informado assim que possível.
         </p>
         <button type="submit" class="gate-btn" id="submitBtn" disabled>Entrar na Lista de Espera</button>
-        <div class="form-error" id="formError">Preencha nome, e-mail, WhatsApp e aceite a Política de Privacidade para continuar.</div>
+        <div class="form-error" id="formError">Preencha data, módulo, nome, e-mail, WhatsApp e aceite a Política de Privacidade para continuar.</div>
       </div>
     </form>
   </div>
@@ -280,32 +281,37 @@
   });
   document.getElementById('leadName').addEventListener('input', toggleSubmitBtn);
   document.getElementById('leadEmail').addEventListener('input', toggleSubmitBtn);
+  document.getElementById('sessionDate').addEventListener('input', toggleSubmitBtn);
   document.getElementById('sessionModule').addEventListener('change', toggleSubmitBtn);
 
-  function toggleSubmitBtn() {
+  function formIsValid() {
+    const data    = document.getElementById('sessionDate').value;
+    const modulo  = document.getElementById('sessionModule').value;
     const nome    = document.getElementById('leadName').value.trim();
     const email   = document.getElementById('leadEmail').value.trim();
     const tel     = leadPhone.value.replace(/\D/g, '');
     const consent = document.getElementById('leadConsent').checked;
     const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    document.getElementById('submitBtn').disabled = !(nome.length > 2 && emailOk && tel.length >= 10 && consent);
+    return !!data && !!modulo && nome.length > 2 && emailOk && tel.length >= 10 && consent;
+  }
+
+  function toggleSubmitBtn() {
+    document.getElementById('submitBtn').disabled = !formIsValid();
   }
 
   /* ── Envio ── */
   document.getElementById('mentoriaForm').addEventListener('submit', function (e) {
     e.preventDefault();
 
-    const nome    = document.getElementById('leadName').value.trim();
-    const email   = document.getElementById('leadEmail').value.trim();
-    const tel     = leadPhone.value.trim();
-    const consent = document.getElementById('leadConsent').checked;
-    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-
-    if (!(nome.length > 2 && emailOk && tel.replace(/\D/g,'').length >= 10 && consent)) {
+    if (!formIsValid()) {
       document.getElementById('formError').classList.add('show');
       return;
     }
     document.getElementById('formError').classList.remove('show');
+
+    const nome  = document.getElementById('leadName').value.trim();
+    const email = document.getElementById('leadEmail').value.trim();
+    const tel   = leadPhone.value.trim();
 
     const params = {
       lead_name: nome,
