@@ -41,10 +41,11 @@
     backdrop-filter: blur(6px);
   }
   .nav-brand {
-    font-family: var(--serif); font-size: 1.3rem; font-weight: 600;
-    letter-spacing: .02em; color: var(--white);
+    font-family: var(--serif); font-size: 1.05rem; font-weight: 400;
+    letter-spacing: .1em; color: var(--white); text-decoration: none;
+    transition: color .3s;
   }
-  .nav-brand span { color: var(--orange); font-weight: 300; font-size: 1rem; vertical-align: super; }
+  .nav-brand:hover { color: var(--orange-light); }
   .nav-links { display: flex; gap: 2.2rem; }
   .nav-links a {
     text-decoration: none; color: var(--white-dim);
@@ -52,12 +53,12 @@
     transition: color .3s;
   }
   .nav-links a:hover { color: var(--orange-light); }
-  .nav-cta {
-    text-decoration: none; background: var(--orange); color: var(--black);
-    padding: .6rem 1.5rem; font-size: .7rem; letter-spacing: .15em;
-    text-transform: uppercase; font-weight: 500; transition: background .3s;
+  .nav-profit {
+    font-family: var(--serif); font-size: 1.3rem; font-weight: 600;
+    letter-spacing: .02em; color: var(--white);
   }
-  .nav-cta:hover { background: var(--orange-light); }
+  .nav-profit-plus { color: var(--white); font-size: 1.5rem; font-weight: 600; }
+  .nav-profit-tm { color: var(--orange); font-weight: 300; font-size: .6rem; vertical-align: super; }
 
   /* ── HERO ── */
   #hero {
@@ -251,13 +252,13 @@
 <body>
 
 <nav>
-  <div class="nav-brand">PROFIT<span>+™</span></div>
+  <a href="index.html" class="nav-brand">MC Treinamentos</a>
   <div class="nav-links">
     <a href="#diagnostico">Diagnóstico</a>
     <a href="#intervencao">Método</a>
     <a href="#cta-final">Próximos Passos</a>
   </div>
-  <a href="#cta-final" class="nav-cta">Fazer o Raio-X Agora</a>
+  <div class="nav-profit">PROFIT<span class="nav-profit-plus">+</span><span class="nav-profit-tm">™</span></div>
 </nav>
 
 <!-- HERO -->
