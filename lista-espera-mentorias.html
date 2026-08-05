@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<link rel="icon" href="favicon.ico" sizes="any"/>
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png"/>
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png"/>
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png"/>
+<title>Lista de Espera — Mentorias — MC Treinamentos</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<style>
+  /* ── TOKENS ── */
+  :root {
+    --black:        #0d0d0d;
+    --black-soft:   #141414;
+    --black-card:   #1a1a1a;
+    --orange:       #c45a00;
+    --orange-light: #d96b0a;
+    --orange-muted: #7a3800;
+    --gold:         #b8843c;
+    --white:        #f5f0ea;
+    --white-dim:    #b0a898;
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --sans:  'Barlow', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: var(--sans);
+    font-weight: 300;
+    overflow-x: hidden;
+  }
+  ::-webkit-scrollbar { width: 3px; }
+  ::-webkit-scrollbar-track { background: var(--black); }
+  ::-webkit-scrollbar-thumb { background: var(--orange); }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.2rem 4rem;
+    background: linear-gradient(to bottom, rgba(13,13,13,.95) 0%, transparent 100%);
+    backdrop-filter: blur(6px);
+  }
+  .nav-brand {
+    font-family: var(--serif); font-size: 1.05rem; font-weight: 400;
+    letter-spacing: .1em; color: var(--white); text-decoration: none;
+  }
+  /* ── LAYOUT ── */
+  main {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 9rem 1.5rem 6rem;
+  }
+  .eyebrow {
+    font-size: .58rem; letter-spacing: .28em; text-transform: uppercase;
+    color: var(--orange); margin-bottom: 1rem;
+    display: flex; align-items: center; gap: .8rem;
+  }
+  .eyebrow::before { content: ''; display: block; width: 28px; height: 1px; background: var(--orange); }
+  h1.page-title {
+    font-family: var(--serif);
+    font-size: clamp(2rem, 4.2vw, 2.9rem);
+    font-weight: 300; line-height: 1.2;
+    margin-bottom: 1rem;
+  }
+  .intro-text {
+    color: var(--white-dim); font-size: .98rem; line-height: 1.85;
+    margin-bottom: 3rem; max-width: 600px;
+  }
+
+  hr.divider { border: none; border-top: 1px solid rgba(196,90,0,.15); margin: 0 0 2.8rem; }
+
+  /* ── BLOCOS ── */
+  .block { margin-bottom: 2.8rem; }
+  .block-label {
+    font-size: .65rem; letter-spacing: .2em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: .4rem; font-weight: 600;
+  }
+  .block-title { font-family: var(--serif); font-size: 1.3rem; margin-bottom: 1.6rem; }
+
+  /* ── CAMPOS (padrão gate) ── */
+  .gate-field { display: flex; flex-direction: column; gap: .45rem; margin-bottom: 1.3rem; }
+  .gate-label { font-size: .6rem; letter-spacing: .22em; text-transform: uppercase; color: var(--gold); }
+  .gate-input {
+    background: transparent;
+    border: none; border-bottom: 1px solid rgba(255,255,255,.18);
+    color: var(--white); font-family: var(--sans); font-size: .95rem;
+    font-weight: 300; padding: .7rem 0;
+    outline: none; transition: border-color .3s; width: 100%;
+    appearance: none;
+  }
+  .gate-input:focus { border-color: var(--orange); }
+  .gate-input::placeholder { color: var(--white-dim); opacity: .45; }
+  select.gate-input { cursor: pointer; }
+  select.gate-input option { background: var(--black-card); color: var(--white); }
+  input[type="date"].gate-input { color-scheme: dark; }
+
+  .policy-note {
+    font-size: .82rem; line-height: 1.75; color: var(--white-dim);
+    background: rgba(196,90,0,.05); border-left: 2px solid var(--orange);
+    padding: .9rem 1.2rem; margin: -.4rem 0 1.4rem;
+  }
+  .policy-note a { color: var(--orange-light); }
+
+  .gate-check {
+    display: flex; gap: .8rem; align-items: flex-start;
+    margin: 1.4rem 0 .4rem;
+  }
+  .gate-check input[type="checkbox"] {
+    accent-color: var(--orange);
+    width: 15px; height: 15px; min-width: 15px; margin-top: 3px; cursor: pointer;
+  }
+  .gate-check label { font-size: .8rem; color: var(--white-dim); line-height: 1.6; cursor: pointer; }
+  .gate-check label a { color: var(--orange-light); text-decoration: underline; }
+
+  .confirm-text {
+    font-size: .88rem; line-height: 1.8; color: var(--white-dim);
+    margin-bottom: 1.8rem;
+  }
+
+  .gate-btn {
+    width: 100%;
+    background: var(--orange); color: var(--black);
+    border: 1px solid var(--orange);
+    padding: 1.1rem;
+    font-family: var(--sans); font-size: .78rem;
+    letter-spacing: .22em; text-transform: uppercase; font-weight: 500;
+    cursor: pointer; transition: background .3s, color .3s;
+  }
+  .gate-btn:hover { background: transparent; color: var(--orange-light); }
+  .gate-btn:disabled { opacity: .3; cursor: not-allowed; }
+
+  .form-error {
+    font-size: .78rem; color: var(--orange-light); margin-top: 1rem; display: none;
+  }
+  .form-error.show { display: block; }
+
+  /* ── CONFIRMAÇÃO ── */
+  #confirmed { display: none; text-align: center; padding: 2rem 0; animation: fadeUp .5s ease; }
+  #confirmed.active { display: block; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+  .confirmed-title {
+    font-family: var(--serif); font-size: clamp(1.7rem, 3.5vw, 2.3rem);
+    font-weight: 400; color: var(--white); margin-bottom: 1rem;
+  }
+  .confirmed-text { color: var(--white-dim); font-size: .95rem; line-height: 1.85; max-width: 480px; margin: 0 auto; }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center; padding: 3rem 1.5rem 2.5rem;
+    border-top: 1px solid rgba(255,255,255,.06);
+    margin-top: 5rem;
+  }
+  .footer-brand {
+    font-family: var(--serif); font-size: 1rem; color: var(--white);
+    margin-bottom: .5rem;
+  }
+  .footer-brand em { color: var(--orange-light); font-style: italic; }
+  .footer-copy { font-size: .78rem; color: var(--white-dim); }
+
+  @media (max-width: 640px) {
+    nav { padding: 1rem 1.4rem; }
+    main { padding: 7.5rem 1.2rem 4rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-brand">MC Treinamentos</a>
+</nav>
+
+<main>
+
+  <div id="formWrap">
+    <div class="eyebrow">Mentorias Premium</div>
+    <h1 class="page-title">Lista de Espera — <span style="color:var(--orange-light);">Mentorias com Madalena Carvalho</span></h1>
+    <p class="intro-text">
+      O espaço para quem deseja acessar os processos de acompanhamento individual de Madalena Carvalho. Mentorias conduzidas de forma estratégica e personalizada, sempre alinhadas ao método CCR™.
+    </p>
+
+    <hr class="divider" />
+
+    <form id="mentoriaForm">
+      <div class="block">
+        <div class="block-label">Etapa 1</div>
+        <div class="block-title">Sessão desejada</div>
+
+        <div class="gate-field">
+          <span class="gate-label">Data desejada</span>
+          <input type="date" id="sessionDate" class="gate-input" />
+        </div>
+
+        <div class="gate-field">
+          <span class="gate-label">Módulo da sessão</span>
+          <select id="sessionModule" class="gate-input">
+            <option value="" disabled selected>Selecione uma opção</option>
+            <option>Módulo 1: Liderança</option>
+            <option>Módulo 2: Oratória e Comunicação de Alto Impacto</option>
+            <option>Módulo 4: Estratégias de Carreira</option>
+            <option>Tira-dúvidas</option>
+          </select>
+        </div>
+
+        <div class="policy-note">
+          Este primeiro encontro é gratuito, pensado para alinharmos expectativas com presença e verdade. Apenas peço que o horário agendado seja honrado. Em caso de ausência sem aviso prévio de 24 horas, aplica-se uma taxa de R$ 597,00. Em caso de cancelamento, envie e-mail para <a href="mailto:madalena@madalenacarvalho.com.br">madalena@madalenacarvalho.com.br</a>.
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Etapa 2</div>
+        <div class="block-title">Seus dados</div>
+
+        <div class="gate-field">
+          <span class="gate-label">Nome completo</span>
+          <input type="text" id="leadName" class="gate-input" placeholder="Seu nome" autocomplete="name" />
+        </div>
+        <div class="gate-field">
+          <span class="gate-label">E-mail</span>
+          <input type="email" id="leadEmail" class="gate-input" placeholder="exemplo@email.com" autocomplete="email" />
+        </div>
+        <div class="gate-field">
+          <span class="gate-label">WhatsApp</span>
+          <input type="tel" id="leadPhone" class="gate-input" placeholder="(11) 99999-9999" maxlength="15" autocomplete="tel" />
+        </div>
+
+        <div class="gate-check">
+          <input type="checkbox" id="leadConsent" onchange="toggleSubmitBtn()" />
+          <label for="leadConsent">
+            Concordo com a <a href="/politica-de-privacidade" target="_blank">Política de Privacidade</a> e autorizo o uso dos dados para contato.
+          </label>
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="block-label">Etapa 3</div>
+        <div class="block-title">Confirmação</div>
+        <p class="confirm-text">
+          Ao enviar este formulário, você confirma sua entrada na lista de espera para as mentorias e inicia o processo de agendamento com Madalena Carvalho. A confirmação da data escolhida chegará no e-mail informado assim que possível.
+        </p>
+        <button type="submit" class="gate-btn" id="submitBtn" disabled>Entrar na Lista de Espera</button>
+        <div class="form-error" id="formError">Preencha nome, e-mail, WhatsApp e aceite a Política de Privacidade para continuar.</div>
+      </div>
+    </form>
+  </div>
+
+  <div id="confirmed">
+    <div class="eyebrow" style="justify-content:center;">Recebido</div>
+    <div class="confirmed-title">Você está na Lista de Espera.</div>
+    <p class="confirmed-text">Madalena vai analisar sua solicitação e confirmar a data e o módulo escolhidos diretamente pelo e-mail ou WhatsApp informados.</p>
+  </div>
+
+</main>
+
+<footer>
+  <div class="footer-brand">MC Treinamentos | 29 anos traduzindo <em>comportamento em resultado financeiro</em></div>
+  <div class="footer-copy">© 2025 MC Treinamentos. Todos os direitos reservados.</div>
+</footer>
+
+<script>
+  /* ── EmailJS ── */
+  emailjs.init({ publicKey: '9dntHcZaskzU7H348' });
+
+  /* ── Máscara de telefone BR ── */
+  const leadPhone = document.getElementById('leadPhone');
+  leadPhone.addEventListener('input', () => {
+    let v = leadPhone.value.replace(/\D/g, '').slice(0, 11);
+    if      (v.length > 10) v = `(${v.slice(0,2)}) ${v.slice(2,7)}-${v.slice(7)}`;
+    else if (v.length >  6) v = `(${v.slice(0,2)}) ${v.slice(2,6)}-${v.slice(6)}`;
+    else if (v.length >  2) v = `(${v.slice(0,2)}) ${v.slice(2)}`;
+    else if (v.length >  0) v = `(${v}`;
+    leadPhone.value = v;
+    toggleSubmitBtn();
+  });
+  document.getElementById('leadName').addEventListener('input', toggleSubmitBtn);
+  document.getElementById('leadEmail').addEventListener('input', toggleSubmitBtn);
+  document.getElementById('sessionModule').addEventListener('change', toggleSubmitBtn);
+
+  function toggleSubmitBtn() {
+    const nome    = document.getElementById('leadName').value.trim();
+    const email   = document.getElementById('leadEmail').value.trim();
+    const tel     = leadPhone.value.replace(/\D/g, '');
+    const consent = document.getElementById('leadConsent').checked;
+    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    document.getElementById('submitBtn').disabled = !(nome.length > 2 && emailOk && tel.length >= 10 && consent);
+  }
+
+  /* ── Envio ── */
+  document.getElementById('mentoriaForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const nome    = document.getElementById('leadName').value.trim();
+    const email   = document.getElementById('leadEmail').value.trim();
+    const tel     = leadPhone.value.trim();
+    const consent = document.getElementById('leadConsent').checked;
+    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+    if (!(nome.length > 2 && emailOk && tel.replace(/\D/g,'').length >= 10 && consent)) {
+      document.getElementById('formError').classList.add('show');
+      return;
+    }
+    document.getElementById('formError').classList.remove('show');
+
+    const params = {
+      lead_name: nome,
+      lead_email: email,
+      lead_phone: tel,
+      lead_phone_digits: '55' + tel.replace(/\D/g, ''),
+      session_date: document.getElementById('sessionDate').value || '—',
+      session_module: document.getElementById('sessionModule').value || '—',
+      timestamp: new Date().toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'medium' })
+    };
+
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.textContent = 'Enviando...';
+
+    emailjs.send('service_uuo9fac', 'template_93ht59c', params)
+      .then(() => {
+        document.getElementById('formWrap').style.display = 'none';
+        document.getElementById('confirmed').classList.add('active');
+      })
+      .catch(err => {
+        console.error('Falha ao enviar inscrição da lista de espera:', err);
+        btn.disabled = false;
+        btn.textContent = 'Entrar na Lista de Espera';
+        document.getElementById('formError').textContent = 'Não foi possível enviar agora. Tente novamente em instantes.';
+        document.getElementById('formError').classList.add('show');
+      });
+  });
+</script>
+
+</body>
+</html>
