@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<link rel="icon" href="favicon.ico" sizes="any"/>
+<title>Área Restrita — Administrador (Protótipo)</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --black: #0d0d0d;
+    --black-soft: #141414;
+    --black-card: #1a1a1a;
+    --black-card-2: #201d19;
+    --orange: #c45a00;
+    --orange-light: #d96b0a;
+    --orange-muted: #7a3800;
+    --gold: #b8843c;
+    --white: #f5f0ea;
+    --white-dim: #b0a898;
+    --white-faint: #7a756c;
+    --border: #2a2a2a;
+    --green: #4a9a5c;
+    --red: #b8443c;
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --sans: 'Barlow', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: var(--sans);
+    font-weight: 300;
+  }
+
+  ::-webkit-scrollbar { width: 3px; }
+  ::-webkit-scrollbar-track { background: var(--black); }
+  ::-webkit-scrollbar-thumb { background: var(--orange); }
+
+  a { color: inherit; }
+
+  /* ── PROTOTYPE RIBBON ── */
+  .proto-ribbon {
+    background: var(--orange-muted);
+    color: var(--white);
+    text-align: center;
+    font-size: .72rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    padding: .55rem 1rem;
+    border-bottom: 1px solid var(--orange);
+  }
+
+  /* ── LOGIN SCREEN ── */
+  #login-screen {
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    padding: 2rem;
+  }
+  .login-card {
+    width: 100%; max-width: 380px;
+    background: var(--black-card);
+    border: 1px solid var(--border);
+    padding: 3rem 2.4rem;
+    text-align: center;
+  }
+  .login-logo {
+    width: 56px; height: 56px; object-fit: cover;
+    border-radius: 8px; margin: 0 auto 1.4rem;
+    display: block; opacity: .95;
+  }
+  .login-card h1 {
+    font-family: var(--serif); font-weight: 400; font-size: 1.6rem;
+    letter-spacing: .04em; margin-bottom: .3rem;
+  }
+  .login-card .sub {
+    font-size: .78rem; color: var(--white-dim);
+    letter-spacing: .1em; text-transform: uppercase; margin-bottom: 2.2rem;
+  }
+  .field { text-align: left; margin-bottom: 1.1rem; }
+  .field label {
+    display: block; font-size: .68rem; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--white-faint); margin-bottom: .4rem;
+  }
+  .field input {
+    width: 100%; background: var(--black-soft); border: 1px solid var(--border);
+    color: var(--white); padding: .7rem .8rem; font-family: var(--sans);
+    font-size: .9rem; outline: none;
+  }
+  .field input:focus { border-color: var(--orange); }
+  .btn {
+    display: inline-block; width: 100%;
+    background: var(--orange); color: var(--black);
+    border: 1px solid var(--orange); cursor: pointer;
+    padding: .75rem 1rem; font-size: .78rem; letter-spacing: .16em;
+    text-transform: uppercase; font-family: var(--sans); font-weight: 500;
+    transition: background .25s, color .25s;
+  }
+  .btn:hover { background: var(--orange-light); }
+  .btn-outline {
+    background: transparent; color: var(--orange-light); border: 1px solid var(--orange);
+    width: auto;
+  }
+  .btn-outline:hover { background: var(--orange); color: var(--black); }
+  .login-hint {
+    margin-top: 1.6rem; font-size: .72rem; color: var(--white-faint);
+    line-height: 1.6;
+  }
+
+  /* ── APP SHELL ── */
+  #app-screen { display: none; min-height: 100vh; }
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 2rem; border-bottom: 1px solid var(--border);
+    background: var(--black-soft);
+  }
+  .topbar-left { display: flex; align-items: center; gap: .9rem; }
+  .topbar-left img { width: 34px; height: 34px; border-radius: 6px; object-fit: cover; }
+  .topbar-left .brand { font-family: var(--serif); font-size: 1.05rem; letter-spacing: .06em; }
+  .topbar-left .role-tag {
+    font-size: .62rem; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--gold); border: 1px solid var(--gold); padding: .15rem .5rem;
+    margin-left: .6rem;
+  }
+  .topbar-right { display: flex; align-items: center; gap: 1.2rem; font-size: .8rem; color: var(--white-dim); }
+  .logout-link { cursor: pointer; color: var(--orange-light); font-size: .75rem; letter-spacing: .06em; }
+  .logout-link:hover { text-decoration: underline; }
+
+  .layout { display: flex; min-height: calc(100vh - 60px); }
+
+  .sidebar {
+    width: 220px; flex-shrink: 0; background: var(--black-soft);
+    border-right: 1px solid var(--border); padding: 1.6rem 0;
+  }
+  .nav-item {
+    display: flex; align-items: center; gap: .7rem;
+    padding: .8rem 1.6rem; font-size: .82rem; color: var(--white-dim);
+    cursor: pointer; border-left: 2px solid transparent;
+    transition: background .2s, color .2s, border-color .2s;
+  }
+  .nav-item:hover { color: var(--white); background: rgba(255,255,255,0.03); }
+  .nav-item.active {
+    color: var(--orange-light); border-left-color: var(--orange);
+    background: rgba(196,90,0,0.08);
+  }
+
+  .content { flex: 1; padding: 2.2rem 2.6rem; overflow-x: auto; }
+  .view { display: none; }
+  .view.active { display: block; }
+
+  .view-header { margin-bottom: 1.8rem; }
+  .view-header h2 {
+    font-family: var(--serif); font-weight: 400; font-size: 1.7rem; letter-spacing: .02em;
+  }
+  .view-header p { font-size: .85rem; color: var(--white-dim); margin-top: .3rem; }
+
+  /* stat cards */
+  .stat-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.1rem; margin-bottom: 2.2rem;
+  }
+  .stat-card {
+    background: var(--black-card); border: 1px solid var(--border); padding: 1.4rem 1.5rem;
+  }
+  .stat-card .label {
+    font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; color: var(--white-faint);
+  }
+  .stat-card .value {
+    font-family: var(--serif); font-size: 2.1rem; margin-top: .4rem; color: var(--white);
+  }
+  .stat-card .delta { font-size: .74rem; margin-top: .3rem; color: var(--green); }
+
+  /* card / table */
+  .card {
+    background: var(--black-card); border: 1px solid var(--border);
+    padding: 1.6rem; margin-bottom: 1.6rem;
+  }
+  .card-head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 1.2rem; gap: 1rem; flex-wrap: wrap;
+  }
+  .card-head h3 { font-family: var(--serif); font-weight: 400; font-size: 1.2rem; }
+
+  table { width: 100%; border-collapse: collapse; font-size: .82rem; }
+  thead th {
+    text-align: left; font-size: .68rem; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--white-faint); padding: .6rem .5rem; border-bottom: 1px solid var(--border);
+  }
+  tbody td { padding: .7rem .5rem; border-bottom: 1px solid var(--border); color: var(--white-dim); }
+  tbody tr:hover td { background: rgba(255,255,255,0.02); color: var(--white); }
+  .mono { font-family: 'Courier New', monospace; font-size: .78rem; }
+
+  .badge {
+    font-size: .65rem; letter-spacing: .06em; text-transform: uppercase;
+    padding: .2rem .55rem; border-radius: 2px; display: inline-block;
+  }
+  .badge-green { background: rgba(74,154,92,0.15); color: var(--green); border: 1px solid var(--green); }
+  .badge-red { background: rgba(184,68,60,0.15); color: var(--red); border: 1px solid var(--red); }
+  .badge-gold { background: rgba(184,132,60,0.15); color: var(--gold); border: 1px solid var(--gold); }
+  .badge-faint { background: rgba(255,255,255,0.04); color: var(--white-faint); border: 1px solid var(--border); }
+
+  .row-actions { display: flex; gap: .8rem; font-size: .74rem; }
+  .row-actions span { cursor: pointer; color: var(--orange-light); }
+  .row-actions span:hover { text-decoration: underline; }
+
+  /* form */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem 1.2rem; }
+  .form-grid .field.full { grid-column: 1 / -1; }
+  textarea {
+    width: 100%; background: var(--black-soft); border: 1px solid var(--border);
+    color: var(--white); padding: .7rem .8rem; font-family: var(--sans);
+    font-size: .88rem; outline: none; resize: vertical; min-height: 110px;
+  }
+  textarea:focus { border-color: var(--orange); }
+  select {
+    width: 100%; background: var(--black-soft); border: 1px solid var(--border);
+    color: var(--white); padding: .7rem .8rem; font-family: var(--sans);
+    font-size: .88rem; outline: none;
+  }
+
+  .checklist { display: flex; flex-direction: column; gap: .5rem; max-height: 180px; overflow-y: auto;
+    border: 1px solid var(--border); padding: .8rem; background: var(--black-soft); }
+  .checklist label {
+    display: flex; align-items: center; gap: .6rem; font-size: .84rem; color: var(--white-dim);
+    cursor: pointer;
+  }
+
+  .btn-sm {
+    display: inline-block; width: auto;
+    background: var(--orange); color: var(--black); border: 1px solid var(--orange);
+    cursor: pointer; padding: .6rem 1.4rem; font-size: .74rem; letter-spacing: .12em;
+    text-transform: uppercase; font-family: var(--sans); font-weight: 500;
+  }
+  .btn-sm:hover { background: var(--orange-light); }
+
+  /* bar chart mock */
+  .bars { display: flex; align-items: flex-end; gap: .8rem; height: 140px; padding-top: 1rem; }
+  .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: .5rem; }
+  .bar { width: 100%; background: linear-gradient(to top, var(--orange), var(--orange-light)); }
+  .bar-col .day-label { font-size: .68rem; color: var(--white-faint); }
+
+  .note {
+    font-size: .78rem; color: var(--white-faint); line-height: 1.7;
+    border-left: 2px solid var(--orange-muted); padding-left: 1rem; margin-top: .5rem;
+  }
+
+  .toast {
+    position: fixed; bottom: 1.6rem; right: 1.6rem;
+    background: var(--black-card); border: 1px solid var(--orange);
+    color: var(--white); padding: .9rem 1.4rem; font-size: .82rem;
+    opacity: 0; transform: translateY(10px); transition: opacity .3s, transform .3s;
+    pointer-events: none; z-index: 200;
+  }
+  .toast.show { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 800px) {
+    .layout { flex-direction: column; }
+    .sidebar { width: 100%; display: flex; overflow-x: auto; padding: .6rem; }
+    .nav-item { border-left: none; border-bottom: 2px solid transparent; white-space: nowrap; }
+    .nav-item.active { border-left-color: transparent; border-bottom-color: var(--orange); }
+    .form-grid { grid-template-columns: 1fr; }
+    .content { padding: 1.4rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="proto-ribbon">Protótipo visual — dados fictícios, sem login real e sem banco de dados ainda</div>
+
+<!-- ══════════════ LOGIN ══════════════ -->
+<div id="login-screen">
+  <div class="login-card">
+    <img class="login-logo" src="logo_mc.jpeg" alt="MC" />
+    <h1>Área Restrita</h1>
+    <div class="sub">Administrador</div>
+    <form id="login-form" onsubmit="return doLogin(event)">
+      <div class="field">
+        <label>Usuário</label>
+        <input type="text" placeholder="admin@mctreinamentos.com" value="admin@mctreinamentos.com" />
+      </div>
+      <div class="field">
+        <label>Senha</label>
+        <input type="password" placeholder="••••••••" value="••••••••" />
+      </div>
+      <button type="submit" class="btn">Entrar</button>
+    </form>
+    <div class="login-hint">Protótipo: qualquer clique em "Entrar" acessa o painel.<br/>Autenticação real será definida na fase funcional.</div>
+  </div>
+</div>
+
+<!-- ══════════════ APP ══════════════ -->
+<div id="app-screen">
+  <div class="topbar">
+    <div class="topbar-left">
+      <img src="logo_mc.jpeg" alt="MC" />
+      <span class="brand">MC Treinamentos</span>
+      <span class="role-tag">Administrador</span>
+    </div>
+    <div class="topbar-right">
+      <span>Cristiano Quadros</span>
+      <span class="logout-link" onclick="doLogout()">Sair</span>
+    </div>
+  </div>
+
+  <div class="layout">
+    <div class="sidebar">
+      <div class="nav-item active" data-view="visao-geral" onclick="switchView('visao-geral', this)">Visão Geral</div>
+      <div class="nav-item" data-view="consultores" onclick="switchView('consultores', this)">Consultores</div>
+      <div class="nav-item" data-view="mensagens" onclick="switchView('mensagens', this)">Mensagens</div>
+      <div class="nav-item" data-view="visitantes" onclick="switchView('visitantes', this)">Visitantes</div>
+    </div>
+
+    <div class="content">
+
+      <!-- ── VISÃO GERAL ── -->
+      <div class="view active" id="view-visao-geral">
+        <div class="view-header">
+          <h2>Visão Geral</h2>
+          <p>Resumo geral da área administrativa</p>
+        </div>
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="label">Consultores ativos</div>
+            <div class="value">7</div>
+            <div class="delta">+2 este mês</div>
+          </div>
+          <div class="stat-card">
+            <div class="label">Visitantes únicos hoje</div>
+            <div class="value">142</div>
+            <div class="delta">+18% vs ontem</div>
+          </div>
+          <div class="stat-card">
+            <div class="label">Visitantes únicos (30 dias)</div>
+            <div class="value">3.284</div>
+            <div class="delta">+6% vs mês anterior</div>
+          </div>
+          <div class="stat-card">
+            <div class="label">Mensagens enviadas</div>
+            <div class="value">23</div>
+            <div class="delta" style="color: var(--white-faint);">últimos 30 dias</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3>Atividade recente</h3></div>
+          <table>
+            <thead><tr><th>Evento</th><th>Detalhe</th><th>Quando</th></tr></thead>
+            <tbody>
+              <tr><td>Novo consultor cadastrado</td><td>Fernanda Lima</td><td>hoje, 09:12</td></tr>
+              <tr><td>Mensagem enviada</td><td>Para 4 consultores — "Atualização de material"</td><td>ontem, 17:40</td></tr>
+              <tr><td>Pico de visitantes</td><td>89 visitantes únicos em 1h</td><td>ontem, 20:00</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── CONSULTORES ── -->
+      <div class="view" id="view-consultores">
+        <div class="view-header">
+          <h2>Consultores</h2>
+          <p>Cadastro e gestão dos consultores com acesso à área restrita</p>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <h3>Novo consultor</h3>
+          </div>
+          <form onsubmit="return addConsultor(event)">
+            <div class="form-grid">
+              <div class="field"><label>Nome completo</label><input type="text" id="c-nome" placeholder="Ex: Joana Silva" required /></div>
+              <div class="field"><label>E-mail</label><input type="email" id="c-email" placeholder="joana@email.com" required /></div>
+              <div class="field"><label>Telefone</label><input type="text" id="c-telefone" placeholder="(11) 90000-0000" /></div>
+              <div class="field"><label>Especialidade</label><input type="text" id="c-especialidade" placeholder="Ex: Vendas B2B" /></div>
+              <div class="field full">
+                <button type="submit" class="btn-sm">+ Cadastrar consultor</button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h3>Consultores cadastrados</h3></div>
+          <table>
+            <thead>
+              <tr><th>Nome</th><th>E-mail</th><th>Telefone</th><th>Especialidade</th><th>Status</th><th>Ações</th></tr>
+            </thead>
+            <tbody id="consultores-tbody">
+              <tr>
+                <td>Ricardo Souza</td><td>ricardo@mctreinamentos.com</td><td>(11) 98888-1234</td><td>Vendas B2B</td>
+                <td><span class="badge badge-green">Ativo</span></td>
+                <td class="row-actions"><span>Editar</span><span>Desativar</span></td>
+              </tr>
+              <tr>
+                <td>Marina Costa</td><td>marina@mctreinamentos.com</td><td>(21) 97777-5678</td><td>Liderança</td>
+                <td><span class="badge badge-green">Ativo</span></td>
+                <td class="row-actions"><span>Editar</span><span>Desativar</span></td>
+              </tr>
+              <tr>
+                <td>Paulo Henrique</td><td>paulo@mctreinamentos.com</td><td>(31) 96666-9012</td><td>Negociação</td>
+                <td><span class="badge badge-faint">Inativo</span></td>
+                <td class="row-actions"><span>Editar</span><span>Reativar</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── MENSAGENS ── -->
+      <div class="view" id="view-mensagens">
+        <div class="view-header">
+          <h2>Mensagens</h2>
+          <p>Enviar comunicados diretamente para os consultores</p>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h3>Nova mensagem</h3></div>
+          <form onsubmit="return sendMessage(event)">
+            <div class="field">
+              <label>Destinatários</label>
+              <div class="checklist">
+                <label><input type="checkbox" checked /> Ricardo Souza</label>
+                <label><input type="checkbox" checked /> Marina Costa</label>
+                <label><input type="checkbox" /> Paulo Henrique (inativo)</label>
+                <label><input type="checkbox" /> Fernanda Lima</label>
+              </div>
+            </div>
+            <div class="field" style="margin-top: 1rem;">
+              <label>Assunto</label>
+              <input type="text" placeholder="Ex: Atualização de material de vendas" required />
+            </div>
+            <div class="field" style="margin-top: 1rem;">
+              <label>Mensagem</label>
+              <textarea placeholder="Escreva a mensagem para os consultores selecionados..." required></textarea>
+            </div>
+            <div style="margin-top: 1.2rem;">
+              <button type="submit" class="btn-sm">Enviar mensagem</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h3>Histórico de envios</h3></div>
+          <table>
+            <thead><tr><th>Assunto</th><th>Destinatários</th><th>Enviado em</th></tr></thead>
+            <tbody id="mensagens-tbody">
+              <tr><td>Atualização de material</td><td>4 consultores</td><td>ontem, 17:40</td></tr>
+              <tr><td>Nova meta do trimestre</td><td>7 consultores</td><td>12/07/2026</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── VISITANTES ── -->
+      <div class="view" id="view-visitantes">
+        <div class="view-header">
+          <h2>Visitantes</h2>
+          <p>Contador de visitas únicas com controle de IP (visitas repetidas não são contadas novamente)</p>
+        </div>
+
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="label">Total de visitantes únicos</div>
+            <div class="value">12.845</div>
+          </div>
+          <div class="stat-card">
+            <div class="label">Hoje</div>
+            <div class="value">142</div>
+          </div>
+          <div class="stat-card">
+            <div class="label">Últimos 7 dias</div>
+            <div class="value">918</div>
+          </div>
+          <div class="stat-card">
+            <div class="label">Visitas repetidas ignoradas (7d)</div>
+            <div class="value">356</div>
+            <div class="delta" style="color: var(--white-faint);">mesmo IP dentro da janela de 24h</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h3>Últimos 7 dias</h3></div>
+          <div class="bars">
+            <div class="bar-col"><div class="bar" style="height: 60%;"></div><div class="day-label">Seg</div></div>
+            <div class="bar-col"><div class="bar" style="height: 75%;"></div><div class="day-label">Ter</div></div>
+            <div class="bar-col"><div class="bar" style="height: 45%;"></div><div class="day-label">Qua</div></div>
+            <div class="bar-col"><div class="bar" style="height: 90%;"></div><div class="day-label">Qui</div></div>
+            <div class="bar-col"><div class="bar" style="height: 68%;"></div><div class="day-label">Sex</div></div>
+            <div class="bar-col"><div class="bar" style="height: 40%;"></div><div class="day-label">Sáb</div></div>
+            <div class="bar-col"><div class="bar" style="height: 55%;"></div><div class="day-label">Dom</div></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h3>Últimos acessos</h3></div>
+          <table>
+            <thead><tr><th>IP (anonimizado)</th><th>Origem</th><th>Data / hora</th><th>Resultado</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">a91f...3d2c</td><td>index.html</td><td>hoje, 10:42</td><td><span class="badge badge-gold">Nova visita — contabilizada</span></td></tr>
+              <tr><td class="mono">7be2...119a</td><td>mc-site-vendas.html</td><td>hoje, 10:39</td><td><span class="badge badge-faint">Repetida — ignorada</span></td></tr>
+              <tr><td class="mono">c04d...aa71</td><td>index.html</td><td>hoje, 10:31</td><td><span class="badge badge-gold">Nova visita — contabilizada</span></td></tr>
+              <tr><td class="mono">a91f...3d2c</td><td>risco-silencioso.html</td><td>hoje, 09:58</td><td><span class="badge badge-faint">Repetida — ignorada</span></td></tr>
+            </tbody>
+          </table>
+          <div class="note">
+            O IP nunca é armazenado em texto puro — apenas um hash (com sal secreto) é guardado, junto de uma janela de expiração (ex: 24h). Isso identifica repetição sem reter o dado pessoal bruto.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  function doLogin(e) {
+    e.preventDefault();
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app-screen').style.display = 'block';
+    return false;
+  }
+  function doLogout() {
+    document.getElementById('app-screen').style.display = 'none';
+    document.getElementById('login-screen').style.display = 'flex';
+  }
+  function switchView(name, el) {
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('view-' + name).classList.add('active');
+  }
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2600);
+  }
+  function addConsultor(e) {
+    e.preventDefault();
+    const nome = document.getElementById('c-nome').value;
+    const email = document.getElementById('c-email').value;
+    const telefone = document.getElementById('c-telefone').value || '—';
+    const especialidade = document.getElementById('c-especialidade').value || '—';
+    const tbody = document.getElementById('consultores-tbody');
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${nome}</td><td>${email}</td><td>${telefone}</td><td>${especialidade}</td>
+      <td><span class="badge badge-green">Ativo</span></td>
+      <td class="row-actions"><span>Editar</span><span>Desativar</span></td>`;
+    tbody.appendChild(tr);
+    e.target.reset();
+    showToast('Consultor cadastrado (simulado — não persiste ainda)');
+    return false;
+  }
+  function sendMessage(e) {
+    e.preventDefault();
+    showToast('Mensagem enviada (simulado — não persiste ainda)');
+    e.target.reset();
+    return false;
+  }
+</script>
+
+</body>
+</html>
