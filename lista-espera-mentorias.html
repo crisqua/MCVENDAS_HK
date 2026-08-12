@@ -145,6 +145,9 @@
   /* ── CONFIRMAÇÃO ── */
   #confirmed { display: none; text-align: center; padding: 2rem 0; animation: fadeUp .5s ease; }
   #confirmed.active { display: block; }
+  #formWrap { display: none; }
+  #unavailable { text-align: center; padding: 2rem 0; }
+  #unavailable .gate-btn { display: inline-block; width: auto; text-decoration: none; margin-top: 1.6rem; padding: 1.1rem 2.4rem; }
   @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
   .confirmed-title {
     font-family: var(--serif); font-size: clamp(1.7rem, 3.5vw, 2.3rem);
@@ -251,6 +254,13 @@
     </form>
   </div>
 
+  <div id="unavailable">
+    <div class="eyebrow" style="justify-content:center;">Indisponível</div>
+    <div class="confirmed-title">Lista de Espera pausada.</div>
+    <p class="confirmed-text">As inscrições por este formulário estão temporariamente pausadas. Fale direto com a Madalena pelo WhatsApp para agendar sua mentoria.</p>
+    <a href="https://wa.me/5511994176450?text=Ol%C3%A1!%20Quero%20entrar%20na%20Lista%20de%20Espera%20das%20Mentorias." target="_blank" class="gate-btn">Falar no WhatsApp</a>
+  </div>
+
   <div id="confirmed">
     <div class="eyebrow" style="justify-content:center;">Recebido</div>
     <div class="confirmed-title">Você está na Lista de Espera.</div>
@@ -299,9 +309,13 @@
     document.getElementById('submitBtn').disabled = !formIsValid();
   }
 
-  /* ── Envio ── */
+  /* ── Envio ──
+     Desativado: template_93ht59c (EmailJS) foi reaproveitado para a página
+     de Liderança Sob Pressão. Reative só depois de criar um template próprio
+     para esta lista de espera. */
   document.getElementById('mentoriaForm').addEventListener('submit', function (e) {
     e.preventDefault();
+    return;
 
     if (!formIsValid()) {
       document.getElementById('formError').classList.add('show');
