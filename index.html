@@ -22,6 +22,7 @@
     --white-dim: #b0a898;
     --serif: 'Cormorant Garamond', Georgia, serif;
     --sans: 'Barlow', sans-serif;
+    --promo-h: 64px;
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -42,13 +43,54 @@
   ::-webkit-scrollbar-track { background: var(--black); }
   ::-webkit-scrollbar-thumb { background: var(--orange); }
 
+  /* ── EVENTO DO MÊS ── */
+  .promo-bar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 101;
+    height: var(--promo-h); display: flex; align-items: center; justify-content: space-between;
+    gap: 1rem; padding: 0 1.4rem 0 4rem;
+    background: linear-gradient(90deg, var(--black-soft), var(--black-card));
+    border-bottom: 1px solid rgba(196,90,0,.35);
+  }
+  .promo-link {
+    display: flex; align-items: center; gap: 1.1rem; min-width: 0;
+    text-decoration: none; flex: 1;
+  }
+  .promo-eyebrow {
+    font-size: .72rem; letter-spacing: .18em; text-transform: uppercase; color: var(--orange-light);
+    display: flex; align-items: center; gap: .7rem; white-space: nowrap; flex-shrink: 0; font-weight: 500;
+  }
+  .promo-eyebrow::before { content: ''; width: 20px; height: 1px; background: var(--orange-light); }
+  .promo-copy {
+    font-size: 1.05rem; color: var(--white); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    min-width: 0;
+  }
+  .promo-copy strong {
+    font-family: var(--serif); font-style: italic; font-weight: 400; color: var(--orange-light); font-size: 1.3em;
+    text-shadow: 0 0 10px rgba(196,90,0,.85), 0 0 22px rgba(217,107,10,.55);
+  }
+  .promo-arrow {
+    text-decoration: none;
+    font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; font-weight: 500;
+    white-space: nowrap; flex-shrink: 0;
+    background: var(--orange); color: var(--black);
+    padding: .55rem 1.3rem;
+    transition: background .3s;
+  }
+  .promo-arrow:hover { background: var(--orange-light); }
+  .promo-close {
+    background: none; border: none; color: var(--white-dim); font-size: 1.4rem; line-height: 1;
+    cursor: pointer; padding: .4rem; opacity: .6; transition: opacity .2s, color .2s; flex-shrink: 0;
+  }
+  .promo-close:hover { opacity: 1; color: var(--orange-light); }
+
   /* ── NAV ── */
   nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    position: fixed; top: var(--promo-h); left: 0; right: 0; z-index: 100;
     display: flex; align-items: center; justify-content: space-between;
     padding: 1.4rem 4rem;
     background: linear-gradient(to bottom, rgba(13,13,13,0.95) 0%, transparent 100%);
     backdrop-filter: blur(6px);
+    transition: top .3s;
   }
   .nav-logo { display: flex; align-items: center; gap: 1rem; text-decoration: none; }
   .nav-logo img {
@@ -94,7 +136,8 @@
     min-height: 100vh;
     display: grid; place-items: center;
     position: relative; overflow: hidden;
-    padding: 8rem 4rem 0;
+    padding: calc(8rem + var(--promo-h)) 4rem 0;
+    transition: padding-top .3s;
   }
   .hero-bg {
     position: absolute; inset: 0;
@@ -873,7 +916,9 @@
     section { padding: 5rem 2rem; }
     .divider { margin: 0 2rem; }
     footer { padding: 2rem; }
-    #hero { padding: 7rem 2rem 0; }
+    #hero { padding: calc(7rem + var(--promo-h)) 2rem 0; }
+    .promo-bar { padding: 0 1rem; }
+    .promo-eyebrow { display: none; }
     .hero-content { grid-template-columns: 1fr; gap: 3rem; }
     .hero-visual { align-items: flex-start; }
     #sobre .container { grid-template-columns: 1fr; gap: 3rem; }
@@ -882,6 +927,9 @@
     .dif-grid { grid-template-columns: 1fr; }
   }
   @media (max-width: 640px) {
+    .promo-eyebrow { display: none; }
+    .promo-copy { font-size: .78rem; }
+    .promo-arrow { padding: .5rem .85rem; font-size: .64rem; }
     .frentes-grid { grid-template-columns: 1fr; }
     .hero-stat-row { flex-direction: column; }
     .cta-actions { flex-direction: column; }
@@ -892,6 +940,16 @@
 </style>
 </head>
 <body>
+
+<!-- EVENTO DO MÊS -->
+<div class="promo-bar" id="promoBar">
+  <a href="lideranca-sob-pressao-landing.html" class="promo-link">
+    <span class="promo-eyebrow">Evento do mês</span>
+    <span class="promo-copy"><strong>Liderança Sob Pressão</strong> — imersão ao vivo · 26 de setembro</span>
+  </a>
+  <a href="lideranca-sob-pressao-landing.html" class="promo-arrow">Garantir vaga →</a>
+  <button class="promo-close" onclick="closePromoBar()" aria-label="Fechar aviso">×</button>
+</div>
 
 <!-- NAV -->
 <nav>
@@ -1532,6 +1590,12 @@
 </footer>
 
 <script>
+  // Evento do mês
+  function closePromoBar() {
+    document.documentElement.style.setProperty('--promo-h', '0px');
+    document.getElementById('promoBar').style.display = 'none';
+  }
+
   // Carrossel de depoimentos
   (function() {
     const track = document.getElementById('depTrack');
