@@ -9,6 +9,11 @@
 | Frontend | Vercel |
 | Backend (API) | Render |
 | Banco de dados | PostgreSQL via Supabase |
+| Contador de visitantes | Vercel Function + Upstash Redis (já em produção, ver Sprint 2) |
+
+## Status atual
+
+✅ **Contador de visitantes já está no ar** — implementado fora da ordem original deste plano, como solução enxuta e independente (Vercel Function + Upstash Redis), sem depender do Render/Supabase. Ver detalhes na nota do Sprint 2. Nenhuma outra entrega deste plano foi iniciada — Sprints 0, 1, 3, 4 e 5 seguem como planejados.
 
 ---
 
@@ -19,22 +24,29 @@ flowchart LR
     subgraph Vercel["Vercel — Frontend"]
         A[Site público\nindex.html, landing pages]
         B[Área restrita\nAdministrador]
+        E["/api/visita.js\n(já em produção)"]
     end
 
     subgraph Render["Render — Backend API"]
-        C[API REST\nauth, consultores,\nmensagens, visitantes]
+        C[API REST\nauth, consultores,\nmensagens]
     end
 
     subgraph Supabase["Supabase — PostgreSQL"]
         D[(Banco de dados)]
     end
 
-    A -- "registra visita" --> C
+    subgraph Upstash["Upstash — Redis"]
+        F[(hash de IP + TTL 1 ano\ntotal_visitas)]
+    end
+
+    A -- "registra visita" --> E
+    E -- "lê/escreve" --> F
     B -- "login, CRUD, envio" --> C
+    B -- "lê estatísticas" --> E
     C -- "leitura/escrita" --> D
 ```
 
-O site público (landing pages atuais) passa a registrar cada visita chamando a API no Render, que aplica a lógica de deduplicação por IP e grava no Postgres. A área restrita consome a mesma API para autenticação, CRUD de consultores, envio de mensagens e leitura das estatísticas de visitantes.
+O contador de visitantes já roda de forma independente: o site público chama `/api/visita.js` (Vercel Function), que aplica a deduplicação por IP direto no Redis do Upstash — sem passar pelo Render/Supabase. O restante (autenticação, CRUD de consultores, mensagens) segue o caminho original: a área restrita consome a API no Render, que lê/escreve no Postgres. Quando a tela **Visitantes** do painel existir, ela só precisa ler do mesmo `/api/visita.js`, não recriar essa lógica no Render.
 
 ---
 
@@ -81,14 +93,19 @@ Cada sprint assume ~1 semana de trabalho focado; ajuste conforme a disponibilida
 ---
 
 ### Sprint 2 — Contador de visitantes com deduplicação por IP
-**Objetivo:** tirar do mock a funcionalidade que motivou o projeto.
+**Status: ✅ concluído antecipadamente, fora da ordem deste plano — arquitetura diferente da originalmente prevista.**
 
-- Endpoint público que recebe o "hit" de visita, chamado pelas páginas do site.
-- Lógica de hash do IP (com sal secreto) + checagem de janela de tempo (ex: 24h) contra `visit_logs`.
-- Endpoint de estatísticas (total, hoje, últimos 7 dias, repetidas ignoradas) para alimentar a tela **Visitantes**.
-- Rotina de expiração/limpeza dos registros antigos.
+Em vez de esperar o Render/Supabase (Sprint 0), o contador foi implementado como peça independente, direto no Vercel:
 
-**Entrega:** tela **Visitantes** da área restrita mostrando números reais, com o mesmo comportamento validado no protótipo.
+- `api/visita.js` (Vercel Function) recebe o "hit" de visita, chamado hoje só por `index.html`.
+- Hash do IP com `SHA-256(IP + VISIT_HASH_SALT)`, gravado no **Upstash Redis** (não no Postgres) com TTL de **1 ano** (não 24h — decisão tomada durante a implementação: mede "visitante único" de forma mais duradoura, não "único por dia").
+- Total exibido direto no rodapé de `index.html` via `#visitor-count`.
+- Expiração é automática (TTL nativo do Redis) — não precisou de rotina de limpeza própria.
+
+**O que falta, só quando a área restrita existir:**
+- Tela **Visitantes** do painel (Sprint 1+) deve **consumir esse mesmo endpoint/Redis** para exibir os números — não recriar a lógica no Render/Postgres.
+- Estender o tracking (chamar `/api/visita`) para as demais páginas públicas, hoje só `index.html` dispara.
+- Se quiser métricas mais ricas (hoje, últimos 7 dias, repetidas ignoradas — como no protótipo visual), precisa de chaves Redis adicionais além do contador único `total_visitas`; ainda não implementado.
 
 ---
 
@@ -136,3 +153,9 @@ A **área de Consultores** (login do consultor, leitura de mensagens recebidas, 
 - Frontend continua HTML/JS puro ou migra para Next.js? (afeta o Sprint 0)
 - Autenticação: JWT próprio no backend ou Supabase Auth?
 - Envio de mensagem dispara e-mail de verdade ou fica só na área restrita por enquanto?
+
+## 6. Decisões já tomadas (fora deste plano, durante a implementação do contador)
+
+- Janela de deduplicação do contador de visitantes: **1 ano** (`VISIT_TTL_SECONDS`), não 24h.
+- Armazenamento do contador: **Upstash Redis**, não Postgres — mantido como peça separada mesmo depois que o Supabase entrar em produção, por ser mais simples para essa necessidade (`INCR` atômico + TTL nativo).
+- `package.json` do repositório passou a existir só por causa da dependência `@upstash/redis` das Vercel Functions — o site público continua sem build step.
