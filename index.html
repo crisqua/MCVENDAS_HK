@@ -802,6 +802,15 @@
     font-weight: 700;
     text-shadow: 0 0 10px rgba(248,180,108,.48);
   }
+  .footer-visitors {
+    margin-top: .4rem;
+    font-size: .66rem; letter-spacing: .04em;
+    color: rgba(246,238,226,.6);
+  }
+  .footer-visitors #visitor-count {
+    color: #f8b46c;
+    font-variant-numeric: tabular-nums;
+  }
 
   /* ── DEPOIMENTOS ── */
   #depoimentos { background: var(--black-soft); }
@@ -1581,7 +1590,10 @@
 
 <!-- FOOTER -->
 <footer>
-  <div class="footer-dev">Desenvolvido por <strong>Desenvolva[IN]</strong></div>
+  <div class="footer-dev">
+    Desenvolvido por <strong>Desenvolva[IN]</strong>
+    <div class="footer-visitors">Número de visitantes: <span id="visitor-count">—</span></div>
+  </div>
   <div class="footer-brand"><span class="mc-word">MC</span> <span class="brand-name">Treinamentos</span><br><em>Engenharia Comportamental</em></div>
   <div class="footer-copy">
     <a href="/politica-de-privacidade" target="_blank" rel="noopener">Política de Privacidade</a><br>
@@ -1590,6 +1602,19 @@
 </footer>
 
 <script>
+  // Contador de visitantes
+  (function() {
+    fetch('/api/visita', { method: 'POST' })
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (data && typeof data.total === 'number') {
+          var el = document.getElementById('visitor-count');
+          if (el) el.textContent = data.total.toLocaleString('pt-BR');
+        }
+      })
+      .catch(function() {});
+  })();
+
   // Evento do mês
   function closePromoBar() {
     document.documentElement.style.setProperty('--promo-h', '0px');
