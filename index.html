@@ -46,7 +46,7 @@
   /* ── EVENTO DO MÊS ── */
   .promo-bar {
     position: fixed; top: 0; left: 0; right: 0; z-index: 101;
-    height: var(--promo-h); display: flex; align-items: center; justify-content: space-between;
+    min-height: var(--promo-h); display: flex; align-items: center; justify-content: space-between;
     gap: 1rem; padding: 0 1.4rem 0 4rem;
     background: linear-gradient(90deg, var(--black-soft), var(--black-card));
     border-bottom: 1px solid rgba(196,90,0,.35);
@@ -936,9 +936,17 @@
     .dif-grid { grid-template-columns: 1fr; }
   }
   @media (max-width: 640px) {
+    .promo-bar {
+      flex-wrap: wrap; row-gap: .6rem;
+      padding: .8rem .8rem; gap: .6rem;
+    }
     .promo-eyebrow { display: none; }
-    .promo-copy { font-size: .78rem; }
-    .promo-arrow { padding: .5rem .85rem; font-size: .64rem; }
+    .promo-link { order: 1; }
+    .promo-copy {
+      font-size: .78rem; white-space: normal; overflow: visible; text-overflow: clip;
+    }
+    .promo-close { order: 2; }
+    .promo-arrow { order: 3; flex: 1 1 100%; text-align: center; padding: .6rem .7rem; font-size: .68rem; }
     .frentes-grid { grid-template-columns: 1fr; }
     .hero-stat-row { flex-direction: column; }
     .cta-actions { flex-direction: column; }
@@ -1620,6 +1628,17 @@
     document.documentElement.style.setProperty('--promo-h', '0px');
     document.getElementById('promoBar').style.display = 'none';
   }
+  // A barra agora pode ter 1 linha (desktop) ou 2 linhas (mobile, texto quebrado),
+  // então a altura reservada pro menu/hero é medida de verdade em vez de fixa.
+  (function() {
+    var promoBar = document.getElementById('promoBar');
+    function syncPromoHeight() {
+      if (promoBar.style.display === 'none') return;
+      document.documentElement.style.setProperty('--promo-h', promoBar.offsetHeight + 'px');
+    }
+    syncPromoHeight();
+    window.addEventListener('resize', syncPromoHeight);
+  })();
 
   // Carrossel de depoimentos
   (function() {
