@@ -23,7 +23,9 @@ Isso resolve, sem debate, a decisão que estava em aberto no Sprint 0: **o `page
 
 ✅ **Sprint 0 concluído** (2026-08-14): repositório [`painel-mc-treinamentos`](https://github.com/crisqua/painel-mc-treinamentos) criado, tabelas no Supabase (`usuarios`, `consultores`, `mensagens`, `mensagens_destinatarios`), backend no Render respondendo em `/health`, frontend Next.js publicado em `https://painel.madalenacarvalho.com.br` (HTTPS válido), contrato de API documentado em `docs/api-contrato.md` nesse repositório.
 
-Sprints 1, 3, 4, 5 e 6 seguem como planejados, ainda não iniciados.
+✅ **Sprint 1 concluído** (2026-08-14): login com bcrypt + JWT próprio no backend, cookie httpOnly setado por rota do Next.js (`/api/auth/login`), `proxy.ts` bloqueando `/painel/*` sem sessão válida. Primeiro admin cadastrado direto no Supabase via SQL.
+
+Sprints 3, 4, 5 e 6 seguem como planejados, ainda não iniciados.
 
 ---
 
@@ -111,7 +113,7 @@ Cada sprint assume ~1 semana de trabalho focado; ajuste conforme a disponibilida
 
 ---
 
-### Sprint 1 — Autenticação e controle de acesso
+### Sprint 1 — Autenticação e controle de acesso ✅ concluído (2026-08-14)
 **Objetivo:** substituir o login fake do protótipo por autenticação real.
 
 **Decisões de desenho:**
@@ -146,7 +148,7 @@ Cada sprint assume ~1 semana de trabalho focado; ajuste conforme a disponibilida
 
 **Validação:** seed do admin → `POST /api/v1/auth/login` via curl → `GET /api/v1/me` com e sem token → fluxo completo no navegador (login → `/painel` acessível → logout → `/painel` bloqueado de novo).
 
-**Entrega:** área restrita só acessível com login válido; sessão expira em 8h.
+**Entrega:** área restrita só acessível com login válido; sessão expira em 8h. Validado em produção: login retorna cookie httpOnly, `/painel` mostra os dados do admin logado, acesso sem cookie redireciona (307) pra `/login`. Primeiro admin (`admin@mctreinamentos.com.br`) já cadastrado via SQL direto no Supabase.
 
 ---
 
