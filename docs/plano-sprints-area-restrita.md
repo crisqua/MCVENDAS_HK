@@ -114,12 +114,39 @@ Cada sprint assume ~1 semana de trabalho focado; ajuste conforme a disponibilida
 ### Sprint 1 — Autenticação e controle de acesso
 **Objetivo:** substituir o login fake do protótipo por autenticação real.
 
-- Implementar login (email + senha) no backend: hash de senha com bcrypt, comparação com `usuarios.senha_hash`, emissão de JWT próprio (decisão tomada — ver seção 6).
-- Middleware no backend que valida o token em toda rota protegida.
-- Frontend: tela de login real, redirecionamento se não autenticado, logout.
-- Modelar `role` (`admin`/`consultor`) desde já, mesmo com só o admin ativo por enquanto.
+**Decisões de desenho:**
+- **JWT em cookie httpOnly**, não `localStorage` — o Next.js atua como intermediário (BFF): o form de login manda pra uma rota própria do Next.js, que chama o backend no Render server-a-server e devolve o token dentro de um cookie que o JavaScript do navegador nunca enxerga (proteção contra roubo de token via XSS).
+- Como o navegador nunca chama o Render diretamente, **não precisa de CORS entre Vercel e Render neste sprint** — a única exceção de CORS do projeto continua sendo a do Sprint 6, isolada.
 
-**Entrega:** área restrita só acessível com login válido; sessão expira corretamente.
+**Backend (`server/`):**
+- `server/package.json` — adiciona `pg`, `bcryptjs`, `jsonwebtoken`, `dotenv` (dev)
+- `server/.env.example` — documenta `DATABASE_URL` e `JWT_SECRET`, sem valores reais
+- `server/src/db.ts` — pool de conexão Postgres
+- `server/src/lib/password.ts` — hash/compare com bcrypt
+- `server/src/lib/jwt.ts` — assina/verifica token (expiração: 8h)
+- `server/src/lib/response.ts` — helpers `ok(data)` / `fail(code, message)`, implementa o envelope de `docs/api-contrato.md`
+- `server/src/middleware/authGuard.ts` — valida `Authorization: Bearer`, popula `req.user`
+- `server/src/routes/auth.ts` — `POST /api/v1/auth/login`, `POST /api/v1/auth/logout`
+- `server/src/routes/me.ts` — `GET /api/v1/me`, rota protegida de teste
+- `server/src/index.ts` — monta os routers acima sob `/api/v1`
+- `server/src/scripts/seed-admin.ts` — cria o primeiro admin (necessário: o cadastro de usuário só existe a partir do Sprint 3)
+
+**Frontend (raiz do repositório):**
+- `package.json` — adiciona `jose` (verificação de JWT compatível com Edge Middleware)
+- `.env.local.example` — documenta `API_URL` (URL do backend no Render)
+- `src/lib/session.ts` — lê/valida o cookie de sessão no servidor
+- `src/app/api/auth/login/route.ts` — recebe o form, chama o backend, seta o cookie httpOnly
+- `src/app/api/auth/logout/route.ts` — limpa o cookie
+- `src/app/login/page.tsx` — formulário de login
+- `src/app/painel/layout.tsx` — layout protegido, com botão de logout
+- `src/app/painel/page.tsx` — placeholder pós-login, só prova que a autenticação funciona
+- `src/middleware.ts` — redireciona pra `/login` quem acessar `/painel/*` sem cookie válido
+
+`role` (`admin`/`consultor`) já existe na tabela `usuarios` desde a 0.2 — este sprint só passa a usá-la nas respostas de login/`/me`, sem criar nada novo no schema.
+
+**Validação:** seed do admin → `POST /api/v1/auth/login` via curl → `GET /api/v1/me` com e sem token → fluxo completo no navegador (login → `/painel` acessível → logout → `/painel` bloqueado de novo).
+
+**Entrega:** área restrita só acessível com login válido; sessão expira em 8h.
 
 ---
 
