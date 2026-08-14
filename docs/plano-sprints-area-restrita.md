@@ -114,7 +114,7 @@ Cada sprint assume ~1 semana de trabalho focado; ajuste conforme a disponibilida
 ### Sprint 1 — Autenticação e controle de acesso
 **Objetivo:** substituir o login fake do protótipo por autenticação real.
 
-- Implementar login (email + senha) no backend, com hash de senha e emissão de token (JWT ou sessão via Supabase Auth — decidir em conjunto com o Sprint 0).
+- Implementar login (email + senha) no backend: hash de senha com bcrypt, comparação com `usuarios.senha_hash`, emissão de JWT próprio (decisão tomada — ver seção 6).
 - Middleware no backend que valida o token em toda rota protegida.
 - Frontend: tela de login real, redirecionamento se não autenticado, logout.
 - Modelar `role` (`admin`/`consultor`) desde já, mesmo com só o admin ativo por enquanto.
@@ -194,7 +194,6 @@ A **área de Consultores** (login do consultor, leitura de mensagens recebidas, 
 
 ## 5. Decisões em aberto
 
-- Autenticação: JWT próprio no backend ou Supabase Auth?
 - Envio de mensagem dispara e-mail de verdade ou fica só na área restrita por enquanto?
 
 ## 6. Decisões já tomadas
@@ -203,3 +202,4 @@ A **área de Consultores** (login do consultor, leitura de mensagens recebidas, 
 - Armazenamento do contador: **Upstash Redis**, não Postgres — mantido como peça separada mesmo depois que o Supabase entrar em produção, por ser mais simples para essa necessidade (`INCR` atômico + TTL nativo).
 - `package.json` do repositório do `pagemc` passou a existir só por causa da dependência `@upstash/redis` das Vercel Functions — o site público continua sem build step.
 - **(2026-08-14) Área restrita nasce em repositório e projeto Vercel próprios**, não como migração do `pagemc` para Next.js — motivado pelo evento ao vivo em produção, que não pode correr risco de instabilidade. Ver nota no topo deste documento e Sprint 6.
+- **(2026-08-14) Autenticação: JWT próprio no backend**, não Supabase Auth — MVP com um administrador e poucos consultores cadastrados manualmente (sem self-signup), onde o valor extra do Supabase Auth (reset de senha por e-mail, confirmação de conta) não compensa reabrir a migration da `usuarios` (que já foi criada com `senha_hash` pensando em JWT próprio). Migrar pro Supabase Auth mais tarde continua possível se a necessidade aparecer.
