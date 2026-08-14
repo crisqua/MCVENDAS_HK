@@ -21,7 +21,7 @@ Isso resolve, sem debate, a decisão que estava em aberto no Sprint 0: **o `page
 
 ✅ **Contador de visitantes já está no ar** — implementado fora da ordem original deste plano, como solução enxuta e independente (Vercel Function + Upstash Redis), sem depender do Render/Supabase. Ver detalhes na nota do Sprint 2.
 
-✅ **Sprint 0 quase concluído** (2026-08-14): repositório [`painel-mc-treinamentos`](https://github.com/crisqua/painel-mc-treinamentos) criado, tabelas no Supabase (`usuarios`, `consultores`, `mensagens`, `mensagens_destinatarios`), backend no Render respondendo em `/health`, frontend Next.js publicado em `https://painel.madalenacarvalho.com.br` (HTTPS válido). Falta só o item 0.6 (contrato de API) pra fechar o sprint.
+✅ **Sprint 0 concluído** (2026-08-14): repositório [`painel-mc-treinamentos`](https://github.com/crisqua/painel-mc-treinamentos) criado, tabelas no Supabase (`usuarios`, `consultores`, `mensagens`, `mensagens_destinatarios`), backend no Render respondendo em `/health`, frontend Next.js publicado em `https://painel.madalenacarvalho.com.br` (HTTPS válido), contrato de API documentado em `docs/api-contrato.md` nesse repositório.
 
 Sprints 1, 3, 4, 5 e 6 seguem como planejados, ainda não iniciados.
 
@@ -80,39 +80,34 @@ Desenhado desde já com a área de Consultores em mente — por isso `usuarios` 
 
 Cada sprint assume ~1 semana de trabalho focado; ajuste conforme a disponibilidade real. A ordem respeita dependências técnicas (não dá pra ter consultores sem autenticação, nem visitantes sem backend no ar).
 
-### Sprint 0 — Fundação técnica
+### Sprint 0 — Fundação técnica ✅ concluído (2026-08-14)
 **Objetivo:** ter a infraestrutura das três camadas no ar e se comunicando, antes de qualquer funcionalidade de negócio — **num projeto isolado do `pagemc`**.
 
-**0.1 Repositório**
-- Novo repositório no GitHub, ex. `painel-mc-treinamentos` (nome sugerido, ajustar se quiser outro) — não reaproveitar o `page_MC`, para que histórico, PRs e deploy fiquem sozinhos.
-- App Next.js (App Router) na raiz desse repositório.
+**0.1 Repositório** ✅
+- Repositório [`painel-mc-treinamentos`](https://github.com/crisqua/painel-mc-treinamentos) criado no GitHub — separado do `page_MC`, histórico e deploy próprios.
+- App Next.js (App Router) na raiz.
 
-**0.2 Banco de dados (Supabase)**
-- Criar projeto novo no Supabase (região `sa-east-1` se disponível, por latência com usuários no Brasil).
-- Rodar a migration inicial com as 4 tabelas (`usuarios`, `consultores`, `mensagens`, `mensagens_destinatarios`) — `visit_logs`, da seção 2, ficou de fora de propósito: o contador de visitantes roda inteiramente no Redis (Sprint 2), sem tabela própria no Postgres.
-- Guardar connection string e chave de service role só em variável de ambiente, nunca no código.
+**0.2 Banco de dados (Supabase)** ✅
+- Projeto Supabase criado.
+- Migration inicial rodada com as 4 tabelas (`usuarios`, `consultores`, `mensagens`, `mensagens_destinatarios`) — script em `supabase/migrations/0001_init_schema.sql` no repositório. `visit_logs`, da seção 2, ficou de fora de propósito: o contador de visitantes roda inteiramente no Redis (Sprint 2), sem tabela própria no Postgres.
 
-**0.3 Backend (Render)**
-- Criar Web Service novo no Render.
-- Variáveis de ambiente: `DATABASE_URL` (Supabase) e o que a decisão de autenticação do Sprint 1 exigir (`JWT_SECRET` ou config do Supabase Auth).
-- Rota `/health` respondendo 200 — primeiro teste de que o serviço está de pé.
+**0.3 Backend (Render)** ✅
+- Web Service `painel-mc-treinamentos-api` no ar no Render, Root Directory `server/`.
+- Esqueleto em Express + TypeScript, rota `/health` respondendo `{"status":"ok"}` em produção.
+- `DATABASE_URL` ainda não configurada — só entra no Sprint 1, quando o backend passar a consultar `usuarios`.
 
-**0.4 Frontend (Next.js)**
-- `create-next-app` com TypeScript + App Router.
-- Só uma tela por enquanto: login estático, sem lógica real — serve pra validar que o deploy no Vercel funciona.
+**0.4 Frontend (Next.js)** ✅
+- `create-next-app` (TypeScript + App Router + Tailwind), publicado no Vercel.
 
-**0.5 Domínio**
-- Subdomínio: `painel.madalenacarvalho.com.br` (domínio raiz real do site, confirmado pelos e-mails de contato nas páginas públicas).
-- Registro CNAME novo no DNS apontando pro Vercel — não mexe no registro do domínio raiz nem do `www`, que seguem intocados.
-- Novo **projeto Vercel** separado, apontando pra esse repositório e domínio — configurado à parte do projeto `pagemc`.
+**0.5 Domínio** ✅
+- `painel.madalenacarvalho.com.br` configurado (CNAME na HomeHost, onde o domínio é gerenciado) e validado no Vercel — HTTPS respondendo 200.
+- `painel-mc-treinamentos.vercel.app` mantido como redirecionamento (307) pro domínio próprio, não removido.
+- Domínio raiz e `www` do `pagemc` não foram tocados.
 
-**0.6 Contrato de API**
-- Definir antes de qualquer código de negócio: formato padrão de resposta (ex. `{ data, error }`), convenção de rotas (`/api/v1/...`), como erros de validação voltam pro front.
-- Documentar num arquivo próprio (ex. `docs/api-contrato.md` no novo repositório), pra Sprint 1 em diante seguir o mesmo padrão.
+**0.6 Contrato de API** ✅
+- Documentado em `docs/api-contrato.md` no repositório: envelope `{ data, error }`, tabela de status HTTP, enum de `error.code`, convenção de rotas (`/api/v1/...`), autenticação via `Authorization: Bearer`, paginação.
 
-**Ordem recomendada** (por dependência): repositório → Supabase (tabelas) → Render (backend já ligado ao banco) → Next.js (scaffold) → domínio. O contrato de API pode ser escrito em paralelo, mas precisa estar fechado antes do Sprint 1.
-
-**Entrega:** `GET /health` respondendo 200 em produção no Render; tabelas criadas no Supabase; Next.js publicado em `painel.madalenacarvalho.com.br` com a tela de login estática. **Nada disso toca o repositório ou o deploy do `pagemc`.**
+**Entrega:** `GET /health` respondendo 200 em produção no Render; tabelas criadas no Supabase; Next.js publicado em `painel.madalenacarvalho.com.br` com a tela padrão; contrato de API documentado. **Nada disso tocou o repositório ou o deploy do `pagemc`.**
 
 ---
 
