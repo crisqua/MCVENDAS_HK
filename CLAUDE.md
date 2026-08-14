@@ -27,4 +27,6 @@ O rastreamento hoje só está embutido em `index.html`. As demais páginas públ
 
 ## Área restrita (planejada, não implementada)
 
-Ver `docs/plano-sprints-area-restrita.md` para o plano completo. Resumo: Administrador (cadastro de consultores, envio de mensagens, visualização do contador) + futura área de Consultores. Stack decidida: Postgres via Supabase, backend em Render, frontend continua no Vercel. Ainda em aberto: framework do frontend (manter HTML puro vs. migrar para Next.js) e estratégia de autenticação.
+Ver `docs/plano-sprints-area-restrita.md` para o plano completo. Resumo: Administrador (cadastro de consultores, envio de mensagens, visualização do contador) + futura área de Consultores. Stack decidida: Next.js + Postgres via Supabase + backend em Render.
+
+**Decisão importante:** a área restrita nasce em **repositório e projeto Vercel próprios**, separados do `pagemc` — não é uma migração do site público para Next.js. Motivo: o `pagemc` está em produção com eventos ao vivo e não pode correr risco de instabilidade por causa da área restrita. Os dois só se comunicam por uma única leitura HTTP (`GET /api/visita`, com CORS restrito), implementada por último no roadmap (Sprint 6). Ainda em aberto: estratégia de autenticação (JWT próprio vs. Supabase Auth).

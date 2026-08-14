@@ -6,14 +6,24 @@
 
 | Camada | Serviço |
 |---|---|
-| Frontend | Vercel |
+| Frontend | Next.js, em **projeto e repositório próprios** (não o `pagemc`) |
 | Backend (API) | Render |
 | Banco de dados | PostgreSQL via Supabase |
-| Contador de visitantes | Vercel Function + Upstash Redis (já em produção, ver Sprint 2) |
+| Contador de visitantes | Vercel Function + Upstash Redis, dentro do `pagemc` (já em produção, ver Sprint 2) |
+
+## Decisão de isolamento (2026-08-14)
+
+O `pagemc` está em produção com um evento ao vivo (landing de Liderança Sob Pressão) e **não pode sofrer risco de instabilidade**. Por isso a área restrita nasce como **projeto Vercel e repositório separados**, com domínio próprio (`painel.madalenacarvalho.com.br` ou similar) — não uma migração do site atual para Next.js.
+
+Isso resolve, sem debate, a decisão que estava em aberto no Sprint 0: **o `pagemc` continua HTML puro, sem build step, intocado.** A única comunicação entre os dois sistemas é uma leitura HTTP pontual (Sprint 6). Diagrama da arquitetura: ["Dois Projetos, Um Elo"](https://claude.ai/code/artifact/ba2fc213-c823-4150-841a-acd3be31659c).
 
 ## Status atual
 
-✅ **Contador de visitantes já está no ar** — implementado fora da ordem original deste plano, como solução enxuta e independente (Vercel Function + Upstash Redis), sem depender do Render/Supabase. Ver detalhes na nota do Sprint 2. Nenhuma outra entrega deste plano foi iniciada — Sprints 0, 1, 3, 4 e 5 seguem como planejados.
+✅ **Contador de visitantes já está no ar** — implementado fora da ordem original deste plano, como solução enxuta e independente (Vercel Function + Upstash Redis), sem depender do Render/Supabase. Ver detalhes na nota do Sprint 2.
+
+✅ **Sprint 0 quase concluído** (2026-08-14): repositório [`painel-mc-treinamentos`](https://github.com/crisqua/painel-mc-treinamentos) criado, tabelas no Supabase (`usuarios`, `consultores`, `mensagens`, `mensagens_destinatarios`), backend no Render respondendo em `/health`, frontend Next.js publicado em `https://painel.madalenacarvalho.com.br` (HTTPS válido). Falta só o item 0.6 (contrato de API) pra fechar o sprint.
+
+Sprints 1, 3, 4, 5 e 6 seguem como planejados, ainda não iniciados.
 
 ---
 
@@ -21,10 +31,17 @@
 
 ```mermaid
 flowchart LR
-    subgraph Vercel["Vercel — Frontend"]
-        A[Site público\nindex.html, landing pages]
-        B[Área restrita\nAdministrador]
+    subgraph PagemcVercel["Vercel — projeto pagemc (site público)"]
+        A[Páginas públicas\nindex.html, landing pages]
         E["/api/visita.js\n(já em produção)"]
+    end
+
+    subgraph Upstash["Upstash — Redis"]
+        F[(hash de IP + TTL 1 ano\ntotal_visitas)]
+    end
+
+    subgraph PainelVercel["Vercel — novo projeto (painel)"]
+        B[Next.js\nÁrea restrita — Administrador]
     end
 
     subgraph Render["Render — Backend API"]
@@ -35,18 +52,14 @@ flowchart LR
         D[(Banco de dados)]
     end
 
-    subgraph Upstash["Upstash — Redis"]
-        F[(hash de IP + TTL 1 ano\ntotal_visitas)]
-    end
-
     A -- "registra visita" --> E
     E -- "lê/escreve" --> F
     B -- "login, CRUD, envio" --> C
-    B -- "lê estatísticas" --> E
     C -- "leitura/escrita" --> D
+    B -. "GET /api/visita — só leitura, CORS\n(Sprint 6)" .-> E
 ```
 
-O contador de visitantes já roda de forma independente: o site público chama `/api/visita.js` (Vercel Function), que aplica a deduplicação por IP direto no Redis do Upstash — sem passar pelo Render/Supabase. O restante (autenticação, CRUD de consultores, mensagens) segue o caminho original: a área restrita consome a API no Render, que lê/escreve no Postgres. Quando a tela **Visitantes** do painel existir, ela só precisa ler do mesmo `/api/visita.js`, não recriar essa lógica no Render.
+O `pagemc` (site público) e o painel da área restrita são **dois projetos Vercel separados**, com deploys e domínios independentes — não um único projeto com duas frentes. O contador de visitantes roda dentro do `pagemc`: a página chama `/api/visita.js` (Vercel Function), que aplica a deduplicação por IP direto no Redis do Upstash, sem passar pelo Render/Supabase. A área restrita segue seu próprio caminho: login, CRUD de consultores e mensagens conversam só com a API no Render, que lê/escreve no Postgres. A única aresta entre os dois projetos é tracejada no diagrama acima — a tela **Visitantes** do painel lendo `/api/visita.js` (Sprint 6), a única dependência entre os dois sistemas.
 
 ---
 
@@ -59,7 +72,7 @@ Desenhado desde já com a área de Consultores em mente — por isso `usuarios` 
 | `usuarios` | id, nome, email, senha_hash, role (`admin` \| `consultor`), status, criado_em | Login único para admin e, futuramente, consultores |
 | `consultores` | id, usuario_id (FK), telefone, especialidade, status | Dados específicos de quem tem `role = consultor` |
 | `mensagens` | id, remetente_id, assunto, corpo, enviado_em | Destinatários numa tabela associativa (`mensagens_destinatarios`) |
-| `visit_logs` | id, ip_hash, pagina, criado_em, expira_em | `ip_hash` = SHA-256(IP + sal secreto); nunca guarda IP puro |
+| ~~`visit_logs`~~ | id, ip_hash, pagina, criado_em, expira_em | **Descartada** (Sprint 0) — o contador de visitantes ficou 100% no Redis (Sprint 2), sem tabela própria no Postgres. Não foi criada na migration inicial. |
 
 ---
 
@@ -68,15 +81,38 @@ Desenhado desde já com a área de Consultores em mente — por isso `usuarios` 
 Cada sprint assume ~1 semana de trabalho focado; ajuste conforme a disponibilidade real. A ordem respeita dependências técnicas (não dá pra ter consultores sem autenticação, nem visitantes sem backend no ar).
 
 ### Sprint 0 — Fundação técnica
-**Objetivo:** ter a infraestrutura das três camadas no ar e se comunicando, antes de qualquer funcionalidade de negócio.
+**Objetivo:** ter a infraestrutura das três camadas no ar e se comunicando, antes de qualquer funcionalidade de negócio — **num projeto isolado do `pagemc`**.
 
-- Decidir se o frontend continua HTML/JS puro ou migra para um framework (ex: Next.js) — impacta como a área restrita é estruturada.
-- Criar o projeto no Supabase e as tabelas iniciais (`usuarios`, `consultores`, `mensagens`, `visit_logs`).
-- Criar o serviço backend no Render (esqueleto da API, variáveis de ambiente, conexão com o Postgres do Supabase).
-- Conectar o repositório ao Vercel (se ainda não estiver) e ao Render, com deploy automático por push.
-- Definir o contrato básico da API (rotas, formato de resposta, tratamento de erro).
+**0.1 Repositório**
+- Novo repositório no GitHub, ex. `painel-mc-treinamentos` (nome sugerido, ajustar se quiser outro) — não reaproveitar o `page_MC`, para que histórico, PRs e deploy fiquem sozinhos.
+- App Next.js (App Router) na raiz desse repositório.
 
-**Entrega:** backend respondendo em produção (ex: rota `/health`), banco criado, frontend e backend conversando num teste simples.
+**0.2 Banco de dados (Supabase)**
+- Criar projeto novo no Supabase (região `sa-east-1` se disponível, por latência com usuários no Brasil).
+- Rodar a migration inicial com as 4 tabelas (`usuarios`, `consultores`, `mensagens`, `mensagens_destinatarios`) — `visit_logs`, da seção 2, ficou de fora de propósito: o contador de visitantes roda inteiramente no Redis (Sprint 2), sem tabela própria no Postgres.
+- Guardar connection string e chave de service role só em variável de ambiente, nunca no código.
+
+**0.3 Backend (Render)**
+- Criar Web Service novo no Render.
+- Variáveis de ambiente: `DATABASE_URL` (Supabase) e o que a decisão de autenticação do Sprint 1 exigir (`JWT_SECRET` ou config do Supabase Auth).
+- Rota `/health` respondendo 200 — primeiro teste de que o serviço está de pé.
+
+**0.4 Frontend (Next.js)**
+- `create-next-app` com TypeScript + App Router.
+- Só uma tela por enquanto: login estático, sem lógica real — serve pra validar que o deploy no Vercel funciona.
+
+**0.5 Domínio**
+- Subdomínio: `painel.madalenacarvalho.com.br` (domínio raiz real do site, confirmado pelos e-mails de contato nas páginas públicas).
+- Registro CNAME novo no DNS apontando pro Vercel — não mexe no registro do domínio raiz nem do `www`, que seguem intocados.
+- Novo **projeto Vercel** separado, apontando pra esse repositório e domínio — configurado à parte do projeto `pagemc`.
+
+**0.6 Contrato de API**
+- Definir antes de qualquer código de negócio: formato padrão de resposta (ex. `{ data, error }`), convenção de rotas (`/api/v1/...`), como erros de validação voltam pro front.
+- Documentar num arquivo próprio (ex. `docs/api-contrato.md` no novo repositório), pra Sprint 1 em diante seguir o mesmo padrão.
+
+**Ordem recomendada** (por dependência): repositório → Supabase (tabelas) → Render (backend já ligado ao banco) → Next.js (scaffold) → domínio. O contrato de API pode ser escrito em paralelo, mas precisa estar fechado antes do Sprint 1.
+
+**Entrega:** `GET /health` respondendo 200 em produção no Render; tabelas criadas no Supabase; Next.js publicado em `painel.madalenacarvalho.com.br` com a tela de login estática. **Nada disso toca o repositório ou o deploy do `pagemc`.**
 
 ---
 
@@ -102,10 +138,9 @@ Em vez de esperar o Render/Supabase (Sprint 0), o contador foi implementado como
 - Total exibido direto no rodapé de `index.html` via `#visitor-count`.
 - Expiração é automática (TTL nativo do Redis) — não precisou de rotina de limpeza própria.
 
-**O que falta, só quando a área restrita existir:**
-- Tela **Visitantes** do painel (Sprint 1+) deve **consumir esse mesmo endpoint/Redis** para exibir os números — não recriar a lógica no Render/Postgres.
-- Estender o tracking (chamar `/api/visita`) para as demais páginas públicas, hoje só `index.html` dispara.
-- Se quiser métricas mais ricas (hoje, últimos 7 dias, repetidas ignoradas — como no protótipo visual), precisa de chaves Redis adicionais além do contador único `total_visitas`; ainda não implementado.
+**O que falta:** ligar a tela **Visitantes** do painel a este endpoint — ver Sprint 6, o último deste plano, feito só depois que a área restrita já existe e funciona sozinha.
+
+Fora do escopo da área restrita (backlog do `pagemc`, independente): estender o tracking para as demais páginas públicas (hoje só `index.html` dispara `/api/visita`) e, se quiser métricas mais ricas (hoje, últimos 7 dias, repetidas ignoradas), criar chaves Redis adicionais além do contador único `total_visitas`.
 
 ---
 
@@ -144,18 +179,32 @@ Em vez de esperar o Render/Supabase (Sprint 0), o contador foi implementado como
 
 ---
 
+### Sprint 6 — Integração com o pagemc
+**Objetivo:** ligar os dois sistemas pelo único ponto de contato previsto (tela **Visitantes**), sem criar nenhuma outra dependência entre eles. Feito por último, de propósito: só depois que a área restrita já está de pé e validada sozinha (Sprints 0–5) é que ela passa a depender de algo do `pagemc`.
+
+- Adaptar `api/visita.js` no repositório do `pagemc`: hoje só aceita `POST` (que conta a visita); adicionar um branch de leitura (`GET`, ou uma rota nova, ex. `/api/visita?read=1`) que **só devolve `total_visitas`**, sem tocar em hash de IP nem em TTL — a leitura do painel não pode contar como visita.
+- Habilitar CORS nesse endpoint **apenas** para a origem do painel (`Access-Control-Allow-Origin: https://painel.madalenacarvalho.com.br`, não `*`).
+- Tela **Visitantes** no painel Next.js consome essa rota de leitura via `fetch` client-side.
+- Testar os dois cenários de isolamento prometidos no diagrama: painel funcionando com `pagemc` fora do ar (só o widget de visitantes falha) e `pagemc` funcionando com o painel fora do ar (nenhum efeito).
+- Deploy do ajuste em `api/visita.js` no `pagemc` — lembrar de dar `git push` nos dois remotes (`origin` e `pagemc`), conforme já documentado no `CLAUDE.md`.
+- Atualizar `CLAUDE.md`/este documento com a URL final do painel e confirmar que nenhuma outra rota do `pagemc` foi exposta além da de leitura.
+
+**Entrega:** tela Visitantes exibindo o número real, com uma única rota de leitura exposta entre os dois sistemas — todo o resto (auth, consultores, mensagens) seguindo 100% independente do `pagemc`.
+
+---
+
 ## 4. Fora de escopo (próximo projeto)
 
 A **área de Consultores** (login do consultor, leitura de mensagens recebidas, funcionalidades próprias ainda a definir) fica para um projeto seguinte — mas o modelo de dados e a autenticação deste plano já foram desenhados para não exigir retrabalho quando ela começar.
 
 ## 5. Decisões em aberto
 
-- Frontend continua HTML/JS puro ou migra para Next.js? (afeta o Sprint 0)
 - Autenticação: JWT próprio no backend ou Supabase Auth?
 - Envio de mensagem dispara e-mail de verdade ou fica só na área restrita por enquanto?
 
-## 6. Decisões já tomadas (fora deste plano, durante a implementação do contador)
+## 6. Decisões já tomadas
 
 - Janela de deduplicação do contador de visitantes: **1 ano** (`VISIT_TTL_SECONDS`), não 24h.
 - Armazenamento do contador: **Upstash Redis**, não Postgres — mantido como peça separada mesmo depois que o Supabase entrar em produção, por ser mais simples para essa necessidade (`INCR` atômico + TTL nativo).
-- `package.json` do repositório passou a existir só por causa da dependência `@upstash/redis` das Vercel Functions — o site público continua sem build step.
+- `package.json` do repositório do `pagemc` passou a existir só por causa da dependência `@upstash/redis` das Vercel Functions — o site público continua sem build step.
+- **(2026-08-14) Área restrita nasce em repositório e projeto Vercel próprios**, não como migração do `pagemc` para Next.js — motivado pelo evento ao vivo em produção, que não pode correr risco de instabilidade. Ver nota no topo deste documento e Sprint 6.
