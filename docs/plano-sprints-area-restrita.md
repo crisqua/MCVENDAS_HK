@@ -171,10 +171,27 @@ Fora do escopo da área restrita (backlog do `pagemc`, independente): estender o
 ### Sprint 3 — Cadastro de consultores (CRUD)
 **Objetivo:** administrador consegue gerenciar consultores de verdade.
 
-- Endpoints de CRUD (`criar`, `listar`, `editar`, `ativar/desativar`) na tabela `consultores` + `usuarios`.
-- Validações (e-mail único, campos obrigatórios).
-- Tela **Consultores** ligada à API real, substituindo os dados fictícios do protótipo.
-- Geração de credencial inicial para o consultor (senha temporária ou convite) — esse fluxo já é a base do futuro login de consultor.
+**Referência visual:** protótipo `admin-prototipo.html` (raiz deste repositório), aba "Consultores" — layout aprovado, é o alvo real desta sprint (formulário nome/email/telefone/especialidade + tabela com badge de status e ações editar/desativar).
+
+**Decisões de desenho:**
+- CRUD fica atrás do `authGuard` (Sprint 1) + um novo `requireAdmin` — consultor não pode gerenciar outro consultor.
+- Criar consultor grava em duas tabelas (`usuarios` com `role='consultor'`, depois `consultores` com o `usuario_id`) — precisa de transação no `pg` para não deixar registro órfão se uma escrita falhar.
+- Sem envio de e-mail nesta sprint: o admin define a senha temporária na hora do cadastro (mesma lógica do `seed-admin.ts` do Sprint 1). Convite por e-mail é a decisão em aberto da seção 5.
+
+**Backend (`server/`):**
+- `server/src/middleware/requireAdmin.ts` — garante `req.user.role === 'admin'`, roda depois do `authGuard`
+- `server/src/lib/validation.ts` — validação de e-mail/campos obrigatórios
+- `server/src/routes/consultores.ts` — `GET /`, `POST /`, `GET /:id`, `PUT /:id`, `PATCH /:id/status` (ativar/desativar)
+- `server/src/index.ts` — monta `/api/v1/consultores` com `authGuard` + `requireAdmin`
+
+**Frontend (raiz do repositório):**
+- `src/lib/api.ts` — helper de fetch pro backend, repassando o cookie de sessão
+- `src/app/painel/consultores/page.tsx` — lista (tabela: nome, email, telefone, especialidade, status)
+- `src/app/painel/consultores/novo/page.tsx` — formulário de cadastro + senha temporária
+- `src/app/painel/consultores/[id]/page.tsx` — editar consultor + ativar/desativar
+- `src/app/painel/layout.tsx` — adiciona link "Consultores" na navegação
+
+**Validação:** criar consultor via curl no backend → listar → editar → desativar → confirmar que login do consultor recém-criado funciona (reusa `/api/v1/auth/login` do Sprint 1) → repetir tudo pelo navegador.
 
 **Entrega:** administrador cadastra, edita e desativa consultores persistindo no banco.
 
