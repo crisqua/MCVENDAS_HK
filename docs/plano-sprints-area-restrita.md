@@ -25,7 +25,9 @@ Isso resolve, sem debate, a decisão que estava em aberto no Sprint 0: **o `page
 
 ✅ **Sprint 1 concluído** (2026-08-14): login com bcrypt + JWT próprio no backend, cookie httpOnly setado por rota do Next.js (`/api/auth/login`), `proxy.ts` bloqueando `/painel/*` sem sessão válida. Primeiro admin cadastrado direto no Supabase via SQL.
 
-Sprints 3, 4, 5 e 6 seguem como planejados, ainda não iniciados.
+✅ **Sprint 3 concluído** (2026-08-16): CRUD de consultores completo (criar, listar, editar, ativar/desativar), protegido por `requireAdmin`. Telas `/painel/consultores` no ar, ligadas à API real via Route Handlers do Next.js. Validado em produção, incluindo login do consultor recém-criado e bloqueio de acesso ao CRUD por role.
+
+Sprints 4, 5 e 6 seguem como planejados, ainda não iniciados.
 
 ---
 
@@ -168,7 +170,7 @@ Fora do escopo da área restrita (backlog do `pagemc`, independente): estender o
 
 ---
 
-### Sprint 3 — Cadastro de consultores (CRUD)
+### Sprint 3 — Cadastro de consultores (CRUD) ✅ concluído (2026-08-16)
 **Objetivo:** administrador consegue gerenciar consultores de verdade.
 
 **Referência visual:** protótipo `admin-prototipo.html` (raiz deste repositório), aba "Consultores" — layout aprovado, é o alvo real desta sprint (formulário nome/email/telefone/especialidade + tabela com badge de status e ações editar/desativar).
@@ -193,7 +195,7 @@ Fora do escopo da área restrita (backlog do `pagemc`, independente): estender o
 
 **Validação:** criar consultor via curl no backend → listar → editar → desativar → confirmar que login do consultor recém-criado funciona (reusa `/api/v1/auth/login` do Sprint 1) → repetir tudo pelo navegador.
 
-**Entrega:** administrador cadastra, edita e desativa consultores persistindo no banco.
+**Entrega:** administrador cadastra, edita e desativa consultores persistindo no banco. Validado em produção ponta a ponta: criação/edição/ativação via curl direto no Render, via Route Handler do Next.js (cadeia completa navegador → BFF → backend → Postgres), consultor recém-criado consegue logar (reusa o Sprint 1) e recebe 403 ao tentar acessar `/api/v1/consultores` (role `consultor` bloqueada pelo `requireAdmin`, só `admin` passa).
 
 ---
 
