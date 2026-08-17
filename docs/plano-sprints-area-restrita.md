@@ -202,9 +202,26 @@ Fora do escopo da área restrita (backlog do `pagemc`, independente): estender o
 ### Sprint 4 — Mensagens para consultores
 **Objetivo:** administrador consegue comunicar consultores cadastrados.
 
-- Tabela `mensagens` + `mensagens_destinatarios`, endpoint de envio.
-- Tela **Mensagens** ligada à API real: seleção de destinatários reais, histórico de envios persistido.
-- Definir se o envio é só interno (visível quando o consultor logar futuramente) ou também dispara e-mail (ex: via Resend/SendGrid) — decisão de escopo, pode ficar para depois.
+**Referência visual:** protótipo `admin-prototipo.html`, aba "Mensagens" — formulário (checklist de destinatários + assunto + corpo) e histórico de envios na mesma tela, sem navegação entre elas.
+
+**Decisões de desenho:**
+- Só admin envia (reusa `authGuard` + `requireAdmin`, mesmo padrão do Sprint 3).
+- Envio grava em transação: `mensagens` (assunto, corpo, `remetente_id` = admin logado) + `mensagens_destinatarios` (uma linha por consultor selecionado).
+- **Sem envio de e-mail nesta sprint** — mensagem fica só registrada no banco, pronta pra ser lida quando a área de Consultores existir. Decisão de e-mail real continua em aberto (seção 5).
+- Sem edição/exclusão de mensagem — é um "enviar", não um documento editável.
+- Destinatários: qualquer consultor cadastrado, ativo ou inativo (igual ao protótipo).
+
+**Backend (`server/`):**
+- `server/src/routes/mensagens.ts` — `POST /` (cria mensagem + destinatários em transação), `GET /` (histórico: assunto, contagem de destinatários, enviado_em)
+- `server/src/index.ts` — monta `/api/v1/mensagens` com `authGuard` + `requireAdmin`
+
+**Frontend (raiz do repositório):**
+- `src/app/api/mensagens/route.ts` — Route Handler `POST`, repassa cookie → backend
+- `src/app/painel/mensagens/page.tsx` — Server Component: busca consultores (pro checklist) + histórico, renderiza os dois
+- `src/app/painel/mensagens/message-form.tsx` — form client-side, `router.refresh()` após enviar
+- `src/app/painel/layout.tsx` — adiciona link "Mensagens" na navegação
+
+**Validação:** enviar mensagem via curl (2 destinatários) → confirmar as linhas em `mensagens_destinatarios` → listar histórico → repetir pelo navegador → conferir validação sem destinatário selecionado.
 
 **Entrega:** mensagens gravadas no banco e associadas aos consultores certos, prontas para serem lidas quando a área de Consultores existir.
 
