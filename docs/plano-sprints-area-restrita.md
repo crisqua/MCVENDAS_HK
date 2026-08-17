@@ -31,7 +31,7 @@ Isso resolve, sem debate, a decisão que estava em aberto no Sprint 0: **o `page
 
 ✅ **Sprint 5 concluído** (2026-08-17): rate limiting, hardening de input, visual do `admin-prototipo.html` aplicado (login, sidebar, consultores, mensagens), `docs/api-contrato.md` atualizado com os endpoints reais. Dois bugs reais encontrados e corrigidos em teste manual — ver detalhes na seção do sprint.
 
-Sprint 6 segue como planejado, ainda não iniciado.
+✅ **Sprint 6 concluído** (2026-08-17): Visão Geral virou um dashboard real de visitantes (hoje/semana/mês/total + gráfico), alimentado por contadores diários novos no Redis do `pagemc` e uma rota `GET` nova em `api/visita.js`. Fetch server-side (sem CORS), `/painel` como página estática revalidada a cada 1 min. **Todos os 6 sprints do plano original estão concluídos.**
 
 ---
 
@@ -271,17 +271,20 @@ Também aproveitado, fora do escopo original mas de baixo risco: raiz (`/`) redi
 
 ---
 
-### Sprint 6 — Integração com o pagemc
-**Objetivo:** ligar os dois sistemas pelo único ponto de contato previsto (tela **Visitantes**), sem criar nenhuma outra dependência entre eles. Feito por último, de propósito: só depois que a área restrita já está de pé e validada sozinha (Sprints 0–5) é que ela passa a depender de algo do `pagemc`.
+### Sprint 6 — Integração com o pagemc ✅ concluído (2026-08-17)
+**Objetivo:** ligar os dois sistemas pelo único ponto de contato previsto, sem criar nenhuma outra dependência entre eles. Feito por último, de propósito: só depois que a área restrita já estava de pé e validada sozinha (Sprints 0–5) é que ela passou a depender de algo do `pagemc`.
 
-- Adaptar `api/visita.js` no repositório do `pagemc`: hoje só aceita `POST` (que conta a visita); adicionar um branch de leitura (`GET`, ou uma rota nova, ex. `/api/visita?read=1`) que **só devolve `total_visitas`**, sem tocar em hash de IP nem em TTL — a leitura do painel não pode contar como visita.
-- Habilitar CORS nesse endpoint **apenas** para a origem do painel (`Access-Control-Allow-Origin: https://painel.madalenacarvalho.com.br`, não `*`).
-- Tela **Visitantes** no painel Next.js consome essa rota de leitura via `fetch` client-side.
-- Testar os dois cenários de isolamento prometidos no diagrama: painel funcionando com `pagemc` fora do ar (só o widget de visitantes falha) e `pagemc` funcionando com o painel fora do ar (nenhum efeito).
-- Deploy do ajuste em `api/visita.js` no `pagemc` — lembrar de dar `git push` nos dois remotes (`origin` e `pagemc`), conforme já documentado no `CLAUDE.md`.
-- Atualizar `CLAUDE.md`/este documento com a URL final do painel e confirmar que nenhuma outra rota do `pagemc` foi exposta além da de leitura.
+**Escopo real ficou mais rico que o previsto** — em vez de só expor `total_visitas`, a tela virou um dashboard completo (hoje / últimos 7 dias / este mês / total, com variação percentual vs. período anterior), fundida na própria **Visão Geral** (`/painel`), não uma aba "Visitantes" separada. Isso exigiu contadores diários novos no Redis, que não existiam antes.
 
-**Entrega:** tela Visitantes exibindo o número real, com uma única rota de leitura exposta entre os dois sistemas — todo o resto (auth, consultores, mensagens) seguindo 100% independente do `pagemc`.
+**Decisão de desenho revista:** o plano original preva CORS + fetch client-side do navegador direto pro `pagemc`. Na hora de implementar, trocamos por **fetch server-side** (o Next.js do painel busca no `pagemc` servidor-a-servidor) — elimina CORS inteiramente (não existe restrição de origem pra chamada servidor-a-servidor) e mantém o mesmo padrão usado no resto do projeto.
+
+- `api/visita.js` no `pagemc` ganhou, de forma aditiva (nada do `POST` existente mudou): contador diário por IP (`visits:day:<data>`, dedup própria de ~26h, independente da dedup de 1 ano do `total_visitas`) e uma rota `GET` que soma os contadores diários (via `MGET`, uma única chamada ao Redis) e devolve hoje/ontem/semana/semana anterior/mês/mês anterior/total.
+- `src/lib/visitantes.ts` no painel busca essa rota via `fetch` server-side, com `revalidate: 60` — `/painel` virou uma página estática com revalidação a cada 1 minuto (ISR), não uma busca a cada acesso.
+- Isolamento é garantido pelo desenho, não testado derrubando o `pagemc` de propósito (arriscado em produção): `getVisitorStats()` tem `try/catch` e retorna `null` em qualquer falha — a Visão Geral cai pra um estado vazio honesto, sem quebrar o resto do painel. O inverso (painel fora do ar não afeta o `pagemc`) já era garantido antes, por não haver nenhuma chamada nesse sentido.
+- Lógica de datas (semana, mês, virada de mês/ano) validada com testes isolados antes de escrever no arquivo de produção.
+- Deploy do ajuste em `api/visita.js` feito nos dois remotes do `pagemc` (`origin` e `pagemc`), com revisão do diff completo antes do push.
+
+**Entrega:** Visão Geral exibindo dados reais de visitantes (hoje/semana/mês/total + gráfico de 7 dias), validado em produção. Único ponto de contato entre os dois sistemas é essa leitura — todo o resto (auth, consultores, mensagens) segue 100% independente do `pagemc`.
 
 ---
 
