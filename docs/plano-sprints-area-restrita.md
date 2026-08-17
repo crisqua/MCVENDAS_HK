@@ -33,6 +33,10 @@ Isso resolve, sem debate, a decisão que estava em aberto no Sprint 0: **o `page
 
 ✅ **Sprint 6 concluído** (2026-08-17): Visão Geral virou um dashboard real de visitantes (hoje/semana/mês/total + gráfico), alimentado por contadores diários novos no Redis do `pagemc` e uma rota `GET` nova em `api/visita.js`. Fetch server-side (sem CORS), `/painel` como página estática revalidada a cada 1 min. **Todos os 6 sprints do plano original estão concluídos.**
 
+✅ **Sprint 7 concluído** (2026-08-17): roteamento por role — login redireciona admin → `/painel` e consultor → `/consultor`; `proxy.ts` bloqueia cada área pro role errado. Validado em produção.
+
+✅ **Sprint 8 concluído** (2026-08-17): painel do Consultor — Mensagens. Rota `/api/v1/minhas-mensagens` (entrada, saída, detalhe com marcação de lida, envio sempre pro admin), tela `/consultor/mensagens` com abas Entrada/Saída e resposta inline no modal. Validado em produção com consultor de teste.
+
 ---
 
 ## 1. Arquitetura
@@ -299,16 +303,16 @@ Login do consultor, leitura/resposta de mensagens, e o espelho disso no lado do 
 - **Reaproveita o `POST /api/v1/mensagens` que já existe** pra tanto broadcast quanto resposta individual (a diferença é só o tamanho do array `destinatarios`) — nenhum endpoint novo de envio no lado do admin.
 - **Bug encontrado ao revisar pra implementar:** `GET /api/v1/mensagens` hoje não filtra por `remetente_id` — devolve mensagens de qualquer remetente. Isso nunca deu problema porque só o admin mandava mensagem até agora; precisa de `where remetente_id = $1` antes do consultor poder enviar, senão a Saída/histórico do admin mistura mensagens de todo mundo.
 
-### Sprint 7 — Roteamento por role
+### Sprint 7 — Roteamento por role ✅ concluído (2026-08-17)
 - Depois do login, redirecionar: admin → `/painel`, consultor → `/consultor` (rota nova, não misturar com `/painel`)
 - `proxy.ts` passa a proteger `/consultor/:path*`, checando `role` do JWT (reaproveita `src/lib/session.ts`, que já decodifica isso) — consultor não acessa `/painel/*` e vice-versa
 - **Entrega:** login redireciona pro painel certo por role; tentar acessar a área errada redireciona pro login ou pra própria área, não quebra
 
-### Sprint 8 — Painel do Consultor: Mensagens
+### Sprint 8 — Painel do Consultor: Mensagens ✅ concluído (2026-08-17)
 - Backend: `GET /api/v1/minhas-mensagens` (entrada, `destinatario_id = req.user.sub`), `GET /api/v1/minhas-mensagens/saida` (`remetente_id = req.user.sub`), `GET /api/v1/minhas-mensagens/:id` (detalhe, marca `lida_em`), `POST /api/v1/minhas-mensagens` (sempre pro admin — busca o `id` do usuário com `role = 'admin'`)
 - `requireConsultor` novo (espelha `requireAdmin`)
 - Frontend: `/consultor/mensagens` — Entrada/Saída, modal de detalhe com resposta inline, layout próprio (sidebar simplificada, badge "Consultor")
-- **Entrega:** consultor loga, vê mensagens do admin, responde inline, manda mensagem nova — tudo validado em produção
+- **Entrega:** consultor loga, vê mensagens do admin, responde inline, manda mensagem nova — tudo validado em produção (login, leitura marcando `lida_em`, resposta criando item na Saída na hora)
 
 ### Sprint 9 — Painel do Admin: Mensagens reestruturada
 - Backend: corrige `GET /api/v1/mensagens` pra filtrar `remetente_id = req.user.sub` E `having count(destinatarios) > 1` (só disparo em massa); novo `GET /api/v1/mensagens/saida-individual` (`remetente_id = me`, `count = 1`); novo `GET /api/v1/mensagens/recebidas` (`destinatario_id = me`). `GET /api/v1/mensagens/:id` já existe e não precisa mudar (sem filtro de direção, já reaproveitável)
