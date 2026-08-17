@@ -288,9 +288,38 @@ Também aproveitado, fora do escopo original mas de baixo risco: raiz (`/`) redi
 
 ---
 
-## 4. Fora de escopo (próximo projeto)
+## 4. Área de Consultores (2026-08-17 — deixou de ser "fora de escopo")
 
-A **área de Consultores** (login do consultor, leitura de mensagens recebidas, funcionalidades próprias ainda a definir) fica para um projeto seguinte — mas o modelo de dados e a autenticação deste plano já foram desenhados para não exigir retrabalho quando ela começar.
+Login do consultor, leitura/resposta de mensagens, e o espelho disso no lado do admin (caixa de entrada). Layout já validado via protótipos (artifacts) antes de qualquer código real — ver decisões abaixo. Schema não muda: `mensagens`/`mensagens_destinatarios` (Sprint 0) já suportam qualquer usuário como remetente ou destinatário, e `mensagens_destinatarios.lida_em` já existe, nunca usado até agora.
+
+**Decisões de desenho (validadas nos protótipos):**
+- **Responder é inline, não navega de tela.** Dentro do modal de detalhe da mensagem, "Responder" abre uma caixa de texto ali mesmo — sem ir pra outra página, sem selecionar destinatário de novo (já é conhecido pelo contexto). Envia e a resposta aparece na aba Saída na hora.
+- **Mensagens (admin e consultor) organizadas em abas Entrada/Saída**, mesmo padrão nos dois painéis. Saída mostra só respostas individuais (1 destinatário).
+- **"Enviar Mensagem" continua separado**, só pro admin, só pra disparo em massa (vários consultores) — com histórico de disparo próprio, não misturado com a Saída de respostas individuais.
+- **Reaproveita o `POST /api/v1/mensagens` que já existe** pra tanto broadcast quanto resposta individual (a diferença é só o tamanho do array `destinatarios`) — nenhum endpoint novo de envio no lado do admin.
+- **Bug encontrado ao revisar pra implementar:** `GET /api/v1/mensagens` hoje não filtra por `remetente_id` — devolve mensagens de qualquer remetente. Isso nunca deu problema porque só o admin mandava mensagem até agora; precisa de `where remetente_id = $1` antes do consultor poder enviar, senão a Saída/histórico do admin mistura mensagens de todo mundo.
+
+### Sprint 7 — Roteamento por role
+- Depois do login, redirecionar: admin → `/painel`, consultor → `/consultor` (rota nova, não misturar com `/painel`)
+- `proxy.ts` passa a proteger `/consultor/:path*`, checando `role` do JWT (reaproveita `src/lib/session.ts`, que já decodifica isso) — consultor não acessa `/painel/*` e vice-versa
+- **Entrega:** login redireciona pro painel certo por role; tentar acessar a área errada redireciona pro login ou pra própria área, não quebra
+
+### Sprint 8 — Painel do Consultor: Mensagens
+- Backend: `GET /api/v1/minhas-mensagens` (entrada, `destinatario_id = req.user.sub`), `GET /api/v1/minhas-mensagens/saida` (`remetente_id = req.user.sub`), `GET /api/v1/minhas-mensagens/:id` (detalhe, marca `lida_em`), `POST /api/v1/minhas-mensagens` (sempre pro admin — busca o `id` do usuário com `role = 'admin'`)
+- `requireConsultor` novo (espelha `requireAdmin`)
+- Frontend: `/consultor/mensagens` — Entrada/Saída, modal de detalhe com resposta inline, layout próprio (sidebar simplificada, badge "Consultor")
+- **Entrega:** consultor loga, vê mensagens do admin, responde inline, manda mensagem nova — tudo validado em produção
+
+### Sprint 9 — Painel do Admin: Mensagens reestruturada
+- Backend: corrige `GET /api/v1/mensagens` pra filtrar `remetente_id = req.user.sub` E `having count(destinatarios) > 1` (só disparo em massa); novo `GET /api/v1/mensagens/saida-individual` (`remetente_id = me`, `count = 1`); novo `GET /api/v1/mensagens/recebidas` (`destinatario_id = me`). `GET /api/v1/mensagens/:id` já existe e não precisa mudar (sem filtro de direção, já reaproveitável)
+- Frontend: `/painel/mensagens` vira Entrada/Saída (com resposta inline, igual ao consultor); `/painel/mensagens/enviar` continua página própria, com o histórico de disparo em massa de volta
+- **Entrega:** admin recebe e responde mensagens de consultores inline, mantém o disparo em massa separado — tudo validado em produção
+
+### Sprint 10 — Botão "Área Restrita" no pagemc
+- Opção B aprovada: link/popup simples no nav (ao lado de "Conexões") levando pro `/login` real do painel — sem formulário de login no site público
+- Só na `index.html` por enquanto (páginas públicas não compartilham template, replicar em outras páginas fica pra depois se fizer sentido)
+- Feito por último, com toda a cautela de sempre — diff revisado antes de qualquer push pros remotes do `pagemc`
+- **Entrega:** botão visível no site público, leva pro login do painel, sem nenhuma mudança de comportamento no resto do `pagemc`
 
 ## 5. Decisões em aberto
 
