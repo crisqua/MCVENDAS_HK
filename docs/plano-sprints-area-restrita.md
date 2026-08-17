@@ -29,7 +29,9 @@ Isso resolve, sem debate, a decisão que estava em aberto no Sprint 0: **o `page
 
 ✅ **Sprint 4 concluído** (2026-08-17): envio de mensagens pra consultores (ativos ou inativos), histórico com contagem de destinatários. Tela `/painel/mensagens` no ar. Validado em produção ponta a ponta (backend direto e cadeia completa via Route Handler).
 
-Sprints 5 e 6 seguem como planejados, ainda não iniciados.
+✅ **Sprint 5 concluído** (2026-08-17): rate limiting, hardening de input, visual do `admin-prototipo.html` aplicado (login, sidebar, consultores, mensagens), `docs/api-contrato.md` atualizado com os endpoints reais. Dois bugs reais encontrados e corrigidos em teste manual — ver detalhes na seção do sprint.
+
+Sprint 6 segue como planejado, ainda não iniciado.
 
 ---
 
@@ -229,7 +231,7 @@ Fora do escopo da área restrita (backlog do `pagemc`, independente): estender o
 
 ---
 
-### Sprint 5 — Segurança, polimento e preparação para a área de Consultores
+### Sprint 5 — Segurança, polimento e preparação para a área de Consultores ✅ concluído (2026-08-17)
 **Objetivo:** fechar o ciclo do Administrador com qualidade de produção e deixar o terreno pronto para o próximo projeto.
 
 **Decisões de escopo (2026-08-17), revisando os itens originais à luz da arquitetura já construída:**
@@ -258,6 +260,12 @@ Fora do escopo da área restrita (backlog do `pagemc`, independente): estender o
 - `docs/api-contrato.md` — lista real de endpoints (`/auth`, `/me`, `/consultores`, `/mensagens`)
 
 **Validação:** rate limit (várias tentativas de login erradas → bloqueio temporário), campo com texto absurdamente longo → erro de validação, visual conferido nas 4 telas no navegador.
+
+**Bugs reais encontrados e corrigidos durante a validação (não previstos no plano):**
+- **`trust proxy` errado no Express.** `trust proxy: 1` pegava um IP interno instável da infraestrutura do Render (varia por requisição) em vez do IP real do cliente, fazendo o rate limit nunca acumular (cada requisição caía num "balde" diferente). Confirmado em produção pelo header `ratelimit-remaining` pulando sem sequência lógica entre chamadas seguidas do mesmo cliente. Corrigido pra `trust proxy: true`.
+- **Bug de UX na tela de Mensagens** (não travava o envio, mas mostrava erro falso): o form guardava `event.currentTarget` pra chamar `.reset()` depois de um `await fetch(...)`, mas o React esvazia essa referência assim que o evento termina de ser processado — a mensagem era enviada com sucesso, mas a chamada a `.reset()` quebrava e caía no `catch`, mostrando "Não foi possível conectar" mesmo com o envio já concluído. Confirmado comparando o histórico de envios (mensagem lá) com o Network tab do navegador (resposta 201 de sucesso) enquanto a tela mostrava erro. Corrigido guardando a referência do form antes do `await`.
+
+Também aproveitado, fora do escopo original mas de baixo risco: raiz (`/`) redireciona pro painel em vez de mostrar o scaffold padrão do Next.js; telefone formatado como `(99) 99999-9999` (máscara ao digitar + normalização na exibição, mesmo pra dados antigos sem formatação).
 
 **Entrega:** área do Administrador pronta para uso real, com base técnica documentada para a próxima fase.
 
