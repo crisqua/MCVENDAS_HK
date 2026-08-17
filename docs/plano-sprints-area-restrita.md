@@ -325,11 +325,46 @@ Login do consultor, leitura/resposta de mensagens, e o espelho disso no lado do 
 - Feito por último, com toda a cautela de sempre — diff revisado antes de qualquer push pros remotes do `pagemc`
 - **Entrega:** botão visível no site público, leva pro login do painel, sem nenhuma mudança de comportamento no resto do `pagemc`
 
-## 5. Decisões em aberto
+## 5. Mural (2026-08-17)
+
+Feed único, separado das Mensagens (que continuam 1-para-1 ou 1-para-vários privadas): qualquer
+usuário logado (admin ou consultor) publica um recado e todo mundo vê o mesmo feed — pensado pela
+Madalena como um mural de avisos/recados da equipe. Chegou a ser cogitado como chat com lista de
+contatos (1-para-1, tipo WhatsApp); esse formato foi descartado a favor do mural de feed único, mais
+simples e mais alinhado ao que ela realmente queria.
+
+**Decisões de desenho:**
+- **Um feed só**, sem canais/tópicos — mantém simples pra 150 consultores + poucos admins
+- **Limite de 250 caracteres** por postagem — recado curto, não substitui Mensagens pra assunto longo
+- **Curtir** (❤) simples, sem comentário/resposta — dá vida ao mural sem virar thread de chat
+- **Fixar/desafixar** só admin — postagens fixadas aparecem no topo, à frente das demais por data
+- **Atualização por polling** (a cada 6s), não WebSocket nem Supabase Realtime — decisão do estudo de
+  custo/infra feito antes: nessa escala (150 consultores + 5 admins) o custo incremental do polling é
+  de poucos dólares por mês e não exige nenhuma mudança na arquitetura de segurança já decidida (o
+  navegador nunca fala direto com o Render, só via Next.js) — ver artifact do estudo se precisar
+  retomar os números.
+
+**Schema:** `mural_postagens` (autor, corpo, fixado, publicado_em) e `mural_curtidas`
+(postagem+usuário, chave composta) — `supabase/migrations/0002_mural.sql` no repo
+`painel-mc-treinamentos`.
+
+**Backend:** `GET/POST /api/v1/mural` (listar e publicar), `POST /api/v1/mural/:id/curtir`
+(alterna), `POST`/`DELETE /api/v1/mural/:id/fixar` (só admin, checado no handler). Montado atrás só
+de `authGuard` (sem `requireAdmin`/`requireConsultor` — os dois roles acessam).
+
+**Frontend:** componente `MuralFeed` compartilhado entre `/painel/mural` e `/consultor/mural` (evita
+duplicar composer/feed/curtir/fixar/polling nas duas árvores de rotas). "Mural" novo item nos dois
+menus laterais.
+
+**Status:** implementado e deployado em produção (2026-08-17); teste manual ponta a ponta (publicar
+dos dois lados, curtir, fixar) ainda a confirmar.
+
+## 6. Decisões em aberto
 
 - Envio de mensagem dispara e-mail de verdade ou fica só na área restrita por enquanto?
+- Sprint 10 (botão "Área Restrita" no `pagemc`) ainda não foi implementada.
 
-## 6. Decisões já tomadas
+## 7. Decisões já tomadas
 
 - Janela de deduplicação do contador de visitantes: **1 ano** (`VISIT_TTL_SECONDS`), não 24h.
 - Armazenamento do contador: **Upstash Redis**, não Postgres — mantido como peça separada mesmo depois que o Supabase entrar em produção, por ser mais simples para essa necessidade (`INCR` atômico + TTL nativo).
