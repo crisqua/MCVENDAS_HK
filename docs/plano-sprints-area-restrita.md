@@ -232,10 +232,32 @@ Fora do escopo da área restrita (backlog do `pagemc`, independente): estender o
 ### Sprint 5 — Segurança, polimento e preparação para a área de Consultores
 **Objetivo:** fechar o ciclo do Administrador com qualidade de produção e deixar o terreno pronto para o próximo projeto.
 
-- Row Level Security (RLS) no Supabase, CORS restrito entre Vercel e Render, rate limiting básico na API.
-- Sanitização de inputs em todos os formulários.
-- Ajustes finais de UX com base no protótipo validado.
-- Documentar o contrato de API e o modelo de dados — vira o ponto de partida da área de Consultores.
+**Decisões de escopo (2026-08-17), revisando os itens originais à luz da arquitetura já construída:**
+- ~~RLS no Supabase~~ — **superado pela arquitetura**: o backend conecta no Postgres com a connection string direta (papel `postgres`), controle de acesso é feito por `authGuard`/`requireAdmin` na API, não por RLS nas tabelas. RLS não teria efeito nessa conexão.
+- ~~CORS restrito entre Vercel e Render~~ — **superado pela arquitetura**: o navegador nunca chama o Render direto (tudo via BFF do Next.js), não existe CORS a restringir hoje. Continua valendo só a exceção pontual do Sprint 6.
+- Rate limiting básico na API — mantido, principalmente em `/api/v1/auth/login`.
+- Sanitização/hardening de input — mantido: SQL injection já coberto (queries parametrizadas), falta limite de tamanho nos campos de texto.
+- Ajustes de UX com base no protótipo validado — mantido, escopo: re-skin das telas já existentes (login, layout do painel, consultores, mensagens) pro tema do `admin-prototipo.html`. Não inclui construir a tela "Visão Geral" (fora de qualquer sprint planejado).
+- Documentar o contrato de API — mantido, atualizar `docs/api-contrato.md` com os endpoints reais construídos.
+
+**Backend (`server/`):**
+- `server/package.json` — adiciona `express-rate-limit`
+- `server/src/middleware/rateLimit.ts` — limiter restrito pro login, mais permissivo pro resto
+- `server/src/index.ts` — aplica o limiter
+- `server/src/lib/validation.ts` — limites de tamanho (nome, assunto, corpo, etc.)
+- `server/src/routes/auth.ts`, `consultores.ts`, `mensagens.ts` — aplicam os novos limites
+
+**Frontend (visual, baseado no `admin-prototipo.html`):**
+- `src/app/globals.css` — paleta do protótipo (dark, laranja/dourado)
+- `src/app/layout.tsx` — troca Geist por Cormorant Garamond + Barlow
+- `src/app/login/page.tsx` — restyle
+- `src/app/painel/layout.tsx` — vira sidebar (hoje é nav horizontal)
+- `src/app/painel/consultores/*`, `src/app/painel/mensagens/*` — restyle dos cards/tabelas/forms
+
+**Docs:**
+- `docs/api-contrato.md` — lista real de endpoints (`/auth`, `/me`, `/consultores`, `/mensagens`)
+
+**Validação:** rate limit (várias tentativas de login erradas → bloqueio temporário), campo com texto absurdamente longo → erro de validação, visual conferido nas 4 telas no navegador.
 
 **Entrega:** área do Administrador pronta para uso real, com base técnica documentada para a próxima fase.
 
