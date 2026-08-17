@@ -213,7 +213,7 @@ Fora do escopo da área restrita (backlog do `pagemc`, independente): estender o
 - Envio grava em transação: `mensagens` (assunto, corpo, `remetente_id` = admin logado) + `mensagens_destinatarios` (uma linha por consultor selecionado).
 - **Sem envio de e-mail nesta sprint** — mensagem fica só registrada no banco, pronta pra ser lida quando a área de Consultores existir. Decisão de e-mail real continua em aberto (seção 5).
 - Sem edição/exclusão de mensagem — é um "enviar", não um documento editável.
-- Destinatários: qualquer consultor cadastrado, ativo ou inativo (igual ao protótipo).
+- ~~Destinatários: qualquer consultor cadastrado, ativo ou inativo~~ — **revisto em 2026-08-17**: só consultor **ativo** pode receber mensagem (validado no backend). Inativo aparece na lista com checkbox desabilitado, não desaparece. Adicionado também "selecionar todos os consultores ativos" — o teto de 200 destinatários por envio (Sprint 5) já cobre esse cenário sem precisar de limite à parte.
 
 **Backend (`server/`):**
 - `server/src/routes/mensagens.ts` — `POST /` (cria mensagem + destinatários em transação), `GET /` (histórico: assunto, contagem de destinatários, enviado_em)
