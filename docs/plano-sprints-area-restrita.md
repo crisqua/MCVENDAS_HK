@@ -27,7 +27,9 @@ Isso resolve, sem debate, a decisão que estava em aberto no Sprint 0: **o `page
 
 ✅ **Sprint 3 concluído** (2026-08-16): CRUD de consultores completo (criar, listar, editar, ativar/desativar), protegido por `requireAdmin`. Telas `/painel/consultores` no ar, ligadas à API real via Route Handlers do Next.js. Validado em produção, incluindo login do consultor recém-criado e bloqueio de acesso ao CRUD por role.
 
-Sprints 4, 5 e 6 seguem como planejados, ainda não iniciados.
+✅ **Sprint 4 concluído** (2026-08-17): envio de mensagens pra consultores (ativos ou inativos), histórico com contagem de destinatários. Tela `/painel/mensagens` no ar. Validado em produção ponta a ponta (backend direto e cadeia completa via Route Handler).
+
+Sprints 5 e 6 seguem como planejados, ainda não iniciados.
 
 ---
 
@@ -199,7 +201,7 @@ Fora do escopo da área restrita (backlog do `pagemc`, independente): estender o
 
 ---
 
-### Sprint 4 — Mensagens para consultores
+### Sprint 4 — Mensagens para consultores ✅ concluído (2026-08-17)
 **Objetivo:** administrador consegue comunicar consultores cadastrados.
 
 **Referência visual:** protótipo `admin-prototipo.html`, aba "Mensagens" — formulário (checklist de destinatários + assunto + corpo) e histórico de envios na mesma tela, sem navegação entre elas.
@@ -223,7 +225,7 @@ Fora do escopo da área restrita (backlog do `pagemc`, independente): estender o
 
 **Validação:** enviar mensagem via curl (2 destinatários) → confirmar as linhas em `mensagens_destinatarios` → listar histórico → repetir pelo navegador → conferir validação sem destinatário selecionado.
 
-**Entrega:** mensagens gravadas no banco e associadas aos consultores certos, prontas para serem lidas quando a área de Consultores existir.
+**Entrega:** mensagens gravadas no banco e associadas aos consultores certos, prontas para serem lidas quando a área de Consultores existir. Validado em produção ponta a ponta: envio via curl direto no Render, via Route Handler do Next.js, histórico com contagem correta de destinatários, e rejeição de destinatário inexistente (400).
 
 ---
 
