@@ -82,6 +82,14 @@
   }
   .btn-ghost:hover{border-color:var(--orange); color:var(--orange);}
   .btn-arrow{margin-left:4px;}
+  .btn-disabled, .btn-disabled:hover{
+    background:rgba(255,255,255,0.08); color:var(--lead); border-color:rgba(255,255,255,0.08);
+    cursor:not-allowed; pointer-events:none;
+  }
+  .closed-tag{
+    font-family:'Roboto Mono', monospace; font-size:12px; letter-spacing:0.1em; text-transform:uppercase;
+    font-weight:700; color:var(--black); background:rgba(13,13,13,0.14); padding:4px 10px;
+  }
 
   /* NAV */
   header{
@@ -169,9 +177,6 @@
     flex-wrap:wrap;
     text-align:center;
   }
-  .countdown-timer{display:flex; gap:8px; font-size:16px;}
-  .countdown-timer span{background:var(--black); color:var(--orange); padding:4px 8px; min-width:44px; display:inline-block;}
-
   /* SECTION GENERIC */
   section{padding:88px 0; border-bottom:1px solid rgba(255,255,255,0.08);}
   .section-navy{background:var(--orange);}
@@ -403,9 +408,7 @@
 <div class="countdown-strip">
   <div class="wrap countdown-inner">
     <span>O Lote 1 vira dia 12/09 —</span>
-    <span class="countdown-timer" id="countdown">
-      <span id="cd-d">00</span><span id="cd-h">00</span><span id="cd-m">00</span><span id="cd-s">00</span>
-    </span>
+    <span class="closed-tag">Inscrições encerradas</span>
   </div>
 </div>
 
@@ -567,7 +570,7 @@
         <div class="price-tag">Lote 1 · até 12/09</div>
         <div class="price-value"><sup>R$</sup>497</div>
         <div class="price-desc">Condição de acesso antecipado, válida enquanto o lote estiver aberto.</div>
-        <button type="button" class="btn" onclick="abrirInscricao()">Quero garantir minha vaga</button>
+        <button type="button" class="btn btn-disabled" disabled>Inscrições encerradas</button>
         <div class="secure-note">
           <div class="secure-row">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><rect x="5" y="11" width="14" height="10" rx="1.5" stroke="currentColor" stroke-width="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4" stroke="currentColor" stroke-width="2"/></svg>
@@ -634,7 +637,7 @@
     <h2>Você não escolhe se haverá pressão.<br>Escolhe como vai responder a ela.</h2>
     <p style="margin-top:6px;">Liderança Sob Pressão. Como lidar com cobrança, emoções e decisões sem perder o controle.</p>
     <p style="margin-top:4px; font-weight:700; color:var(--off);">26 de setembro · 9h às 17h</p>
-    <button type="button" class="btn" onclick="abrirInscricao()">Garantir minha vaga <span class="btn-arrow">→</span></button>
+    <button type="button" class="btn btn-disabled" disabled>Inscrições encerradas</button>
     <div class="secure-note">
       <div class="secure-row">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><rect x="5" y="11" width="14" height="10" rx="1.5" stroke="currentColor" stroke-width="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4" stroke="currentColor" stroke-width="2"/></svg>
@@ -703,7 +706,7 @@
         </div>
 
         <div class="form-error" id="inscError">Confira os campos destacados antes de continuar.</div>
-        <button type="submit" class="btn modal-submit" id="inscSubmitBtn">Ir para pagamento →</button>
+        <button type="submit" class="btn modal-submit btn-disabled" id="inscSubmitBtn" disabled>Inscrições encerradas</button>
       </form>
     </div>
 
@@ -738,24 +741,6 @@
 <script>
   /* ── EmailJS ── */
   emailjs.init({ publicKey: '9dntHcZaskzU7H348' });
-
-  const deadline = new Date("2026-09-12T23:59:59-03:00").getTime();
-  function tick(){
-    const now = new Date().getTime();
-    let diff = deadline - now;
-    if(diff < 0) diff = 0;
-    const d = Math.floor(diff / (1000*60*60*24));
-    const h = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
-    const m = Math.floor((diff % (1000*60*60)) / (1000*60));
-    const s = Math.floor((diff % (1000*60)) / 1000);
-    const pad = n => String(n).padStart(2,'0');
-    document.getElementById('cd-d').textContent = pad(d)+'d';
-    document.getElementById('cd-h').textContent = pad(h)+'h';
-    document.getElementById('cd-m').textContent = pad(m)+'m';
-    document.getElementById('cd-s').textContent = pad(s)+'s';
-  }
-  tick();
-  setInterval(tick, 1000);
 
   /* ── INSCRIÇÃO ── */
   function abrirInscricao(abrirPolitica){

@@ -77,6 +77,14 @@
     transition: background .3s;
   }
   .promo-arrow:hover { background: var(--orange-light); }
+  .promo-arrow.promo-arrow-disabled {
+    background: rgba(255,255,255,.08); color: var(--white-dim);
+    cursor: not-allowed; pointer-events: none;
+  }
+  .promo-closed {
+    font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; font-weight: 600;
+    color: var(--orange-light); white-space: nowrap; flex-shrink: 0; margin-left: .9rem;
+  }
   .promo-close {
     background: none; border: none; color: var(--white-dim); font-size: 1.4rem; line-height: 1;
     cursor: pointer; padding: .4rem; opacity: .6; transition: opacity .2s, color .2s; flex-shrink: 0;
@@ -960,11 +968,12 @@
 
 <!-- EVENTO DO MÊS -->
 <div class="promo-bar" id="promoBar">
-  <a href="lideranca-sob-pressao-landing.html" class="promo-link">
+  <div class="promo-link">
     <span class="promo-eyebrow">Evento do mês</span>
     <span class="promo-copy"><strong>Liderança Sob Pressão</strong> — imersão ao vivo · 26 de setembro</span>
-  </a>
-  <a href="lideranca-sob-pressao-landing.html" class="promo-arrow">Garantir vaga →</a>
+    <span class="promo-closed">Inscrições encerradas</span>
+  </div>
+  <span class="promo-arrow promo-arrow-disabled" aria-disabled="true">Garantir vaga →</span>
   <button class="promo-close" onclick="closePromoBar()" aria-label="Fechar aviso">×</button>
 </div>
 
