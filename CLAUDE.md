@@ -4,7 +4,7 @@ Site institucional da MC Treinamentos (Engenharia Comportamental). Conjunto de p
 
 ## Estrutura
 
-- Páginas públicas: arquivos `.html` soltos na raiz (`index.html`, `mc-site-vendas.html`, `lideranca-sob-pressao-landing.html`, `risco-silencioso.html`, `raio-x-posicionamento.html`, `lista-espera-mentorias.html`, `profitmc.html`, `politica-de-privacidade.html`). Sem framework, sem build step — cada página é autocontida (CSS/JS inline).
+- Páginas públicas: arquivos `.html` soltos na raiz (`index.html`, `dispersao-executiva.html`, `lideranca-sob-pressao-landing.html`, `risco-silencioso.html`, `raio-x-posicionamento.html`, `lista-espera-mentorias.html`, `profitmc.html`, `politica-de-privacidade.html`). Sem framework, sem build step — cada página é autocontida (CSS/JS inline).
 - `api/` — funções serverless do Vercel (Node.js). Hoje contém só `visita.js` (contador de visitantes).
 - `docs/plano-sprints-area-restrita.md` — roadmap da futura área restrita (Administrador + Consultores).
 - `admin-prototipo.html` e `prototipo-contador-visitantes.html` — protótipos visuais/interativos soltos na raiz, **não são páginas do site publicado**, servem só de referência de design/lógica. Não linkar a partir das páginas reais sem que isso seja pedido explicitamente.
@@ -13,7 +13,7 @@ Site institucional da MC Treinamentos (Engenharia Comportamental). Conjunto de p
 
 - Hospedagem: Vercel, projeto **pagemc**.
 - **Importante**: este repositório local tem dois remotes do GitHub — `origin` (MCVENDAS_HK) e `pagemc` (PageMC). O deploy automático do Vercel está conectado ao repositório **PageMC**. Ao enviar mudanças que precisam ir ao ar, `git push` em **ambos os remotes** (`origin` e `pagemc`), não só no upstream padrão.
-- `vercel.json` só define `cleanUrls` e `trailingSlash: false` — sem domínio customizado declarado no repo (fica no dashboard do Vercel).
+- `vercel.json` define `cleanUrls`, `trailingSlash: false` e um `redirects` (301 de `/mc-site-vendas` para `/dispersao-executiva`, mantido após o rename do arquivo) — sem domínio customizado declarado no repo (fica no dashboard do Vercel).
 
 ## Contador de visitantes (implementado)
 
