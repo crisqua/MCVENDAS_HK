@@ -167,7 +167,7 @@
   .hero-content {
     position: relative; z-index: 2;
     display: grid; grid-template-columns: 1fr 1fr; gap: 6rem;
-    align-items: center; max-width: 1200px; width: 100%;
+    align-items: stretch; max-width: 1200px; width: 100%;
   }
   .hero-left {
     display: flex;
@@ -265,7 +265,15 @@
     text-transform: uppercase; color: var(--orange);
   }
 
-  .hero-diag { display: grid; gap: 1rem; width: 100%; }
+  .diag-eyebrow {
+    font-family: var(--sans); font-size: .58rem; letter-spacing: .32em; text-transform: uppercase;
+    color: var(--orange); margin-bottom: 2rem;
+    display: flex; align-items: center; justify-content: center; gap: .9rem;
+  }
+  .diag-eyebrow::before, .diag-eyebrow::after {
+    content: ''; display: block; width: 28px; height: 1px; background: var(--orange);
+  }
+  .hero-diag { display: flex; flex-direction: column; gap: 3rem; width: 100%; }
   .hero-diag-item {
     display: block; text-decoration: none;
     padding: 1.4rem 1.6rem;
@@ -1039,6 +1047,7 @@
       </div>
     </div>
     <div class="hero-visual anim anim-d3">
+      <div class="diag-eyebrow">Diagnóstico Gratuito</div>
       <div class="hero-diag">
         <a href="/risco-silencioso" class="hero-diag-item">
           <div class="hero-diag-head">
