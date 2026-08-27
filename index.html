@@ -138,6 +138,46 @@
     background: var(--orange);
     color: var(--black) !important;
   }
+  .nav-right { display: flex; align-items: center; gap: 1rem; }
+
+  /* ── MENU MOBILE (hambúrguer) ── */
+  .nav-burger {
+    display: none;
+    background: none; border: none; cursor: pointer; padding: .4rem;
+    flex-direction: column; gap: 5px; width: 26px;
+  }
+  .nav-burger span {
+    display: block; height: 2px; width: 100%; background: var(--white);
+    transition: transform .3s ease, opacity .2s ease;
+  }
+  .nav-burger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .nav-burger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+  .nav-burger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  .mobile-menu {
+    position: fixed;
+    top: calc(var(--promo-h) + 82px);
+    left: 0; right: 0; bottom: 0;
+    background: rgba(13,13,13,.98);
+    backdrop-filter: blur(6px);
+    z-index: 98;
+    display: flex; flex-direction: column;
+    padding: 2rem 2rem 2rem;
+    gap: 1.5rem;
+    transform: translateY(-12px);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform .3s ease, opacity .25s ease, top .3s;
+    overflow-y: auto;
+  }
+  .mobile-menu.open { transform: translateY(0); opacity: 1; pointer-events: auto; }
+  .mobile-menu a {
+    text-decoration: none; color: var(--white-dim);
+    font-size: 1rem; letter-spacing: .1em; text-transform: uppercase;
+  }
+  .mobile-menu a:hover { color: var(--orange-light); }
+  .mobile-menu a.nav-link-profit { align-self: flex-start; font-size: .75rem; letter-spacing: .18em; }
+  @media (prefers-reduced-motion: reduce) { .mobile-menu { transition: none; } }
 
   /* ── HERO ── */
   #hero {
@@ -951,6 +991,7 @@
   @media (max-width: 1024px) {
     nav { padding: 1.2rem 2rem; }
     .nav-links { display: none; }
+    .nav-burger { display: flex; }
     section { padding: 5rem 2rem; }
     .divider { margin: 0 2rem; }
     footer { padding: 2rem; }
@@ -1012,9 +1053,26 @@
     <a href="#depoimentos">Depoimentos</a>
     <a href="#conteudos">Conteúdos</a>
     <a href="#conexoes">Conexões</a>
+    <a href="https://painel.madalenacarvalho.com.br/login" class="nav-link-profit" target="_blank" rel="noopener">Área Restrita</a>
   </div>
-  <a href="#contato" class="nav-cta">Falar com MC</a>
+  <div class="nav-right">
+    <button class="nav-burger" id="navBurger" aria-label="Abrir menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <a href="#contato" class="nav-cta">Falar com MC</a>
+  </div>
 </nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#sobre">Sobre</a>
+  <a href="#frentes">Atuação</a>
+  <a href="#metodo">Método CCR</a>
+  <a href="#diferenciais">Diferenciais</a>
+  <a href="#depoimentos">Depoimentos</a>
+  <a href="#conteudos">Conteúdos</a>
+  <a href="#conexoes">Conexões</a>
+  <a href="https://painel.madalenacarvalho.com.br/login" class="nav-link-profit" target="_blank" rel="noopener">Área Restrita</a>
+</div>
 
 <!-- HERO -->
 <section id="hero">
@@ -1655,6 +1713,34 @@
         }
       })
       .catch(function() {});
+  })();
+
+  // Menu mobile (hambúrguer)
+  (function() {
+    var burger = document.getElementById('navBurger');
+    var menu = document.getElementById('mobileMenu');
+
+    function closeMenu() {
+      menu.classList.remove('open');
+      burger.setAttribute('aria-expanded', 'false');
+      burger.setAttribute('aria-label', 'Abrir menu');
+      document.body.style.overflow = '';
+    }
+
+    function toggleMenu() {
+      var open = menu.classList.toggle('open');
+      burger.setAttribute('aria-expanded', String(open));
+      burger.setAttribute('aria-label', open ? 'Fechar menu' : 'Abrir menu');
+      document.body.style.overflow = open ? 'hidden' : '';
+    }
+
+    burger.addEventListener('click', toggleMenu);
+    menu.querySelectorAll('a').forEach(function(a) {
+      a.addEventListener('click', closeMenu);
+    });
+    window.addEventListener('resize', function() {
+      if (window.innerWidth > 1024) closeMenu();
+    });
   })();
 
   // Evento do mês
