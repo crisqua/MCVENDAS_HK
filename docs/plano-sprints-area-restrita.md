@@ -37,6 +37,14 @@ Isso resolve, sem debate, a decisão que estava em aberto no Sprint 0: **o `page
 
 ✅ **Sprint 8 concluído** (2026-08-17): painel do Consultor — Mensagens. Rota `/api/v1/minhas-mensagens` (entrada, saída, detalhe com marcação de lida, envio sempre pro admin), tela `/consultor/mensagens` com abas Entrada/Saída e resposta inline no modal. Validado em produção com consultor de teste.
 
+✅ **Sprint 9 concluído** (2026-08-17): `/painel/mensagens` do admin reestruturada em Entrada/Saída com resposta inline, mesmo padrão do consultor. Corrigido o bug do `GET /api/v1/mensagens`, que não filtrava por `remetente_id`. `/painel/mensagens/enviar` ficou separado, só pro disparo em massa. Refinamentos posteriores: destaque de linha não lida e correção de `lida_em` não atualizando após abrir a mensagem.
+
+✅ **Mural concluído** (2026-08-17): feed único visto por admin e consultores, com curtir e fixar/desafixar (só admin). Detalhes na seção 5.
+
+✅ **Auditoria de responsividade mobile concluída** (2026-08-27, fora do plano original): sidebar do painel virou nav horizontal no mobile, tabela de Consultores virou cards, botão "Nova Mensagem" do consultor corrigido. Detalhes na seção 6.
+
+✅ **Sprint 10 concluído** (2026-08-27): botão "Área Restrita" no `pagemc`, com menu hambúrguer mobile criado do zero. **Todas as sprints do plano estão concluídas.**
+
 ---
 
 ## 1. Arquitetura
@@ -186,7 +194,7 @@ Fora do escopo da área restrita (backlog do `pagemc`, independente): estender o
 **Decisões de desenho:**
 - CRUD fica atrás do `authGuard` (Sprint 1) + um novo `requireAdmin` — consultor não pode gerenciar outro consultor.
 - Criar consultor grava em duas tabelas (`usuarios` com `role='consultor'`, depois `consultores` com o `usuario_id`) — precisa de transação no `pg` para não deixar registro órfão se uma escrita falhar.
-- Sem envio de e-mail nesta sprint: o admin define a senha temporária na hora do cadastro (mesma lógica do `seed-admin.ts` do Sprint 1). Convite por e-mail é a decisão em aberto da seção 5.
+- Sem envio de e-mail nesta sprint: o admin define a senha temporária na hora do cadastro (mesma lógica do `seed-admin.ts` do Sprint 1). Convite por e-mail é a decisão em aberto da seção 7.
 
 **Backend (`server/`):**
 - `server/src/middleware/requireAdmin.ts` — garante `req.user.role === 'admin'`, roda depois do `authGuard`
@@ -215,7 +223,7 @@ Fora do escopo da área restrita (backlog do `pagemc`, independente): estender o
 **Decisões de desenho:**
 - Só admin envia (reusa `authGuard` + `requireAdmin`, mesmo padrão do Sprint 3).
 - Envio grava em transação: `mensagens` (assunto, corpo, `remetente_id` = admin logado) + `mensagens_destinatarios` (uma linha por consultor selecionado).
-- **Sem envio de e-mail nesta sprint** — mensagem fica só registrada no banco, pronta pra ser lida quando a área de Consultores existir. Decisão de e-mail real continua em aberto (seção 5).
+- **Sem envio de e-mail nesta sprint** — mensagem fica só registrada no banco, pronta pra ser lida quando a área de Consultores existir. Decisão de e-mail real continua em aberto (seção 7).
 - Sem edição/exclusão de mensagem — é um "enviar", não um documento editável.
 - ~~Destinatários: qualquer consultor cadastrado, ativo ou inativo~~ — **revisto em 2026-08-17**: só consultor **ativo** pode receber mensagem (validado no backend). Inativo aparece na lista com checkbox desabilitado, não desaparece. Adicionado também "selecionar todos os consultores ativos" — o teto de 200 destinatários por envio (Sprint 5) já cobre esse cenário sem precisar de limite à parte.
 
@@ -314,16 +322,17 @@ Login do consultor, leitura/resposta de mensagens, e o espelho disso no lado do 
 - Frontend: `/consultor/mensagens` — Entrada/Saída, modal de detalhe com resposta inline, layout próprio (sidebar simplificada, badge "Consultor")
 - **Entrega:** consultor loga, vê mensagens do admin, responde inline, manda mensagem nova — tudo validado em produção (login, leitura marcando `lida_em`, resposta criando item na Saída na hora)
 
-### Sprint 9 — Painel do Admin: Mensagens reestruturada
-- Backend: corrige `GET /api/v1/mensagens` pra filtrar `remetente_id = req.user.sub` E `having count(destinatarios) > 1` (só disparo em massa); novo `GET /api/v1/mensagens/saida-individual` (`remetente_id = me`, `count = 1`); novo `GET /api/v1/mensagens/recebidas` (`destinatario_id = me`). `GET /api/v1/mensagens/:id` já existe e não precisa mudar (sem filtro de direção, já reaproveitável)
-- Frontend: `/painel/mensagens` vira Entrada/Saída (com resposta inline, igual ao consultor); `/painel/mensagens/enviar` continua página própria, com o histórico de disparo em massa de volta
-- **Entrega:** admin recebe e responde mensagens de consultores inline, mantém o disparo em massa separado — tudo validado em produção
+### Sprint 9 — Painel do Admin: Mensagens reestruturada ✅ concluído (2026-08-17)
+- Backend: `GET /api/v1/mensagens` corrigido pra filtrar `remetente_id = req.user.sub` E `having count(destinatarios) > 1` (só disparo em massa); `GET /api/v1/mensagens/saida-individual` novo (`remetente_id = me`, `count = 1`); `GET /api/v1/mensagens/recebidas` novo (`destinatario_id = me`). `GET /api/v1/mensagens/:id` reaproveitado sem mudança
+- Frontend: `/painel/mensagens` virou Entrada/Saída com resposta inline (mesmo padrão do consultor); `/painel/mensagens/enviar` ficou página própria, com o histórico de disparo em massa
+- **Entrega:** admin recebe e responde mensagens de consultores inline, mantém o disparo em massa separado — validado em produção. Dois refinamentos posteriores, fora do escopo original: destaque visual de linha não lida na Entrada (admin e consultor) e correção de um bug em que `lida_em` não atualizava a tela depois de abrir a mensagem
 
-### Sprint 10 — Botão "Área Restrita" no pagemc
-- Opção B aprovada: link/popup simples no nav (ao lado de "Conexões") levando pro `/login` real do painel — sem formulário de login no site público
+### Sprint 10 — Botão "Área Restrita" no pagemc ✅ concluído (2026-08-27)
+- Link "Área Restrita" no nav do `index.html`, ao lado de "Conexões" — reaproveita a classe `.nav-link-profit` (já existia no CSS do pagemc, sem uso), leva pro `/login` real do painel em nova aba (`target="_blank"`), sem formulário de login no site público
+- **Escopo cresceu durante a validação do protótipo:** o pagemc não tinha nenhum tratamento de nav pro mobile — abaixo de 1024px, `.nav-links` simplesmente vira `display: none`, sem hambúrguer nem substituto, então "Conexões" e os outros links já somem hoje, e "Área Restrita" sumiria junto. Resolvido criando um **menu hambúrguer do zero**: botão `.nav-burger` (vira X ao abrir), painel `.mobile-menu` com todos os links empilhados + "Área Restrita" com a mesma borda de destaque. Decisão consciente: **"Falar com MC" continua visível na barra mobile** (fora do hambúrguer), igual já era antes — evita regredir a visibilidade do CTA principal do site
 - Só na `index.html` por enquanto (páginas públicas não compartilham template, replicar em outras páginas fica pra depois se fizer sentido)
-- Feito por último, com toda a cautela de sempre — diff revisado antes de qualquer push pros remotes do `pagemc`
-- **Entrega:** botão visível no site público, leva pro login do painel, sem nenhuma mudança de comportamento no resto do `pagemc`
+- Protótipo validado num Artifact antes de mexer no código; diff revisado e testado localmente (servidor estático + Playwright, desktop e mobile) antes do push nos dois remotes (`origin` = MCVENDAS_HK, `pagemc` = PageMC)
+- **Entrega:** botão visível no site público (desktop) e menu hambúrguer funcional no mobile, sem nenhuma mudança de comportamento no resto do `pagemc` (contador de visitantes, carrossel, abas de conteúdo intactos)
 
 ## 5. Mural (2026-08-17)
 
@@ -356,15 +365,39 @@ de `authGuard` (sem `requireAdmin`/`requireConsultor` — os dois roles acessam)
 duplicar composer/feed/curtir/fixar/polling nas duas árvores de rotas). "Mural" novo item nos dois
 menus laterais.
 
-**Status:** implementado e deployado em produção (2026-08-17); teste manual ponta a ponta (publicar
-dos dois lados, curtir, fixar) ainda a confirmar.
+**Status:** implementado e deployado em produção (2026-08-17), validado em uso (publicar dos dois
+lados, curtir, fixar) e com refinamentos posteriores no destaque de não lida.
 
-## 6. Decisões em aberto
+## 6. Auditoria de responsividade mobile (2026-08-27)
+
+Fora de qualquer sprint planejada — surgiu de prints reais do usuário mostrando o painel quebrado
+no celular, depois de todas as sprints originais já concluídas. Três bugs reais encontrados e
+corrigidos, todos no repo `painel-mc-treinamentos`:
+
+- **Sidebar de largura fixa** (`painel/layout.tsx` e `consultor/layout.tsx`): 224px fixos não
+  colapsavam, sobrando ~180px de conteúdo em telas de 412px. Abaixo de `md`, o menu vira nav
+  horizontal rolável no topo; volta a ser sidebar vertical a partir daí.
+- **Tabela de `/painel/consultores`** (6 colunas: nome, e-mail, telefone, especialidade, status,
+  ações): não cabia em 412px mesmo com a sidebar corrigida — precisava rolar de lado, com a coluna
+  "Nome" já fora da tela ao abrir. Vira cards empilhados abaixo de `md`; tabela original mantida
+  sem mudança em telas maiores.
+- **Botão "Nova Mensagem" do consultor** (`consultor/mensagens/message-history.tsx`): a barra que
+  junta as abas Entrada/Saída com o botão não tinha `flex-wrap`, estourando a borda da tela em
+  360px (Android comum). Corrigido com `flex-wrap`.
+
+De quebra, achado ao testar localmente: `.env.local.example` apontava pra uma URL de backend que
+não existe (`painel-mc-treinamentos-api.onrender.com`, com sufixo `-api` a mais) — corrigida pra
+`painel-mc-treinamentos.onrender.com`.
+
+Processo: cada fix foi visualmente confirmado (Playwright headless, viewport 412×915 e 360×780,
+sessão simulada com JWT assinado localmente já que não há acesso às credenciais reais de produção)
+antes do commit. Três commits em produção: `efca459`, `47e3697`, `30ab38c`.
+
+## 7. Decisões em aberto
 
 - Envio de mensagem dispara e-mail de verdade ou fica só na área restrita por enquanto?
-- Sprint 10 (botão "Área Restrita" no `pagemc`) ainda não foi implementada.
 
-## 7. Decisões já tomadas
+## 8. Decisões já tomadas
 
 - Janela de deduplicação do contador de visitantes: **1 ano** (`VISIT_TTL_SECONDS`), não 24h.
 - Armazenamento do contador: **Upstash Redis**, não Postgres — mantido como peça separada mesmo depois que o Supabase entrar em produção, por ser mais simples para essa necessidade (`INCR` atômico + TTL nativo).
