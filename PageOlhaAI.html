@@ -189,16 +189,12 @@
     margin-top: 28px;
   }
   .hero-eye-wrap { display: flex; justify-content: center; }
-  #hero-eye { width: 100%; max-width: 420px; height: auto; }
-  #eye-root { transform-box: fill-box; transform-origin: center; }
-  #eye-root.blink { animation: blinkAnim 260ms ease-in-out; }
-  @keyframes blinkAnim {
-    0% { transform: scaleY(1); }
-    45% { transform: scaleY(0.05); }
-    100% { transform: scaleY(1); }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    #eye-root.blink { animation: none; }
+  #hero-eye {
+    width: 100%;
+    max-width: 420px;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 24px;
   }
 
   /* ---------- sections ---------- */
@@ -411,35 +407,7 @@
         </div>
       </div>
       <div class="hero-eye-wrap">
-        <svg id="hero-eye" viewBox="0 0 400 260" role="img" aria-label="Ilustração de um olho, símbolo da Olha.AI">
-          <defs>
-            <clipPath id="eyeClip">
-              <path d="M20,140 C110,42 290,42 380,140 C290,238 110,238 20,140 Z" />
-            </clipPath>
-            <radialGradient id="irisGrad" cx="35%" cy="32%" r="75%">
-              <stop offset="0%" style="stop-color:var(--accent-soft)" />
-              <stop offset="55%" style="stop-color:var(--accent)" />
-              <stop offset="100%" style="stop-color:var(--accent-deep)" />
-            </radialGradient>
-          </defs>
-          <g id="eye-root">
-            <path d="M20,140 C110,42 290,42 380,140 C290,238 110,238 20,140 Z" fill="var(--bg-raised)" stroke="var(--ink)" stroke-width="5" />
-            <g clip-path="url(#eyeClip)">
-              <g id="iris-group" transform="translate(200,140)">
-                <circle r="72" fill="url(#irisGrad)" />
-                <circle r="33" fill="var(--ink)" />
-                <circle cx="-15" cy="-16" r="10" fill="#fff" opacity="0.8" />
-              </g>
-            </g>
-            <path d="M20,140 C110,42 290,42 380,140" fill="none" stroke="var(--ink)" stroke-width="6" stroke-linecap="round" />
-            <g stroke="var(--ink)" stroke-width="4" stroke-linecap="round">
-              <path d="M96,66 L84,44" />
-              <path d="M150,46 L142,22" />
-              <path d="M250,46 L258,22" />
-              <path d="M304,66 L316,44" />
-            </g>
-          </g>
-        </svg>
+        <img id="hero-eye" src="hero-eye-mosaic-negocios-reais.jpeg" alt="Mosaico de anúncios de diversos segmentos ao redor da mensagem: negócios reais, resultados de verdade" />
       </div>
     </div>
   </section>
@@ -565,44 +533,5 @@
   </div>
 </footer>
 
-<script>
-  (function () {
-    var svg = document.getElementById('hero-eye');
-    var eyeRoot = document.getElementById('eye-root');
-    var irisGroup = document.getElementById('iris-group');
-    if (!svg || !irisGroup) return;
-    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    if (reduced) return;
-
-    var targetX = 0, targetY = 0, curX = 0, curY = 0;
-    var maxOffset = 22;
-
-    window.addEventListener('mousemove', function (e) {
-      var rect = svg.getBoundingClientRect();
-      var cx = rect.left + rect.width / 2;
-      var cy = rect.top + rect.height / 2;
-      var dx = (e.clientX - cx) / (rect.width / 2);
-      var dy = (e.clientY - cy) / (rect.height / 2);
-      var dist = Math.min(1, Math.hypot(dx, dy));
-      var ang = Math.atan2(dy, dx);
-      targetX = Math.cos(ang) * dist * maxOffset;
-      targetY = Math.sin(ang) * dist * maxOffset * 0.6;
-    }, { passive: true });
-
-    function tick() {
-      curX += (targetX - curX) * 0.12;
-      curY += (targetY - curY) * 0.12;
-      irisGroup.setAttribute('transform', 'translate(' + (200 + curX) + ',' + (140 + curY) + ')');
-      requestAnimationFrame(tick);
-    }
-    tick();
-
-    setTimeout(function () {
-      eyeRoot.classList.add('blink');
-      setTimeout(function () { eyeRoot.classList.remove('blink'); }, 280);
-    }, 900);
-  })();
-</script>
 </body>
 </html>
