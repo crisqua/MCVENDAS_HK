@@ -10,6 +10,7 @@ Site institucional da MC Treinamentos (Engenharia Comportamental). Conjunto de p
 - `admin-prototipo.html` e `prototipo-contador-visitantes.html` — protótipos visuais/interativos soltos na raiz, **não são páginas do site publicado**, servem só de referência de design/lógica. Não linkar a partir das páginas reais sem que isso seja pedido explicitamente.
 - `PageOlhaAI.html` e `olha-ai-briefing.html` — protótipos da Olha.AI (nova marca do Grupo MC). **Ainda não fazem parte do site publicado**: não linkar nem divulgar a partir das páginas reais até que seja pedido.
 - `consciencia-executiva.html` — protótipo da landing page de vendas do Consciência Executiva (assinatura semestral de atendimentos individuais com Madalena Carvalho, método CCR). CTA aponta direto para o Checkout Nubank oficial. **Ainda não faz parte do site publicado**: não linkar nem divulgar a partir das páginas reais até que seja pedido.
+- `consciencia-executiva-termos.html` — Política de Privacidade e Termos de Contratação do Consciência Executiva (texto integral do PDF v1.0 de 22/10/2026), linkada só a partir do rodapé de `consciencia-executiva.html`. Também é protótipo, mesma regra acima.
 - `assets/` — imagens. `consciencia-executiva-logo.png` é o logo oficial (original, fundo cinza); `consciencia-executiva-logo-transparente.png` é a versão web recortada, usada na `consciencia-executiva.html`.
 
 ## Deploy

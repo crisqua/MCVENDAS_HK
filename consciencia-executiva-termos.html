@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Privacidade e Termos — Consciência Executiva</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Karla:wght@400;500;600;700&display=swap">
+<style>
+  :root{
+    --bg:#f7f4ec;
+    --surface:#ffffff;
+    --ink:#0e1c34;
+    --ink-dim:#56607a;
+    --navy:#0c2142;
+    --gold:#9c7a34;
+    --gold-bright:#b4903f;
+    --line:rgba(14,28,52,.14);
+    --on-navy:#eef1f8;
+    --display:"Cormorant Garamond", Georgia, "Times New Roman", serif;
+    --text:"Karla", "Segoe UI", Arial, sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth;}
+  html,body{margin:0;padding:0;}
+  body{background:var(--bg); color:var(--ink); font-family:var(--text); -webkit-font-smoothing:antialiased;}
+  h1,h2,h3{font-family:var(--display); font-weight:600; margin:0; text-wrap:balance;}
+
+  header.top{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 24px; gap:16px; flex-wrap:wrap;
+    border-bottom:1px solid var(--line);
+    max-width:1040px; margin:0 auto;
+  }
+  .mark img{height:52px; width:auto; display:block;}
+  header.top nav{display:flex; gap:20px; flex-wrap:wrap;}
+  header.top nav a{
+    font-size:.82rem; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--ink-dim); text-decoration:none; border-bottom:1px solid transparent;
+  }
+  header.top nav a:hover,header.top nav a:focus-visible{color:var(--gold); border-color:var(--gold);}
+
+  .doc{max-width:760px; margin:0 auto; padding:clamp(40px,7vw,80px) 24px clamp(56px,8vw,96px);}
+  .eyebrow{font-weight:700; font-size:.72rem; letter-spacing:.24em; text-transform:uppercase; color:var(--gold-bright);}
+  .doc-head{display:flex; flex-direction:column; gap:14px; padding-bottom:28px; border-bottom:1px solid var(--line); margin-bottom:28px;}
+  .doc-head h1{font-size:clamp(2rem,5vw,3rem); color:var(--navy); line-height:1.1;}
+  .version{font-size:.84rem; color:var(--ink-dim); letter-spacing:.02em;}
+
+  .toc{display:flex; gap:12px; flex-wrap:wrap; margin-bottom:8px;}
+  .toc a{
+    font-size:.84rem; color:var(--navy); text-decoration:none;
+    border:1px solid var(--gold); padding:9px 16px; border-radius:2px;
+  }
+  .toc a:hover,.toc a:focus-visible{background:var(--navy); color:var(--on-navy);}
+
+  .doc p, .doc li{font-size:1rem; line-height:1.75; color:var(--ink-dim);}
+  .doc p{margin:0 0 14px;}
+  .doc strong{color:var(--ink); font-weight:600;}
+
+  .part{
+    font-size:clamp(1.6rem,3.6vw,2.2rem); color:var(--navy);
+    margin:56px 0 8px; padding-top:28px; border-top:3px solid var(--gold);
+    scroll-margin-top:20px;
+  }
+  .doc h2.art{font-size:1.45rem; color:var(--ink); margin:36px 0 12px;}
+  .doc h3{font-family:var(--text); font-size:.95rem; font-weight:700; color:var(--ink); margin:22px 0 6px;}
+  .doc ul{margin:0 0 14px; padding:0; list-style:none; display:flex; flex-direction:column; gap:8px;}
+  .doc ul li{padding-left:18px; position:relative;}
+  .doc ul li::before{content:"—"; position:absolute; left:0; color:var(--gold);}
+
+  .optin{
+    background:var(--surface); border:1px solid var(--line); border-left:3px solid var(--gold);
+    padding:16px 18px; font-style:italic;
+  }
+  .notice{background:var(--surface); border:1px solid var(--line); padding:16px 18px;}
+
+  table{width:100%; border-collapse:collapse; margin:6px 0 18px; font-size:.92rem; background:var(--surface);}
+  th,td{text-align:left; vertical-align:top; padding:12px 14px; border:1px solid var(--line); line-height:1.5;}
+  th{background:var(--navy); color:var(--on-navy); font-weight:600; font-size:.78rem; letter-spacing:.08em; text-transform:uppercase;}
+  td{color:var(--ink-dim);}
+  @media (max-width:640px){
+    table, thead, tbody, tr, th, td{display:block;}
+    thead{display:none;}
+    tr{border:1px solid var(--line); margin-bottom:10px;}
+    td{border:none; border-bottom:1px solid var(--line); padding:10px 14px;}
+    td:last-child{border-bottom:none;}
+    td::before{content:attr(data-label); display:block; font-size:.68rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); margin-bottom:4px;}
+  }
+
+  .company{margin-top:48px; padding-top:24px; border-top:1px solid var(--line);}
+  .company p{margin:0 0 4px;}
+  .back{display:inline-block; margin-top:32px; color:var(--navy); font-size:.9rem; text-decoration:none; border-bottom:1px solid var(--gold);}
+
+  .proto{
+    position:fixed; left:12px; bottom:12px;
+    padding:6px 12px; border-radius:999px; background:var(--navy); color:var(--gold-bright);
+    border:1px solid var(--gold); font-size:.68rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
+    z-index:20;
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <a class="mark" href="consciencia-executiva.html">
+    <img src="assets/consciencia-executiva-logo-transparente.png" alt="Consciência Executiva — Madalena Carvalho" width="900" height="309">
+  </a>
+  <nav>
+    <a href="#privacidade">Privacidade</a>
+    <a href="#termos">Termos</a>
+  </nav>
+</header>
+
+<main class="doc">
+  <div class="doc-head">
+    <span class="eyebrow">MC Treinamentos Gerenciais · Programa Consciência Executiva</span>
+    <h1>Política de Privacidade e Termos de Contratação</h1>
+    <span class="version">Versão 1.0 · Data de publicação: 22 de outubro de 2026 · Última atualização: 22 de outubro de 2026</span>
+  </div>
+
+  <p>Este documento estabelece as regras de privacidade, proteção de dados pessoais e contratação do programa Consciência Executiva, oferecido pela MC Treinamentos Gerenciais.</p>
+  <p>Aplica-se à Landing Page do programa, aos formulários de contato, às comunicações com interessados e participantes e à contratação dos atendimentos individuais.</p>
+  <p>A Política de Privacidade e os Termos de Contratação devem ser interpretados em conjunto com a legislação aplicável, especialmente a Lei nº 13.709/2018 (Lei Geral de Proteção de Dados Pessoais - LGPD), o Código de Defesa do Consumidor (CDC) e as normas aplicáveis ao comércio eletrônico.</p>
+
+  <nav class="toc" aria-label="Partes do documento">
+    <a href="#privacidade">Parte I · Política de Privacidade</a>
+    <a href="#termos">Parte II · Termos de Contratação</a>
+  </nav>
+
+  <!-- PARTE I -->
+  <h2 class="part" id="privacidade">Parte I: Política de Privacidade</h2>
+
+  <h2 class="art">Art. 1º. Identificação do responsável pelo tratamento</h2>
+  <p><strong>Controlador dos dados pessoais:</strong> MC Treinamentos Gerenciais.<br>
+  <strong>CNPJ:</strong> 46.590.965/0001-82.<br>
+  <strong>Responsável:</strong> Maria Madalena de Carvalho Lima.<br>
+  <strong>Canal para assuntos de privacidade e proteção de dados:</strong> madalena@madalenacarvalho.com.br.<br>
+  <strong>Endereço comercial:</strong> Avenida Paulista, 726, conjunto 1202, São Paulo, SP, CEP 01310-910.</p>
+  <p>A MC Treinamentos Gerenciais é responsável pelas decisões relacionadas ao tratamento dos dados pessoais coletados no âmbito do programa Consciência Executiva, respeitadas as responsabilidades próprias de terceiros que tratem dados em seus ambientes e sistemas.</p>
+
+  <h2 class="art">Art. 2º. Quais dados pessoais podem ser coletados</h2>
+  <p>Os dados coletados dependem da interação do titular com a MC Treinamentos Gerenciais.</p>
+  <h3>2.1. Visitantes da Landing Page</h3>
+  <p>Durante a navegação, poderão ser tratados dados técnicos necessários ao funcionamento, à segurança e à manutenção da página, incluindo informações sobre o dispositivo, navegador, endereço IP e registros de acesso.</p>
+  <h3>2.2. Pessoas interessadas no programa</h3>
+  <p>Quando uma pessoa preencher o formulário de contato ou solicitar informações, poderão ser coletados: nome, endereço de e-mail, número de telefone (caso solicitado) e informações voluntárias sobre o motivo do contato. O preenchimento não obriga a contratação.</p>
+  <h3>2.3. Participantes contratantes</h3>
+  <p>Para formalizar e executar a contratação, poderão ser tratados: nome completo, e-mail, telefone, registro do pagamento, histórico de agendamentos e informações profissionais/pessoais compartilhadas voluntariamente durante os encontros. Não serão solicitados dados pessoais sensíveis como condição para contratar.</p>
+  <h3>2.4. Dados de pagamento</h3>
+  <p>O pagamento será realizado no ambiente de checkout disponibilizado pelo Nubank. A MC Treinamentos Gerenciais não solicita dados completos do cartão diretamente em seus formulários. O tratamento no ambiente do prestador de pagamento segue suas próprias políticas.</p>
+
+  <h2 class="art">Art. 3º. Finalidades e bases legais do tratamento</h2>
+  <table>
+    <thead><tr><th>Finalidade</th><th>Dados envolvidos</th><th>Base legal aplicável</th></tr></thead>
+    <tbody>
+      <tr><td data-label="Finalidade">Responder a pedidos de informação</td><td data-label="Dados envolvidos">Nome, e-mail, telefone e conteúdo da solicitação</td><td data-label="Base legal">Procedimentos preliminares ou legítimo interesse</td></tr>
+      <tr><td data-label="Finalidade">Formalizar a contratação e realizar atendimentos</td><td data-label="Dados envolvidos">Dados de identificação, contato e agendamento</td><td data-label="Base legal">Execução de contrato</td></tr>
+      <tr><td data-label="Finalidade">Processar e conferir pagamentos</td><td data-label="Dados envolvidos">Registros da transação</td><td data-label="Base legal">Execução de contrato e obrigação legal</td></tr>
+      <tr><td data-label="Finalidade">Cumprir obrigações fiscais e legais</td><td data-label="Dados envolvidos">Dados contratuais e financeiros</td><td data-label="Base legal">Cumprimento de obrigação legal</td></tr>
+      <tr><td data-label="Finalidade">Enviar ofertas e novidades (se autorizado)</td><td data-label="Dados envolvidos">Dados de contato</td><td data-label="Base legal">Consentimento específico</td></tr>
+    </tbody>
+  </table>
+
+  <h2 class="art">Art. 4º. Formulário de contato e comunicações comerciais</h2>
+  <p>O formulário destina-se a facilitar o atendimento de interessados. <strong>O fornecimento de dados para solicitar informações não implica autorização automática para receber campanhas promocionais.</strong></p>
+  <p>Quando o formulário for implementado, conterá uma caixa de seleção <strong>desmarcada por padrão</strong>, com a seguinte redação:</p>
+  <p class="optin">[ ] Quero receber novidades, conteúdos e ofertas da MC Treinamentos Gerenciais por e-mail ou WhatsApp. Sei que posso retirar essa autorização a qualquer momento.</p>
+
+  <h2 class="art">Art. 5º. Compartilhamento de dados pessoais</h2>
+  <p>Os dados poderão ser compartilhados, na medida necessária, com:</p>
+  <ul>
+    <li><strong>Plataforma de hospedagem e formulários:</strong> Lovable (hospedagem da aplicação) e provedores de banco de dados associados, para funcionamento da página e armazenamento seguro de solicitações.</li>
+    <li><strong>Nubank e prestadores de pagamento:</strong> Limitado ao necessário para realização e confirmação da transação.</li>
+    <li><strong>Prestadores administrativos e contábeis:</strong> Para atividades fiscais e financeiras.</li>
+    <li><strong>Autoridades públicas:</strong> Quando exigido por lei.</li>
+  </ul>
+
+  <h2 class="art">Art. 6º. Retenção e eliminação dos dados</h2>
+  <ul>
+    <li><strong>Contatos que não contrataram:</strong> Até 12 meses após a última interação.</li>
+    <li><strong>Dados de participantes e registros contratuais:</strong> Pelo período de execução do contrato e, após o encerramento, pelos prazos legais aplicáveis (ex: 5 anos para fins fiscais).</li>
+    <li>Encerrado o prazo, os dados serão eliminados ou anonimizados, ressalvadas hipóteses legais de conservação.</li>
+  </ul>
+
+  <h2 class="art">Art. 7º. Direitos dos titulares</h2>
+  <p>O titular poderá solicitar confirmação de tratamento, acesso, correção, eliminação de dados excessivos, portabilidade (quando aplicável) e revogação de consentimento. Solicitações devem ser encaminhadas para: <strong>madalena@madalenacarvalho.com.br</strong>.</p>
+
+  <h2 class="art">Art. 8º. Segurança da informação</h2>
+  <p>A MC Treinamentos Gerenciais adotará medidas técnicas e administrativas proporcionais (controles de acesso, sistemas atualizados) para reduzir riscos. A segurança também depende dos recursos oferecidos pelos prestadores tecnológicos (como o Lovable).</p>
+
+  <h2 class="art">Art. 9º. Cookies e tecnologias semelhantes</h2>
+  <p>Atualmente, a Landing Page utiliza <strong>apenas cookies estritamente necessários</strong> ao funcionamento e à segurança da plataforma Lovable. <strong>Não utilizamos</strong>, neste momento, cookies de terceiros para fins de publicidade, rastreamento de comportamento ou análise de tráfego (como Google Analytics ou Meta Pixel). Caso essa prática seja implementada no futuro, esta política será atualizada e os mecanismos de consentimento adequados serão disponibilizados.</p>
+
+  <h2 class="art">Art. 10. Atualizações desta política</h2>
+  <p>Esta política poderá ser atualizada para refletir mudanças na legislação ou no funcionamento do programa. A versão vigente será sempre a disponível na Landing Page.</p>
+
+  <!-- PARTE II -->
+  <h2 class="part" id="termos">Parte II: Termos de Contratação do Consciência Executiva</h2>
+
+  <h2 class="art">Art. 11. Identificação do serviço</h2>
+  <p>O Consciência Executiva é um programa de acompanhamento individual oferecido pela MC Treinamentos Gerenciais e conduzido por Madalena Carvalho, utilizando o método CCR (Consciência, Compromisso e Resultado). Não se trata de curso gravado, treinamento coletivo ou atendimento automatizado.</p>
+
+  <h2 class="art">Art. 12. Formato e duração</h2>
+  <p>A contratação compreende:</p>
+  <ul>
+    <li>Um ciclo de seis (6) meses.</li>
+    <li>Seis (6) atendimentos individuais (um por mês).</li>
+    <li>Sessenta (60) minutos por atendimento.</li>
+    <li>Agendamento prévio, conforme disponibilidade de agenda.</li>
+  </ul>
+
+  <h2 class="art">Art. 13. Agendamento dos encontros</h2>
+  <p>Os atendimentos serão agendados de segunda a sexta-feira, entre 9h e 20h. O participante deverá utilizar o canal de contato informado após a contratação para combinar os horários. O programa não inclui atendimento emergencial ou disponibilidade contínua fora dos encontros agendados.</p>
+
+  <h2 class="art">Art. 14. Reagendamentos, faltas e atrasos (Regra de Governabilidade)</h2>
+  <p>Para garantir a qualidade e o respeito à agenda de ambas as partes, aplicam-se as seguintes regras:</p>
+  <ul>
+    <li><strong>Reagendamento:</strong> O participante poderá solicitar o reagendamento com antecedência mínima de <strong>24 (vinte e quatro) horas</strong>. Será permitido até <strong>1 (um) reagendamento</strong> por ciclo semestral sem ônus adicional.</li>
+    <li><strong>Faltas e Atrasos:</strong> Cancelamentos com menos de 24 horas de antecedência, ausências sem aviso prévio ou atrasos superiores a 15 (quinze) minutos por parte do participante serão considerados como <strong>sessão realizada e consumida</strong>, não havendo direito a reposição, extensão do ciclo ou reembolso do valor da sessão.</li>
+    <li><strong>Cancelamento pela MC:</strong> Caso a impossibilidade de realização decorra da MC Treinamentos Gerenciais, será oferecida nova data em até 7 dias, sem prejuízo ao participante.</li>
+  </ul>
+
+  <h2 class="art">Art. 15. Investimento e pagamento</h2>
+  <p>O valor total do ciclo semestral do Consciência Executiva é de <strong>R$ 882,00 (oitocentos e oitenta e dois reais)</strong>.</p>
+  <p>O pagamento será realizado pelo checkout disponibilizado pelo Nubank, podendo ser à vista ou parcelado em até 6 (seis) vezes de R$ 147,00, conforme condições do momento da contratação.</p>
+  <p class="notice"><strong>Atenção:</strong> O programa não constitui assinatura de cobrança mensal recorrente automática. Trata-se de uma contratação semestral única.</p>
+
+  <h2 class="art">Art. 16. Início e vigência do ciclo</h2>
+  <p>O ciclo terá início após a confirmação do pagamento e agendamento do primeiro encontro. As datas dos encontros seguintes serão combinadas durante o ciclo, respeitada a frequência mensal.</p>
+
+  <h2 class="art">Art. 17. Cancelamento e Direito de Arrependimento</h2>
+  <ul>
+    <li><strong>Direito de Arrependimento (até 7 dias):</strong> Nos termos do Art. 49 do CDC, o participante pode solicitar o cancelamento total em até 7 (sete) dias corridos após a confirmação do pagamento, com <strong>reembolso de 100%</strong> do valor pago, sem necessidade de justificativa.</li>
+    <li><strong>Cancelamento após o início do ciclo (após o 7º dia):</strong> O participante poderá solicitar o cancelamento. Neste caso, será devido o <strong>reembolso proporcional apenas dos encontros que ainda não foram realizados</strong>, deduzida uma taxa administrativa de 10% (dez por cento) sobre o valor remanescente, para cobrir custos de reserva de agenda, curadoria e processamento.</li>
+    <li><strong>Forma de devolução:</strong> O reembolso será realizado via <strong>estorno no próprio cartão de crédito</strong> utilizado na compra (processado pelo Nubank), em até 10 (dez) dias úteis após a formalização e aprovação do pedido de cancelamento.</li>
+  </ul>
+
+  <h2 class="art">Art. 18. Encerramento e renovação</h2>
+  <p>O contrato se encerra ao final do ciclo semestral contratado. <strong>Não haverá renovação automática nem cobrança de um novo ciclo semestral sem nova contratação expressa e autorização do participante.</strong></p>
+
+  <h2 class="art">Art. 19. Natureza e limites do serviço</h2>
+  <p>O trabalho busca contribuir para a compreensão de questões profissionais e definição de ações. A aplicação do método não representa garantia de resultados específicos, financeiros ou profissionais. O serviço não substitui atendimento médico, psicológico, jurídico ou contábil. O participante permanece responsável por suas próprias decisões.</p>
+
+  <h2 class="art">Art. 20. Confidencialidade</h2>
+  <p>As informações compartilhadas durante os encontros serão tratadas com discrição. O participante deverá evitar compartilhar segredos comerciais ou dados pessoais de terceiros sem autorização. A confidencialidade não impede o cumprimento de determinações legais válidas.</p>
+
+  <h2 class="art">Art. 21. Propriedade intelectual</h2>
+  <p>O método CCR e os materiais disponibilizados permanecem protegidos pela legislação. A contratação autoriza o uso exclusivo para fins pessoais e profissionais do participante, sendo vedada a reprodução, distribuição ou comercialização sem autorização expressa.</p>
+
+  <h2 class="art">Art. 22. Atendimento e comunicação</h2>
+  <p>Dúvidas relacionadas à contratação, agendamento, pagamento ou execução do programa poderão ser encaminhadas para:</p>
+  <p><strong>E-mail:</strong> madalena@madalenacarvalho.com.br<br>
+  <strong>WhatsApp (Atendimento):</strong> +55 11 95897.5491</p>
+
+  <h2 class="art">Art. 23. Disposições finais</h2>
+  <p>A contratação deverá ocorrer após a disponibilização prévia destes Termos e da Política de Privacidade. Os casos não previstos serão tratados conforme a legislação aplicável e os princípios da boa-fé. Fica preservado o direito do consumidor de recorrer aos órgãos competentes (como o PROCON) para a defesa de seus direitos.</p>
+
+  <div class="company">
+    <p><strong>MC TREINAMENTOS GERENCIAIS</strong></p>
+    <p>CNPJ: 46.590.965/0001-82</p>
+    <p>Endereço: Avenida Paulista, 726, conjunto 1202, São Paulo, SP, CEP 01310-910.</p>
+    <p>E-mail: madalena@madalenacarvalho.com.br</p>
+  </div>
+
+  <a class="back" href="consciencia-executiva.html">← Voltar para o Consciência Executiva</a>
+</main>
+
+<div class="proto">Protótipo</div>
+
+</body>
+</html>
