@@ -9,6 +9,7 @@ Site institucional da MC Treinamentos (Engenharia Comportamental). Conjunto de p
 - `api/` — funções serverless do Vercel (Node.js). Hoje contém só `visita.js` (contador de visitantes).
 - `docs/plano-sprints-area-restrita.md` — roadmap da futura área restrita (Administrador + Consultores).
 - `docs/plano-sprints-portal-grupo-mc.md` — plano da troca de home para o Portal Grupo MC e promoção do Consciência Executiva a página publicada.
+- `docs/plano-sprints-leads-divulgacao.md` — plano de divulgação e geração de leads com tráfego pago (diagnóstico de rastreamento/conversão, sprints 1 a 4 e código do Pixel/GA4). Status: planejado.
 - `admin-prototipo.html` e `prototipo-contador-visitantes.html` — protótipos visuais/interativos soltos na raiz, **não são páginas do site publicado**, servem só de referência de design/lógica. Não linkar a partir das páginas reais sem que isso seja pedido explicitamente.
 - `PageOlhaAI.html` e `olha-ai-briefing.html` — protótipos da Olha.AI (nova marca do Grupo MC). **Ainda não fazem parte do site publicado**: não linkar nem divulgar a partir das páginas reais até que seja pedido.
 - `assets/` — imagens. `consciencia-executiva-logo.png` é o logo oficial (original, fundo cinza); `consciencia-executiva-logo-transparente.png` é a versão web recortada, usada na `consciencia-executiva.html`.
