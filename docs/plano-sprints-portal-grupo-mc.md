@@ -2,7 +2,7 @@
 
 **Projeto:** MC Treinamentos — site institucional (`pagemc`)
 **Escopo deste documento:** mudar a página principal (`/`) de "home do MC Treinamentos" para o **Portal Grupo MC** (3 cards), movendo o conteúdo atual de MC Treinamentos para `/mc-treinamentos`, e tirando o `consciencia-executiva.html` do status de protótipo.
-**Status:** plano em revisão (03/11/2026) — nada foi alterado no código ainda.
+**Status:** ✅ Sprints A e B concluídas e em produção (03/11/2026).
 
 ## Contexto / decisões já tomadas
 
@@ -17,23 +17,29 @@
 
 ---
 
-## Sprint A — Consciência Executiva sai do status de protótipo
+## Sprint A — Consciência Executiva sai do status de protótipo ✅ concluído (03/11/2026)
 
-- Remover a badge fixa "Protótipo" (`.proto`) de `consciencia-executiva.html` e `consciencia-executiva-termos.html`.
-- Atualizar `CLAUDE.md`: essas duas páginas deixam de estar na lista de "ainda não fazem parte do site publicado".
-- URL pública: `/consciencia-executiva` (já funciona via `cleanUrls` do `vercel.json`, sem precisar de redirect novo).
-- Decisão a confirmar com o usuário: contador de visitantes também nessa página, ou só no site principal por enquanto?
+- Badge fixa "Protótipo" (`.proto`) removida de `consciencia-executiva.html` e `consciencia-executiva-termos.html`.
+- `CLAUDE.md` atualizado: essas duas páginas saem da lista de "ainda não fazem parte do site publicado".
+- URL pública no ar: `/consciencia-executiva`.
+- Decisão em aberto (não bloqueante): contador de visitantes também nessa página, ou só no site principal por enquanto?
 
-## Sprint B — Nova página principal: Portal Grupo MC
+## Sprint B — Nova página principal: Portal Grupo MC ✅ concluído (03/11/2026)
 
-- Renomear o `index.html` atual → `mc-treinamentos.html` (mesmo conteúdo, só muda de rota para `/mc-treinamentos`).
-- Criar o novo `index.html` = Portal Grupo MC (promover o protótipo do artifact para arquivo real), com os 3 cards:
+- `index.html` renomeado para `mc-treinamentos.html`, servido em `/mc-treinamentos`.
+- Novo `index.html` no ar = Portal Grupo MC, com os 3 cards na ordem final (ajustada a pedido do usuário):
+  - **Consciência Executiva** → `/consciencia-executiva`
   - **MC Treinamentos** → `/mc-treinamentos`
-  - **Consciência Executiva** → `/consciencia-executiva` (real, sem "link a definir")
-  - **DesenvolvaIN** → "em breve" até o link chegar
-- Atualizar os links internos de "home"/logo em todas as outras páginas do site (`dispersao-executiva.html`, `risco-silencioso.html`, `raio-x-posicionamento.html`, `lista-espera-mentorias.html`, `profitmc.html`, `politica-de-privacidade.html`, `lideranca-sob-pressao-landing.html`) — hoje apontam para `/`, precisam passar a apontar para `/mc-treinamentos`.
-- Replicar o script do contador de visitantes em `mc-treinamentos.html` (hoje embutido só no `index.html` original) e decidir se o portal novo também conta visita.
+  - **DesenvolvaIN** → card desativado, "Em breve" (sem link clicável)
+- Links internos de "home"/logo atualizados em todas as outras páginas (`dispersao-executiva.html`, `risco-silencioso.html`, `raio-x-posicionamento.html`, `lista-espera-mentorias.html`, `profitmc.html`, `politica-de-privacidade.html`, `lideranca-sob-pressao-landing.html`) — agora apontam para `/mc-treinamentos`.
+- Contador de visitantes replicado no `index.html` novo, além de `mc-treinamentos.html`.
+- Publicado em produção: commits `bb224b8` (mudança principal) e `de4ff94` (reordenação dos cards), enviados pra `origin` e `pagemc`.
+
+## Pendências que seguem em aberto
+
+- Link do site da **DesenvolvaIN** — card 3 continua em "Em breve" até chegar.
+- Se `consciencia-executiva.html` também deve ganhar o contador de visitantes.
 
 ## Regra de ouro
 
-Seguir o fluxo plano → revisão → implementação: nada deste plano é implementado até confirmação explícita, sprint por sprint. `pagemc` está em produção — confirmar antes de qualquer `git push`.
+Seguir o fluxo plano → revisão → implementação. `pagemc` está em produção — confirmar antes de qualquer `git push`.
