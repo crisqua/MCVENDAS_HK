@@ -4,13 +4,13 @@ Site institucional da MC Treinamentos (Engenharia Comportamental). Conjunto de p
 
 ## Estrutura
 
-- Páginas públicas: arquivos `.html` soltos na raiz (`index.html`, `dispersao-executiva.html`, `lideranca-sob-pressao-landing.html`, `risco-silencioso.html`, `raio-x-posicionamento.html`, `lista-espera-mentorias.html`, `profitmc.html`, `politica-de-privacidade.html`). Sem framework, sem build step — cada página é autocontida (CSS/JS inline).
+- `index.html` — **Portal Grupo MC** (nova home, 3 cards: MC Treinamentos, Consciência Executiva, DesenvolvaIN). Ver `docs/plano-sprints-portal-grupo-mc.md`.
+- Páginas públicas: `mc-treinamentos.html` (ex-`index.html`, site de MC Treinamentos, servido em `/mc-treinamentos`), `consciencia-executiva.html` (landing de vendas da assinatura semestral com Madalena Carvalho, método CCR, CTA direto pro Checkout Nubank oficial, servida em `/consciencia-executiva`), `consciencia-executiva-termos.html` (Política de Privacidade e Termos de Contratação do Consciência Executiva, texto integral do PDF v1.0 de 22/10/2026, linkada só a partir do rodapé de `consciencia-executiva.html`), `dispersao-executiva.html`, `lideranca-sob-pressao-landing.html`, `risco-silencioso.html`, `raio-x-posicionamento.html`, `lista-espera-mentorias.html`, `profitmc.html`, `politica-de-privacidade.html`. Sem framework, sem build step — cada página é autocontida (CSS/JS inline).
 - `api/` — funções serverless do Vercel (Node.js). Hoje contém só `visita.js` (contador de visitantes).
 - `docs/plano-sprints-area-restrita.md` — roadmap da futura área restrita (Administrador + Consultores).
+- `docs/plano-sprints-portal-grupo-mc.md` — plano da troca de home para o Portal Grupo MC e promoção do Consciência Executiva a página publicada.
 - `admin-prototipo.html` e `prototipo-contador-visitantes.html` — protótipos visuais/interativos soltos na raiz, **não são páginas do site publicado**, servem só de referência de design/lógica. Não linkar a partir das páginas reais sem que isso seja pedido explicitamente.
 - `PageOlhaAI.html` e `olha-ai-briefing.html` — protótipos da Olha.AI (nova marca do Grupo MC). **Ainda não fazem parte do site publicado**: não linkar nem divulgar a partir das páginas reais até que seja pedido.
-- `consciencia-executiva.html` — protótipo da landing page de vendas do Consciência Executiva (assinatura semestral de atendimentos individuais com Madalena Carvalho, método CCR). CTA aponta direto para o Checkout Nubank oficial. **Ainda não faz parte do site publicado**: não linkar nem divulgar a partir das páginas reais até que seja pedido.
-- `consciencia-executiva-termos.html` — Política de Privacidade e Termos de Contratação do Consciência Executiva (texto integral do PDF v1.0 de 22/10/2026), linkada só a partir do rodapé de `consciencia-executiva.html`. Também é protótipo, mesma regra acima.
 - `assets/` — imagens. `consciencia-executiva-logo.png` é o logo oficial (original, fundo cinza); `consciencia-executiva-logo-transparente.png` é a versão web recortada, usada na `consciencia-executiva.html`.
 
 ## Deploy
@@ -21,13 +21,13 @@ Site institucional da MC Treinamentos (Engenharia Comportamental). Conjunto de p
 
 ## Contador de visitantes (implementado)
 
-Vercel Function `api/visita.js`, chamada via `fetch('/api/visita', { method: 'POST' })` no `<script>` de `index.html`. Preenche o `<span id="visitor-count">` do rodapé.
+Vercel Function `api/visita.js`, chamada via `fetch('/api/visita', { method: 'POST' })` no `<script>` de `index.html` (Portal Grupo MC) e de `mc-treinamentos.html`. Preenche o `<span id="visitor-count">` do rodapé em cada página.
 
 Lógica: lê o IP do header `x-forwarded-for`, gera `SHA-256(IP + VISIT_HASH_SALT)`, confere no Redis se a chave `visit:<hash>` existe. Se não existir, incrementa `total_visitas` e grava a chave com TTL de 1 ano (`VISIT_TTL_SECONDS`, default `31536000`) — assim o mesmo IP só é recontado depois de um ano sem visitar. Usa o SDK oficial `@upstash/redis` (`Redis.fromEnv()`).
 
 **Variáveis de ambiente necessárias** (já configuradas no Vercel, produção e preview): `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN`, `VISIT_HASH_SALT`. Sem essas variáveis a function retorna erro 500 (ou falha silenciosamente no front-end, que mantém o placeholder `—`).
 
-O rastreamento hoje só está embutido em `index.html`. As demais páginas públicas ainda não chamam `/api/visita` — se quiser contar visitas vindas delas também, replicar o mesmo bloco de script.
+O rastreamento está embutido em `index.html` e `mc-treinamentos.html`. As demais páginas públicas (incluindo `consciencia-executiva.html`) ainda não chamam `/api/visita` — se quiser contar visitas vindas delas também, replicar o mesmo bloco de script.
 
 ## Área restrita (planejada, não implementada)
 
